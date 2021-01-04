@@ -1,4 +1,26 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+// with polyfills
+import 'core-js/stable'
+import 'regenerator-runtime/runtime'
 
-createApp(App).mount('#app')
+import {createApp} from 'vue'
+
+import 'normalize.css/normalize.css' // A modern alternative to CSS resets
+
+import ElementPlus from 'element-plus'
+import 'element-plus/lib/theme-chalk/index.css'
+
+import '@/styles/scss/index.scss' // global css
+
+import App from './App'
+import store from './store'
+import router from './router'
+
+const { mockXHR } = require('../mock')
+mockXHR()
+
+const app = createApp(App)
+
+app.use(ElementPlus)
+app.use(store)
+app.use(router)
+app.mount('#app')
