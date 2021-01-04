@@ -22,7 +22,7 @@ mockXHR()
 
 const app = createApp(App)
 
-app.use(ElementPlus)
+app.use(ElementPlus, { size: 'small' })
 app.use(store)
 app.use(router)
 app.mount('#app')
