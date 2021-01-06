@@ -1,5 +1,7 @@
 <template>
+  <div class="next-layout layout-has-sider pro-layout">
 
+  </div>
 </template>
 
 <script>
