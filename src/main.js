@@ -22,6 +22,9 @@ mockXHR()
 
 const app = createApp(App)
 
+console.log('Vue', `v${app.version}`)
+console.log('ElementPlus', `v${ElementPlus.version}`)
+
 app.use(ElementPlus, { size: 'small' })
 app.use(store)
 app.use(router)
