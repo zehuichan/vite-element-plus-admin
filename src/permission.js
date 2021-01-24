@@ -6,8 +6,6 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 router.beforeEach(async (to, from) => {
   // start progress bar
   NProgress.start()
-
-  console.log(to, from)
 })
 
 router.afterEach(() => {
