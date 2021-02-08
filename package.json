@@ -8,7 +8,7 @@
     "build:prod": "vue-cli-service build",
     "build:stage": "vue-cli-service build --mode staging",
     "preview": "node build/index.js --preview",
-    "release": "standard-version && git push --follow-tags origin master",
+    "release": "release-it && git push --follow-tags origin main",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -35,20 +35,25 @@
     "eslint-plugin-vue": "^7.5.0",
     "mockjs": "^1.1.0",
     "regenerator-runtime": "^0.13.7",
+    "release-it": "^14.3.0",
     "runjs": "^4.4.2",
     "sass": "^1.32.6",
     "sass-loader": "^10.1.1",
-    "serve-static": "^1.14.1",
-    "standard-version": "^9.1.0"
+    "serve-static": "^1.14.1"
   },
   "browserslist": [
     "> 1%",
     "last 2 versions",
     "not dead"
   ],
-  "standard-version": {
-    "skip": {
-      "changelog": true
+  "release-it": {
+    "npm": {
+      "publish": false
+    },
+    "git": {
+      "push": false,
+      "tagName": "v${version}",
+      "commitMessage": "chore: release v${version}"
     }
   }
 }
