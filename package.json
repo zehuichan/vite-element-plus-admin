@@ -8,23 +8,23 @@
     "build:prod": "vue-cli-service build",
     "build:stage": "vue-cli-service build --mode staging",
     "preview": "node build/index.js --preview",
-    "release": "release-it",
+    "release": "standard-version && git push --follow-tags origin master",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "axios": "^0.21.1",
     "core-js": "^3.8.3",
-    "element-plus": "^1.0.1-beta.27",
+    "element-plus": "^1.0.2-beta.31",
     "normalize.css": "^8.0.1",
     "nprogress": "^0.2.0",
     "vue": "^3.0.5",
     "vue-router": "^4.0.3",
-    "vuex": "^4.0.0-rc.2"
+    "vuex": "^4.0.0"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.5.10",
-    "@vue/cli-plugin-eslint": "^4.5.10",
-    "@vue/cli-service": "^4.5.10",
+    "@vue/cli-plugin-babel": "^4.5.11",
+    "@vue/cli-plugin-eslint": "^4.5.11",
+    "@vue/cli-service": "^4.5.11",
     "@vue/compiler-sfc": "^3.0.0",
     "babel-eslint": "^10.1.0",
     "babel-plugin-dynamic-import-node": "^2.3.3",
@@ -35,15 +35,20 @@
     "eslint-plugin-vue": "^7.5.0",
     "mockjs": "^1.1.0",
     "regenerator-runtime": "^0.13.7",
-    "release-it": "^14.2.2",
     "runjs": "^4.4.2",
-    "sass": "^1.32.5",
+    "sass": "^1.32.6",
     "sass-loader": "^10.1.1",
-    "serve-static": "^1.14.1"
+    "serve-static": "^1.14.1",
+    "standard-version": "^9.1.0"
   },
   "browserslist": [
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "standard-version": {
+    "skip": {
+      "changelog": true
+    }
+  }
 }
