@@ -2,10 +2,12 @@
   <div class="v-search">
     <el-form label-position="right" ref="form" :model="modelValue" :label-width="labelWidth">
       <el-row :gutter="20">
-        <el-col :span="23">
-          <el-col :span="6" v-for="item in opts">{{item}}{{labelWidth}}</el-col>
+        <el-col :span="22">
+          <el-col :span="6" v-for="item in opts">
+
+          </el-col>
         </el-col>
-        <el-col :span="1" class="text-right" v-if="options.length > threshold">
+        <el-col :span="2" class="text-right" v-if="options.length > threshold">
           <el-button type="text" @click="ellipsis = !ellipsis">
             {{ellipsis ? '收起' : '展开'}}<i class="el-icon--right" :class="icon"/>
           </el-button>
@@ -42,14 +44,14 @@
       },
       labelWidth: {
         type: String,
-        default: '80px'
+        default: '105px'
       },
       remoteMethod: Function,
       loading: Boolean,
       // 阈值
       threshold: {
         type: [String, Number],
-        default: 8
+        default: 12
       }
     },
     emits: [
@@ -58,7 +60,7 @@
       'search',
       'reset',
     ],
-    setup(props, {emit}) {
+    setup(props, { emit }) {
       const ellipsis = ref(false)
 
       const opts = computed(() => {
@@ -68,15 +70,15 @@
       const icon = computed(() => ellipsis.value ? 'el-icon-arrow-up' : 'el-icon-arrow-down')
 
       const onSearch = () => {
-        emit('update:modelValue', {...props.modelValue})
-        emit('change', {...props.modelValue})
-        emit('search', {...props.modelValue})
+        emit('update:modelValue', { ...props.modelValue })
+        emit('change', { ...props.modelValue })
+        emit('search', { ...props.modelValue })
       }
 
       const onReset = () => {
-        emit('update:modelValue', {...props.modelValue})
-        emit('change', {...props.modelValue})
-        emit('reset', {...props.modelValue})
+        emit('update:modelValue', { ...props.modelValue })
+        emit('change', { ...props.modelValue })
+        emit('reset', { ...props.modelValue })
       }
 
       return {
