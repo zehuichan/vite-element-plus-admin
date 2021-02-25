@@ -1,8 +1,14 @@
 // components
 import VSearch from '@/components/VSearch'
+import VForm from '@/components/VForm'
+import VFooter from '@/components/VFooter'
+import VSvgIcon from '@/components/VSvgIcon'
 
 const components = [
-  VSearch
+  VSearch,
+  VForm,
+  VFooter,
+  VSvgIcon
 ]
 
 function plugin(app) {

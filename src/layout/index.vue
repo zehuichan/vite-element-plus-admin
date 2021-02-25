@@ -1,21 +1,19 @@
 <template>
   <div class="next-layout layout-has-sider pro-layout">
-    <router-view/>{{width}}{{height}}
+    <router-view/>
+    <v-footer :copyright="copyright"/>
   </div>
 </template>
 
 <script>
-  // hooks
-  import useResize from '@/hooks/use-resize'
+  // settings
+  import defaultSettings from '@/settings'
 
   export default {
-    name: 'index',
-    setup() {
-      const {width, height} = useResize()
-
-      return {
-        width,
-        height
+    name: 'Layout',
+    computed: {
+      copyright() {
+        return defaultSettings.copyright
       }
     }
   }

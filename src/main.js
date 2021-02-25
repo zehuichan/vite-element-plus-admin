@@ -7,7 +7,9 @@ import {createApp} from 'vue'
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
 import ElementPlus from 'element-plus'
+import locale from 'element-plus/lib/locale/lang/zh-cn'
 import 'element-plus/lib/theme-chalk/index.css'
+
 import VComponents from '@/constants/vcomponents' // global components
 
 import '@/styles/scss/index.scss' // global css
@@ -23,10 +25,10 @@ mockXHR()
 
 const app = createApp(App)
 
-console.log('Vue', `v${app.version}`)
-console.log('ElementPlus', `v${ElementPlus.version}`)
+console.info('Vue', `v${app.version}`)
+console.info('ElementPlus', `v${ElementPlus.version}`)
 
-app.use(ElementPlus, { size: 'small' })
+app.use(ElementPlus, { size: 'small', locale })
 app.use(VComponents)
 app.use(store)
 app.use(router)

@@ -1,3 +1,12 @@
+const IS_PROD = ['production', 'prod'].includes(process.env.NODE_ENV)
+
+const plugins = []
+
+if (IS_PROD) {
+  plugins.push(['transform-remove-console', { 'exclude': ['error', 'warn', 'info'] }])
+}
+
+
 module.exports = {
   presets: [
     '@vue/cli-plugin-babel/preset'
@@ -9,5 +18,6 @@ module.exports = {
       // https://panjiachen.github.io/vue-element-admin-site/guide/advanced/lazy-loading.html
       plugins: ['dynamic-import-node']
     }
-  }
+  },
+  plugins
 }
