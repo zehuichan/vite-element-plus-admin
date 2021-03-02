@@ -1,7 +1,7 @@
 <template>
-  <el-form class="v-form" ref="form" :model="modelValue" v-bind="$attrs">
+  <el-form class="v-form" :ref="setFormRef" :model="modelValue" v-bind="$attrs">
     <el-form-item
-      v-for="item in _options"
+      v-for="item in opts"
       :key="item.key"
       :label="item.label"
       :prop="item.key"
@@ -13,14 +13,14 @@
           :placeholder="item.placeholder"
           :disabled="item.disabled"
           clearable
-          @update:modelValue="$_inputChange(item, $event)"
+          @update:modelValue="inputChange(item, $event)"
           style="width:100%"
         />
       </template>
       <template v-if="item.type === 'textarea'">
         <el-input
           type="textarea"
-          :modelValue="value[item.key]"
+          :modelValue="modelValue[item.key]"
           :placeholder="item.placeholder"
           :disabled="item.disabled"
           clearable
@@ -28,29 +28,18 @@
           :show-word-limit="item.showWordLimit"
           :autosize="item.autosize || { minRows: 5}"
           resize="none"
-          @update:modelValue="$_inputChange(item, $event)"
+          @update:modelValue="inputChange(item, $event)"
           style="width:100%"
         />
       </template>
       <template v-if="item.type === 'radio'">
-        <el-radio-group :modelValue="modelValue[item.key]" @update:modelValue="$_inputChange(item, $event)">
-          <el-radio
-            v-for="(sub, idx) in item.options"
-            :key="idx"
-            :label="sub.value"
-          >
-            {{sub.label}}
-          </el-radio>
+        <el-radio-group :modelValue="modelValue[item.key]" @update:modelValue="inputChange(item, $event)">
+          {{item.options}}
         </el-radio-group>
       </template>
       <template v-if="item.type === 'checkbox'">
-        <el-checkbox-group :modelValue="modelValue[item.key]" @update:modelValue="$_inputChange(item, $event)">
-          <el-checkbox
-            v-for="(sub, idx) in item.options"
-            :key="idx"
-            :label="sub.label"
-            :name="sub.value"
-          />
+        <el-checkbox-group :modelValue="modelValue[item.key]" @update:modelValue="inputChange(item, $event)">
+          {{item.options}}
         </el-checkbox-group>
       </template>
       <template v-if="item.type === 'select'">
@@ -66,7 +55,7 @@
           :disabled="item.disabled"
           :loading="loading"
           clearable
-          @update:modelValue="$_inputChange(item, $event)"
+          @update:modelValue="inputChange(item, $event)"
           style="width:100%"
         >
           <el-option
@@ -82,8 +71,7 @@
           :modelValue="modelValue[item.key]"
           :type="item.type"
           :placeholder="item.placeholder"
-          :format="item.format || undefined"
-          @update:modelValue="$_inputChange(item, $event)"
+          @update:modelValue="inputChange(item, $event)"
           style="width:100%; height:33px;"
         />
       </template>
@@ -94,8 +82,7 @@
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
-          :default-time="item.defaultTime || ['00:00:00', '23:59:59']"
-          @update:modelValue="$_inputChange(item, $event)"
+          @update:modelValue="inputChange(item, $event)"
           style="width:100%; height:33px;"
         />
       </template>
@@ -104,7 +91,7 @@
           :modelValue="modelValue[item.key]"
           type="datetime"
           :placeholder="item.placeholder"
-          @update:modelValue="$_inputChange(item, $event)"
+          @update:modelValue="inputChange(item, $event)"
           style="width:100%; height:33px;"
         />
       </template>
@@ -114,10 +101,14 @@
 </template>
 
 <script>
+  // vue
+  import {defineComponent, computed, watch, ref} from 'vue'
+  // hooks
+  import useExpose from '@/hooks/use-expose'
   // utils
   import {formatNumber} from '../utils/formate-number'
 
-  export default {
+  export default defineComponent({
     name: 'VForm',
     props: {
       modelValue: {
@@ -138,35 +129,54 @@
     emits: [
       'update:modelValue',
     ],
-    computed: {
-      _options() {
-        return this.options.filter(item => !item.hidden)
+    setup(props, { emit }) {
+      const form = ref()
+      const setFormRef = (el) => {
+        form.value = el
       }
-    },
-    created() {
-      this.$_setDefaultValue()
-    },
-    methods: {
-      $_setDefaultValue() {
-        this._options.forEach((item) => {
+
+      const opts = computed(() => {
+        return props.options.filter(item => !item.hidden)
+      })
+
+
+      watch(
+        () => opts.value,
+        (val) => {
+          setDefaultValue()
+        }
+      )
+
+      const setDefaultValue = () => {
+        opts.value.forEach((item) => {
           // 1. 填充默认值
+          props.modelValue[item.key] = props.modelValue[item.key]
           // 2. 映射回配置项
-          item.value = this.modelValue[item.key] = this.modelValue[item.key] || item.value
+          item.value = props.modelValue[item.key]
         })
-      },
-      $_inputChange({ type, key }, event) {
+      }
+
+      const inputChange = ({ type, key }, event) => {
         switch (type) {
           case 'digit': // 正整数
-            this.$emit('update:modelValue', { ...this.modelValue, [key]: formatNumber(event, false) })
+            emit('update:modelValue', { ...props.modelValue, [key]: formatNumber(event, false) })
             break
           case 'number': // 数字
-            this.$emit('update:modelValue', { ...this.modelValue, [key]: formatNumber(event) })
+            emit('update:modelValue', { ...props.modelValue, [key]: formatNumber(event) })
             break
           default:
-            this.$emit('update:modelValue', { ...this.modelValue, [key]: event })
+            emit('update:modelValue', { ...props.modelValue, [key]: event })
             break
         }
-      },
+      }
+
+      return {
+        setFormRef,
+        opts,
+        inputChange
+      }
+    },
+    methods: {
       // v-form api
       validate(cb) {
         return this.$refs.form.validate(cb)
@@ -181,7 +191,7 @@
         return this.$refs.form.clearValidate(props, cb)
       }
     }
-  }
+  })
 </script>
 
 <style lang="scss" scoped>

@@ -73,7 +73,7 @@
 </template>
 
 <script>
-  import {defineComponent, computed, watch, ref, nextTick} from 'vue'
+  import {defineComponent, computed, watch, ref} from 'vue'
 
   export default defineComponent({
     name: 'VSearch',
