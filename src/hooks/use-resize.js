@@ -14,7 +14,6 @@ const useResize = () => {
   onBeforeMount(() => {
     window.addEventListener('resize', onResize)
     window.addEventListener('orientationchange', onResize)
-
   })
 
   onBeforeUnmount(() => {

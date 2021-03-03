@@ -3,7 +3,7 @@ import {createRouter, createWebHashHistory} from 'vue-router'
 import Layout from '@/layout'
 
 const routes = [
-  {path: '/', redirect: '/vcomponents'},
+  { path: '/', redirect: '/vcomponents' },
   {
     path: '/vcomponents',
     component: Layout,
@@ -11,7 +11,10 @@ const routes = [
       {
         path: '/vcomponents',
         component: () => import('@/views/vcomponents'),
-        name: 'index'
+        name: 'index',
+        meta: {
+          title: 'vcomponents'
+        }
       }
     ]
   }
