@@ -1,5 +1,5 @@
 <template>
-  <el-form class="v-form" :ref="setFormRef" :model="modelValue" v-bind="$attrs">
+  <el-form class="v-form" ref="form" :model="modelValue" v-bind="$attrs">
     <el-form-item
       v-for="item in opts"
       :key="item.key"
@@ -130,15 +130,11 @@
       'update:modelValue',
     ],
     setup(props, { emit }) {
-      const form = ref()
-      const setFormRef = (el) => {
-        form.value = el
-      }
+      const form = ref(null)
 
       const opts = computed(() => {
         return props.options.filter(item => !item.hidden)
       })
-
 
       watch(
         () => opts.value,
@@ -170,25 +166,31 @@
         }
       }
 
+      // v-form api
+      const validate = (cb) => {
+        form.value.validate(cb)
+      }
+      const validateField = (props, cb) => {
+        form.value.validateField(props, cb)
+      }
+      const resetFields = () => {
+        return form.value.resetFields()
+      }
+      const clearValidate = (props, cb) => {
+        return form.value.clearValidate(props, cb)
+      }
+
+      useExpose({
+        validate,
+        validateField,
+        resetFields,
+        clearValidate,
+      })
+
       return {
-        setFormRef,
+        form,
         opts,
         inputChange
-      }
-    },
-    methods: {
-      // v-form api
-      validate(cb) {
-        return this.$refs.form.validate(cb)
-      },
-      validateField(props, cb) {
-        return this.$refs.form.validateField(props, cb)
-      },
-      resetFields() {
-        return this.$refs.form.resetFields()
-      },
-      clearValidate(props, cb) {
-        return this.$refs.form.clearValidate(props, cb)
       }
     }
   })

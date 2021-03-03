@@ -9,10 +9,10 @@
       </v-search>
     </demo-card>
     <demo-card title="v-search">
-      <v-form v-model="form" :options="formOptions">
+      <v-form ref="vform" v-model="form" :options="formOptions" label-position="left" label-width="80px">
         <template #actions>
-          <el-button type="primary">立即创建</el-button>
-          <el-button>取消</el-button>
+          <el-button type="primary" @click="submit">立即创建</el-button>
+          <el-button @click="reset">取消</el-button>
         </template>
       </v-form>
     </demo-card>
@@ -154,12 +154,25 @@
         dataForm: {
           name: 'chenzehui'
         },
-        form:{}
+        form: {}
       }
     },
     methods: {
       onSearch(form) {
 
+      },
+      submit() {
+        this.$refs.vform.validate((valid) => {
+          if (valid) {
+            alert('submit!')
+          } else {
+            console.log('error submit!!')
+            return false
+          }
+        })
+      },
+      reset() {
+        this.$refs.vform.resetFields()
       }
     }
   }
