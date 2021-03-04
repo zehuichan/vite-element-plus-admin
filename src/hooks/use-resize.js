@@ -1,6 +1,6 @@
-const inBrowser = typeof window !== 'undefined'
-
 import {ref, onBeforeMount, onBeforeUnmount} from 'vue'
+
+const inBrowser = typeof window !== 'undefined'
 
 const useResize = () => {
   const width = ref(inBrowser ? window.innerWidth : 0)
@@ -21,7 +21,7 @@ const useResize = () => {
     window.removeEventListener('orientationchange', onResize)
   })
 
-  return {width, height}
+  return { width, height }
 }
 
 export default useResize
