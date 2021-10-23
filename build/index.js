@@ -1,35 +1,28 @@
-const { run } = require('runjs')
-const chalk = require('chalk')
-const config = require('../vue.config.js')
-const rawArgv = process.argv.slice(2)
-const args = rawArgv.join(' ')
+import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 
-if (process.env.npm_config_preview || rawArgv.includes('--preview')) {
-  const report = rawArgv.includes('--report')
+import { configHtmlPlugin } from './html'
+import { configCompressPlugin } from './compress'
 
-  run(`vue-cli-service build ${args}`)
+export function createVitePlugins(viteEnv, isBuild) {
+  const { VITE_BUILD_COMPRESS, VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE } = viteEnv
 
-  const port = 9526
-  const publicPath = config.publicPath
+  const vitePlugins = [
+    // have to
+    vue(),
+    // have to
+    vueJsx()
+  ]
 
-  var connect = require('connect')
-  var serveStatic = require('serve-static')
-  const app = connect()
+  // vite-plugin-html
+  vitePlugins.push(configHtmlPlugin(viteEnv, isBuild))
 
-  app.use(
-    publicPath,
-    serveStatic('./dist', {
-      index: ['vcomponents.html', '/']
-    })
-  )
+  if (isBuild) {
+    // rollup-plugin-gzip
+    vitePlugins.push(
+      configCompressPlugin(VITE_BUILD_COMPRESS, VITE_BUILD_COMPRESS_DELETE_ORIGIN_FILE)
+    )
+  }
 
-  app.listen(port, function () {
-    console.log(chalk.green(`> Preview at  http://localhost:${port}${publicPath}`))
-    if (report) {
-      console.log(chalk.green(`> Report at  http://localhost:${port}${publicPath}report.html`))
-    }
-
-  })
-} else {
-  run(`vue-cli-service build ${args}`)
+  return vitePlugins
 }

@@ -1,35 +1,27 @@
-// with polyfills
-import 'core-js/stable'
-import 'regenerator-runtime/runtime'
+import { createApp } from 'vue'
+import App from './App.vue'
 
-import {createApp} from 'vue'
+// A modern alternative to CSS resets
+import 'normalize.css/normalize.css'
+// global css
+import './assets/scss/index.scss'
 
-import 'normalize.css/normalize.css' // A modern alternative to CSS resets
+import { setupElementPlus } from './plugins/element'
+import { setupGlobComponents } from './components'
 
-import ElementPlus from 'element-plus'
-import locale from 'element-plus/lib/locale/lang/zh-cn'
-import 'element-plus/lib/theme-chalk/index.css'
+import { setupStore } from './store'
+import { router, setupRouter } from './router'
+import { setupRouterGuard } from './router/guard'
 
-import VComponents from '@/constants/vcomponents' // global components
+function bootstrap() {
+  const app = createApp(App)
 
-import '@/styles/scss/index.scss' // global css
+  setupElementPlus(app)
+  setupGlobComponents(app)
+  setupStore(app)
+  setupRouter(app)
+  setupRouterGuard(router)
+  app.mount('#app')
+}
 
-import App from './App'
-import store from './store'
-import router from './router'
-
-import './permission'
-
-const { mockXHR } = require('../mock')
-mockXHR()
-
-const app = createApp(App)
-
-console.info('Vue', `v${app.version}`)
-console.info('ElementPlus', `v${ElementPlus.version}`)
-
-app.use(ElementPlus, { size: 'small', locale })
-app.use(VComponents)
-app.use(store)
-app.use(router)
-app.mount('#app')
+bootstrap()

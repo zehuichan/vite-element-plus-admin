@@ -1,7 +1,9 @@
-const state = () => ({
+const state = {
   avatar: '',
-  name: ''
-})
+  cellphone: '',
+  username: '',
+  github: '',
+}
 
 const mutations = {}
 
