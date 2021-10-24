@@ -1,4 +1,4 @@
-import {getCurrentInstance} from 'vue'
+import { getCurrentInstance } from 'vue'
 
 const useExpose = (apis) => {
   const instance = getCurrentInstance()

@@ -21,7 +21,7 @@ http.interceptors.response.use(
   (response) => {
     const res = response.data
     if (res.status !== 1) {
-      Toast(`status:${res.status},${res.msg}`)
+      ElMessage.error(`status:${res.status}, ${res.msg}`)
       return Promise.reject(res.msg)
     } else {
       return response.data
@@ -29,7 +29,7 @@ http.interceptors.response.use(
   },
   (error) => {
     console.log(`err,${error}`)
-    Toast(`err,${error}`)
+    ElMessage.error(`err,${error}`)
     return Promise.reject(error)
   }
 )

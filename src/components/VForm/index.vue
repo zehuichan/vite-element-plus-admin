@@ -34,12 +34,12 @@
       </template>
       <template v-if="item.type === 'radio'">
         <el-radio-group :modelValue="modelValue[item.key]" @update:modelValue="inputChange(item, $event)">
-          {{item.options}}
+          {{ item.options }}
         </el-radio-group>
       </template>
       <template v-if="item.type === 'checkbox'">
         <el-checkbox-group :modelValue="modelValue[item.key]" @update:modelValue="inputChange(item, $event)">
-          {{item.options}}
+          {{ item.options }}
         </el-checkbox-group>
       </template>
       <template v-if="item.type === 'select'">
@@ -101,103 +101,104 @@
 </template>
 
 <script>
-  // vue
-  import {defineComponent, computed, watch, ref} from 'vue'
-  // hooks
-  import useExpose from '@/hooks/use-expose'
-  // utils
-  import {formatNumber} from '../utils/formate-number'
+// vue
+import { defineComponent, computed, watch, ref } from 'vue'
+// hooks
+import useExpose from '@/hooks/use-expose'
+// utils
+import { formatNumber } from '../utils/formate-number'
 
-  export default defineComponent({
-    name: 'VForm',
-    props: {
-      modelValue: {
-        type: Object,
-        default: () => {
-          return {}
-        }
-      },
-      options: {
-        type: Array,
-        default: () => [],
-        required: true
-      },
-      remoteMethod: Function,
-      loading: Boolean,
-      test: String
+export default defineComponent({
+  name: 'VForm',
+  inheritAttrs: false,
+  props: {
+    modelValue: {
+      type: Object,
+      default: () => {
+        return {}
+      }
     },
-    emits: [
-      'update:modelValue',
-    ],
-    setup(props, { emit }) {
-      const form = ref(null)
+    options: {
+      type: Array,
+      default: () => [],
+      required: true
+    },
+    remoteMethod: Function,
+    loading: Boolean,
+    test: String
+  },
+  emits: [
+    'update:modelValue',
+  ],
+  setup(props, { emit }) {
+    const form = ref()
 
-      const opts = computed(() => {
-        return props.options.filter(item => !item.hidden)
+    const opts = computed(() => {
+      return props.options.filter(item => !item.hidden)
+    })
+
+    watch(
+      () => opts.value,
+      (val) => {
+        setDefaultValue()
+      }
+    )
+
+    const setDefaultValue = () => {
+      opts.value.forEach((item) => {
+        // 1. 填充默认值
+        props.modelValue[item.key] = props.modelValue[item.key]
+        // 2. 映射回配置项
+        item.value = props.modelValue[item.key]
       })
+    }
 
-      watch(
-        () => opts.value,
-        (val) => {
-          setDefaultValue()
-        }
-      )
-
-      const setDefaultValue = () => {
-        opts.value.forEach((item) => {
-          // 1. 填充默认值
-          props.modelValue[item.key] = props.modelValue[item.key]
-          // 2. 映射回配置项
-          item.value = props.modelValue[item.key]
-        })
-      }
-
-      const inputChange = ({ type, key }, event) => {
-        switch (type) {
-          case 'digit': // 正整数
-            emit('update:modelValue', { ...props.modelValue, [key]: formatNumber(event, false) })
-            break
-          case 'number': // 数字
-            emit('update:modelValue', { ...props.modelValue, [key]: formatNumber(event) })
-            break
-          default:
-            emit('update:modelValue', { ...props.modelValue, [key]: event })
-            break
-        }
-      }
-
-      // v-form api
-      const validate = (cb) => {
-        form.value.validate(cb)
-      }
-      const validateField = (props, cb) => {
-        form.value.validateField(props, cb)
-      }
-      const resetFields = () => {
-        return form.value.resetFields()
-      }
-      const clearValidate = (props, cb) => {
-        return form.value.clearValidate(props, cb)
-      }
-
-      useExpose({
-        validate,
-        validateField,
-        resetFields,
-        clearValidate,
-      })
-
-      return {
-        form,
-        opts,
-        inputChange
+    const inputChange = ({ type, key }, event) => {
+      switch (type) {
+        case 'digit': // 正整数
+          emit('update:modelValue', { ...props.modelValue, [key]: formatNumber(event, false) })
+          break
+        case 'number': // 数字
+          emit('update:modelValue', { ...props.modelValue, [key]: formatNumber(event) })
+          break
+        default:
+          emit('update:modelValue', { ...props.modelValue, [key]: event })
+          break
       }
     }
-  })
+
+    // v-form api
+    const validate = (cb) => {
+      form.value.validate(cb)
+    }
+    const validateField = (props, cb) => {
+      form.value.validateField(props, cb)
+    }
+    const resetFields = () => {
+      return form.value.resetFields()
+    }
+    const clearValidate = (props, cb) => {
+      return form.value.clearValidate(props, cb)
+    }
+
+    useExpose({
+      validate,
+      validateField,
+      resetFields,
+      clearValidate,
+    })
+
+    return {
+      form,
+      opts,
+      inputChange
+    }
+  }
+})
 </script>
 
-<style lang="scss" scoped>
-  .v-form {
+<style lang="scss">
+.v-form {
 
-  }
+}
 </style>
