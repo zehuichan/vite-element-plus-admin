@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 // basic components
+import BasicLayout from '@/layouts'
 
 const RouteView = {
   name: 'RouteView',
@@ -8,6 +9,15 @@ const RouteView = {
 }
 
 const routes = [
+  {
+    path: '/',
+    name: 'index',
+    component: BasicLayout,
+    meta: {
+      title: 'Root',
+    },
+    children: []
+  }
 ]
 
 export const router = createRouter({
