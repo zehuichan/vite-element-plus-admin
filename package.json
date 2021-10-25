@@ -33,5 +33,15 @@
     "vite": "^2.6.4",
     "vite-plugin-compression": "^0.3.5",
     "vite-plugin-html": "^2.1.1"
+  },
+  "release-it": {
+    "npm": {
+      "publish": false
+    },
+    "git": {
+      "push": false,
+      "tagName": "v${version}",
+      "commitMessage": "chore: release v${version}"
+    }
   }
 }

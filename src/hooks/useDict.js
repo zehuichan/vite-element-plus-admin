@@ -1,4 +1,3 @@
-
 // api
 import { get as getDictDetail } from '@/api/dict'
 
