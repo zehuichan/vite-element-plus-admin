@@ -1,15 +1,16 @@
 <template>
-  Menu
+  AppMain
+  <router-view></router-view>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'Menu'
+  name: 'AppMain'
 })
 </script>
 
-<style >
+<style scoped>
 
 </style>

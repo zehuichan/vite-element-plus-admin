@@ -1,15 +1,15 @@
 <template>
-  <router-view></router-view>
+  Header
 </template>
 
 <script>
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'Main'
+  name: 'Header',
 })
 </script>
 
-<style scoped>
+<style>
 
 </style>

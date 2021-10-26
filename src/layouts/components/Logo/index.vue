@@ -1,15 +1,15 @@
 <template>
-  Menu
+  Logo
 </template>
 
 <script>
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'Menu'
+  name: 'Logo',
 })
 </script>
 
-<style >
+<style>
 
 </style>

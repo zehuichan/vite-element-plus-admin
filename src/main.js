@@ -13,7 +13,7 @@ import { setupStore } from './store'
 import { router, setupRouter } from './router'
 import { setupRouterGuard } from './router/guard'
 
-function bootstrap() {
+async function bootstrap() {
   const app = createApp(App)
 
   setupElementPlus(app)

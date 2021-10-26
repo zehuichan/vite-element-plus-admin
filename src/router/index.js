@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 
 // basic components
 import BasicLayout from '@/layouts'
+import component from 'element-plus/packages/element-plus/component'
 
 const RouteView = {
   name: 'RouteView',
@@ -16,7 +17,16 @@ const routes = [
     meta: {
       title: 'Root',
     },
-    children: []
+    children: [
+      {
+        path: 'dashboard',
+        name: 'dashboard',
+        component: () => import('@/views/dashboard'),
+        meta: {
+          title: '仪表板',
+        },
+      }
+    ]
   }
 ]
 
