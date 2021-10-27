@@ -6,7 +6,6 @@ import 'normalize.css/normalize.css'
 // global css
 import './assets/scss/index.scss'
 
-import { setupElementPlus } from './plugins/element'
 import { setupGlobComponents } from './components'
 
 import { setupStore } from './store'
@@ -16,7 +15,6 @@ import { setupRouterGuard } from './router/guard'
 async function bootstrap() {
   const app = createApp(App)
 
-  setupElementPlus(app)
   setupGlobComponents(app)
   setupStore(app)
   setupRouter(app)

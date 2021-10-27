@@ -1,7 +1,7 @@
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
-// import { configElementPlusPlugin } from './element'
+import { configElementPlusPlugin } from './element'
 import { configHtmlPlugin } from './html'
 import { configCompressPlugin } from './compress'
 
@@ -16,7 +16,7 @@ export function createVitePlugins(viteEnv, isBuild) {
   ]
 
   // element-plus
-  // vitePlugins.push(configElementPlusPlugin())
+  vitePlugins.push(configElementPlusPlugin())
 
   // vite-plugin-html
   vitePlugins.push(configHtmlPlugin(viteEnv, isBuild))

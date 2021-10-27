@@ -2,7 +2,6 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 
 // basic components
 import BasicLayout from '@/layouts'
-import component from 'element-plus/packages/element-plus/component'
 
 const RouteView = {
   name: 'RouteView',
