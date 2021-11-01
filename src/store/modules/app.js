@@ -12,7 +12,8 @@ export const useAppStore = defineStore({
       size: cache.getItem('size') || 'small'
     }
   ),
-  actions:{
+  getters: {},
+  actions: {
     toggleSideBar() {
       this.sidebar.opened = !this.sidebar.opened
       this.sidebar.withoutAnimation = false
