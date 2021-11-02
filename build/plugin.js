@@ -12,11 +12,10 @@ export function createVitePlugins(viteEnv, isBuild) {
     // have to
     vue(),
     // have to
-    vueJsx()
+    vueJsx(),
+    // element-plus
+    configElementPlusPlugin()
   ]
-
-  // element-plus
-  vitePlugins.push(configElementPlusPlugin())
 
   // vite-plugin-html
   vitePlugins.push(configHtmlPlugin(viteEnv, isBuild))

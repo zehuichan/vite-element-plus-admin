@@ -1,14 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= title %></title>
-    <script src="//at.alicdn.com/t/font_2260306_zsy9pk1ai1o.js"></script>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8"/>
+  <link rel="icon" href="/favicon.ico"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= title %></title>
+  <script src="//at.alicdn.com/t/font_2260306_zsy9pk1ai1o.js"></script>
+  <style>
+    body {
+      margin: 0;
+    }
+
+    .first-loading-wrp {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      min-height: 100vh;
+      height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      line-height: 1.5715;
+      background-color: #f0f2f5;
+    }
+
+    .first-loading-content {
+      display: flex;
+    }
+
+    .first-loading-content > img {
+      height: 56px;
+    }
+
+    .first-loading-content > p {
+      font-weight: 500;
+      margin: 0;
+      padding-left: 16px;
+      font-size: 36px
+    }
+  </style>
+</head>
+<body ontouchstart>
+<div id="app">
+  <div class="first-loading-wrp">
+    <div class="first-loading-content">
+      <img src="/mona-loading-dimmed.gif" alt="loading">
+      <p>ZehuiChan_ Design.</p>
+    </div>
+  </div>
+</div>
+<script type="module" src="/src/main.js"></script>
+</body>
 </html>

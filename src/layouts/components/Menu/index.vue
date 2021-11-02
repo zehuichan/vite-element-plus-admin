@@ -1,5 +1,7 @@
 <template>
-  Menu
+  <el-scrollbar>
+    Menu
+  </el-scrollbar>
 </template>
 
 <script>
@@ -10,6 +12,6 @@ export default defineComponent({
 })
 </script>
 
-<style >
+<style>
 
 </style>
