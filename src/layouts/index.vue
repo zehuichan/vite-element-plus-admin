@@ -52,6 +52,7 @@ export default defineComponent({
 }
 
 .basic-layout__aside {
+  min-height: 100%;
   box-shadow: 2px 0 8px 0 rgb(29 35 41 / 5%);
 
   .basic-layout__aside-content {
