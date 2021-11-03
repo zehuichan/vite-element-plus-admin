@@ -16,6 +16,7 @@
       <el-main>
         <AppMain/>
       </el-main>
+      <el-backtop />
     </el-container>
   </el-container>
 </template>
