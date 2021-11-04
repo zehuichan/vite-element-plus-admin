@@ -2,17 +2,14 @@
   <el-scrollbar wrap-class="scrollbar-wrapper">
     <el-menu
       mode="vertical"
-      :unique-opened="true"
+      :unique-opened="false"
       :collapse-transition="false"
-      :background-color="backgroundColor"
-      :text-color="textColor"
-      :active-text-color="activeTextColor"
+      :background-color="variables.backgroundColor"
+      :text-color="variables.textColor"
+      :active-text-color="variables.activeTextColor"
     >
       <el-sub-menu index="1">
         <template #title>
-          <el-icon>
-            <location/>
-          </el-icon>
           <span>Navigator One</span>
         </template>
         <el-menu-item-group title="Group One">
@@ -28,21 +25,12 @@
         </el-sub-menu>
       </el-sub-menu>
       <el-menu-item index="2">
-        <el-icon>
-          <icon-menu/>
-        </el-icon>
         <span>Navigator Two</span>
       </el-menu-item>
       <el-menu-item index="3">
-        <el-icon>
-          <document/>
-        </el-icon>
         <span>Navigator Three</span>
       </el-menu-item>
       <el-menu-item index="4">
-        <el-icon>
-          <setting/>
-        </el-icon>
         <span>Navigator Four</span>
       </el-menu-item>
     </el-menu>
@@ -50,20 +38,16 @@
 </template>
 
 <script>
-import { computed, defineComponent } from 'vue'
-import { Location, Document, Menu as IconMenu, Setting, } from '@element-plus/icons'
+import { defineComponent } from 'vue'
+import { useExtractICSS } from '@/hooks/useExtractICSS'
+import variables from '@/assets/scss/variables.scss'
 
 export default defineComponent({
   name: 'Menu',
   setup() {
     return {
+      variables: useExtractICSS(variables)
     }
-  },
-  components: {
-    Location,
-    Document,
-    Setting,
-    IconMenu,
   },
 })
 </script>

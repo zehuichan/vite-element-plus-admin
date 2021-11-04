@@ -1,10 +1,8 @@
 import { getCurrentInstance } from 'vue'
 
-const useExpose = (apis) => {
+export function useExpose(apis) {
   const instance = getCurrentInstance()
   if (instance) {
     Object.assign(instance.proxy, apis)
   }
 }
-
-export default useExpose

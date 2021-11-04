@@ -1,8 +1,8 @@
-import {ref, onBeforeMount, onBeforeUnmount} from 'vue'
+import { ref, onBeforeMount, onBeforeUnmount } from 'vue'
 
 const inBrowser = typeof window !== 'undefined'
 
-const useResize = () => {
+export function useResize() {
   const width = ref(inBrowser ? window.innerWidth : 0)
   const height = ref(inBrowser ? window.innerHeight : 0)
 
@@ -23,5 +23,3 @@ const useResize = () => {
 
   return { width, height }
 }
-
-export default useResize
