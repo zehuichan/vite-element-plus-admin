@@ -34,12 +34,13 @@
         <span>Navigator Four</span>
       </el-menu-item>
     </el-menu>
+    {{ variables }}
   </el-scrollbar>
 </template>
 
 <script>
 import { defineComponent } from 'vue'
-import { useExtractICSS } from '@/hooks/useExtractICSS'
+import { useExtractICSS } from '@/hooks'
 import variables from '@/assets/scss/variables.scss'
 
 export default defineComponent({
@@ -53,11 +54,4 @@ export default defineComponent({
 </script>
 
 <style>
-.el-menu {
-  border: 0;
-}
-
-.scrollbar-wrapper {
-  height: calc(100vh - 57px - 48px);
-}
 </style>

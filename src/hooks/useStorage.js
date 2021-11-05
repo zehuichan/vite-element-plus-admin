@@ -2,7 +2,7 @@ import { ref, watchEffect } from 'vue'
 
 const prefix = import.meta.env.VITE_WECHAT_APPID
 
-export function useStorage(key, defaultValue) {
+export default function useStorage(key, defaultValue) {
   const state = ref(getState())
 
   function getState() {
@@ -11,8 +11,8 @@ export function useStorage(key, defaultValue) {
     if (raw) {
       try {
         return JSON.parse(raw)
-      } catch {
-        //
+      } catch (err) {
+        console.log(err)
       }
     }
 

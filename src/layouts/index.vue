@@ -1,6 +1,6 @@
 <template>
   <el-container class="basic-layout">
-    <el-aside class="basic-layout__aside" width="208px">
+    <el-aside class="basic-layout__aside" :width="variables.width">
       <div class="basic-layout__aside-content">
         <Logo/>
         <div style="flex: 1 1 0%; overflow: hidden auto;">
@@ -16,7 +16,7 @@
       <el-main>
         <AppMain/>
       </el-main>
-      <el-backtop />
+      <el-backtop/>
     </el-container>
   </el-container>
 </template>
@@ -30,6 +30,9 @@ import Trigger from './components/Trigger'
 import Header from './components/Header'
 import AppMain from './components/AppMain'
 
+import { useExtractICSS } from '@/hooks'
+import variables from '@/assets/scss/variables.scss'
+
 export default defineComponent({
   name: 'BasicLayout',
   components: {
@@ -39,27 +42,14 @@ export default defineComponent({
     Header,
     AppMain
   },
-  setup(props) {
-
-    return {}
-  }
+  setup() {
+    return {
+      variables: useExtractICSS(variables)
+    }
+  },
 })
 </script>
 
 <style lang="scss">
-.basic-layout {
-  width: 100%;
-  min-height: 100%;
-}
-
-.basic-layout__aside {
-  min-height: 100%;
-  box-shadow: 2px 0 8px 0 rgb(29 35 41 / 5%);
-
-  .basic-layout__aside-content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-}
+@import "./index.scss";
 </style>

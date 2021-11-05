@@ -2,7 +2,7 @@ import { ref, onBeforeMount, onBeforeUnmount } from 'vue'
 
 const inBrowser = typeof window !== 'undefined'
 
-export function useResize() {
+export default function useResize() {
   const width = ref(inBrowser ? window.innerWidth : 0)
   const height = ref(inBrowser ? window.innerHeight : 0)
 

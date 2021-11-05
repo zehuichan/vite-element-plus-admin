@@ -1,5 +1,5 @@
 // api
 import { get as getDictDetail } from '@/api/dict'
 
-export function useDict(name, opts) {
+export default function useDict(name, opts) {
 }

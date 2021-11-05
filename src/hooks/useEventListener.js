@@ -1,3 +1,3 @@
-export function useEventListener(eventName, handler, options) {
+export default function useEventListener(eventName, handler, options) {
 
 }

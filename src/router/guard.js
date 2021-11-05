@@ -1,5 +1,5 @@
 import { store } from '@/store'
-import { useTitle } from '@/hooks/useTitle'
+import { useTitle } from '@/hooks'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 

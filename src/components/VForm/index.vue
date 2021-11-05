@@ -104,7 +104,7 @@
 // vue
 import { defineComponent, computed, watch, ref } from 'vue'
 // hooks
-import { useExpose } from '@/hooks/useExpose'
+import { useExpose } from '@/hooks'
 // utils
 import { formatNumber } from '../utils/formate-number'
 
