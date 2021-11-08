@@ -34,7 +34,6 @@
         <span>Navigator Four</span>
       </el-menu-item>
     </el-menu>
-    {{ variables }}
   </el-scrollbar>
 </template>
 
