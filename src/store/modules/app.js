@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { store } from '@/store'
 import cache from '@/utils/cache'
 
 export const useAppStore = defineStore({
@@ -12,7 +13,6 @@ export const useAppStore = defineStore({
       size: cache.getItem('size') || 'small'
     }
   ),
-  getters: {},
   actions: {
     toggleSideBar() {
       this.sidebar.opened = !this.sidebar.opened
@@ -30,3 +30,7 @@ export const useAppStore = defineStore({
     }
   }
 })
+
+export function useAppStoreWithInstall() {
+  return useAppStore(store)
+}

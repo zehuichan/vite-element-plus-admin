@@ -22,4 +22,4 @@ async function bootstrap() {
   app.mount('#app')
 }
 
-bootstrap()
+void bootstrap()

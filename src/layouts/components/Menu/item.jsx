@@ -1,4 +1,5 @@
 import { computed, defineComponent, h } from 'vue'
+import { ElMenuItem, ElSubMenu } from 'element-plus'
 import MenuItem from './item'
 
 export default defineComponent({
@@ -20,18 +21,16 @@ export default defineComponent({
         : false
     }
 
-    console.log(slots)
-
     return () => {
       if (item.value && !hasMultiChild(item.value)) {
         return h(
-          'el-menu-item',
+          ElMenuItem,
           { index: item.value.redirect || item.value.path },
           () => slots.default && slots.default(item.value)
         )
       } else if (item.value) {
         return h(
-          'el-sub-menu',
+          ElSubMenu,
           { index: item.value.path },
           {
             title: () => slots.default && slots.default({ meta: item.value?.meta }),

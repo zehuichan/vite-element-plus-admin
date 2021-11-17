@@ -3,8 +3,10 @@
     <el-aside class="basic-layout__aside" :width="variables.width">
       <div class="basic-layout__aside-content">
         <Logo/>
-        <div style="flex: 1 1 0%; overflow: hidden auto;">
-          <Menu/>
+        <div style="flex: 1 1 0; overflow: hidden auto;">
+          <el-scrollbar wrap-class="scrollbar-wrapper">
+            <Menu :routes="routes"/>
+          </el-scrollbar>
         </div>
         <Trigger/>
       </div>
@@ -23,12 +25,7 @@
 
 <script>
 import { defineComponent } from 'vue'
-
-import Logo from './components/Logo'
-import Menu from './components/Menu'
-import Trigger from './components/Trigger'
-import Header from './components/Header'
-import AppMain from './components/AppMain'
+import { Logo, Menu, Trigger, Header, AppMain } from './components'
 
 import { useExtractICSS } from '@/hooks'
 import variables from '@/assets/scss/variables.scss'
@@ -44,7 +41,8 @@ export default defineComponent({
   },
   setup() {
     return {
-      variables: useExtractICSS(variables)
+      variables: useExtractICSS(variables),
+      routes: []
     }
   },
 })
@@ -53,3 +51,4 @@ export default defineComponent({
 <style lang="scss">
 @import "./index.scss";
 </style>
+

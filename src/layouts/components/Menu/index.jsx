@@ -1,9 +1,8 @@
 import { defineComponent, h } from 'vue'
 import { useRoute } from 'vue-router'
+import { ElMenu } from 'element-plus'
 import MenuItem from './item'
 import MenuLink from './link'
-import { useExtractICSS } from '@/hooks'
-import variables from '@/assets/scss/variables.scss'
 
 export default defineComponent({
   name: 'Menu',
@@ -24,54 +23,33 @@ export default defineComponent({
       if (slots.default) {
         return slots.default(item)
       } else {
+        return h(
+          MenuLink,
+          { to: item.path },
+          () => [
+            item.meta?.icon && h(item.meta.icon),
+            item.meta?.title && h('span', item.meta.title)
+          ]
+        )
       }
     }
 
-    const renderMenu = () => {
-      return h(
-        'el-menu',
+    return () => h(
+      ElMenu,
+      {
+        defaultActive: route?.path,
+        mode: 'vertical',
+        collapse: props.collapse,
+      },
+      () => props.routes.map((menu) => h(
+        MenuItem,
         {
-          defaultActive: route?.path,
-          mode: 'vertical',
-          collapse: props.collapse,
+          item: menu
         },
-        () => props.routes.map((menu) => {
-          return h(
-            MenuItem,
-            {
-              item: menu
-            },
-            {
-              default: (scope) => renderDefault(scope)
-            }
-          )
-        })
-      )
-    }
-
-    return () => {
-      return h(
-        'el-scrollbar',
         {
-          'wrap-class': 'scrollbar-wrapper'
-        },
-        () => renderMenu()
-      )
-    }
+          default: (scope) => renderDefault(scope)
+        }
+      ))
+    )
   }
 })
-
-/**
- *
- * <el-scrollbar wrap-class="scrollbar-wrapper">
- <el-menu
- mode="vertical"
- unique-opened={false}
- collapse-transition={false}
- background-color="variables.backgroundColor"
- text-color="variables.textColor"
- active-text-color="variables.activeTextColor"
- >
- </el-menu>
- </el-scrollbar>
- */
