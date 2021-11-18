@@ -1,10 +1,11 @@
-import { ref, watchEffect } from 'vue'
+import { ref, unref } from 'vue'
+import variables from '@/assets/scss/variables.scss'
 
 // share-variables-between-js-and-sass
-export default function useExtractICSS(source) {
+export default function useExtractICSS() {
   const obj = ref({})
   const reg = /([\w]+):([^?&=;]*)/g
-  source.replace(reg, (rs, $1, $2) => {
+  variables.replace(reg, (rs, $1, $2) => {
     const name = $1
     let val = $2
     val = val.trim()
@@ -12,5 +13,5 @@ export default function useExtractICSS(source) {
     return rs
   })
 
-  return obj
+  return unref(obj)
 }

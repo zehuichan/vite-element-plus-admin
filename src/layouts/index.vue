@@ -1,6 +1,6 @@
 <template>
   <el-container class="basic-layout">
-    <el-aside class="basic-layout__aside" :width="variables.width">
+    <el-aside class="basic-layout__aside" width="208">
       <div class="basic-layout__aside-content">
         <Logo/>
         <div style="flex: 1 1 0; overflow: hidden auto;">
@@ -25,10 +25,8 @@
 
 <script>
 import { defineComponent } from 'vue'
+import { useRouter } from 'vue-router'
 import { Logo, Menu, Trigger, Header, AppMain } from './components'
-
-import { useExtractICSS } from '@/hooks'
-import variables from '@/assets/scss/variables.scss'
 
 export default defineComponent({
   name: 'BasicLayout',
@@ -40,9 +38,9 @@ export default defineComponent({
     AppMain
   },
   setup() {
+    const router = useRouter()
     return {
-      variables: useExtractICSS(variables),
-      routes: []
+      routes: router.options.routes
     }
   },
 })

@@ -35,11 +35,11 @@ export default defineComponent({
     }
 
     return () => h(
-      ElMenu,
+      'el-menu',
       {
         defaultActive: route?.path,
         mode: 'vertical',
-        collapse: props.collapse,
+        collapse: props.collapse
       },
       () => props.routes.map((menu) => h(
         MenuItem,
