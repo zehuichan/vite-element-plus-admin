@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 // basic components
-import BasicLayout from '@/layouts'
+import BasicLayout from '@/layouts/index.vue'
 
 const RouteView = {
   name: 'RouteView',
@@ -16,7 +16,7 @@ const routes = [
     children: [
       {
         path: 'dashboard',
-        component: () => import('@/views/dashboard'),
+        component: () => import('@/views/dashboard/index.vue'),
         name: 'dashboard',
         meta: { title: '仪表板', hidden: true },
       },
@@ -34,13 +34,13 @@ const routes = [
     children: [
       {
         path: '/nested/menu1',
-        component: () => import('@/views/nested'), // Parent router-view
+        component: () => import('@/views/nested/index.vue'), // Parent router-view
         name: 'Menu1',
         meta: { title: 'Menu1' },
         children: [
           {
             path: '/nested/menu1/menu1-1',
-            component: () => import('@/views/nested'),
+            component: () => import('@/views/nested/index.vue'),
             name: 'Menu1-1',
             meta: { title: 'Menu1-1' }
           },
@@ -52,13 +52,13 @@ const routes = [
             children: [
               {
                 path: 'menu1-2-1',
-                component: () => import('@/views/nested'),
+                component: () => import('@/views/nested/index.vue'),
                 name: 'Menu1-2-1',
                 meta: { title: 'Menu1-2-1' }
               },
               {
                 path: 'menu1-2-2',
-                component: () => import('@/views/nested'),
+                component: () => import('@/views/nested/index.vue'),
                 name: 'Menu1-2-2',
                 meta: { title: 'Menu1-2-2' }
               }
@@ -66,7 +66,7 @@ const routes = [
           },
           {
             path: '/nested/menu1/menu1-3',
-            component: () => import('@/views/nested'),
+            component: () => import('@/views/nested/index.vue'),
             name: 'Menu1-3',
             meta: { title: 'Menu1-3' }
           }
@@ -74,7 +74,7 @@ const routes = [
       },
       {
         path: '/nested/menu2',
-        component: () => import('@/views/nested'),
+        component: () => import('@/views/nested/index.vue'),
         name: 'Menu2',
         meta: { title: 'Menu2' }
       }

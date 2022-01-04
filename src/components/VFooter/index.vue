@@ -8,57 +8,63 @@
         :target="link.target ? '_blank' : '_self'"
         :href="link.href"
       >
-        {{link.title}}
+        {{ link.title }}
       </a>
     </div>
     <div class="v-footer-copyright">
       Copyright
       <v-svg-icon name="icon-copyright"/>
-      {{copyright}}
+      {{ copyright }}
     </div>
   </div>
 </template>
 
 <script>
-  export default {
-    name: 'VFooter',
-    props: {
-      links: {
-        type: Array,
-        default: () => []
-      },
-      copyright: String
-    }
+// components
+import { VSvgIcon } from '@/components'
+
+export default {
+  name: 'VFooter',
+  props: {
+    links: {
+      type: Array,
+      default: () => []
+    },
+    copyright: String
+  },
+  components: {
+    VSvgIcon
   }
+}
 </script>
 
 <style lang="scss">
-  .v-footer {
-    margin: 48px 0 24px;
-    padding: 0 16px;
-    text-align: center;
-    line-height: 1.5715;
-  }
+.v-footer {
+  margin: 48px 0 24px;
+  padding: 0 16px;
+  text-align: center;
+  line-height: 1.5715;
+}
 
-  .v-footer-links {
-    margin-bottom: 8px;
+.v-footer-links {
+  margin-bottom: 8px;
 
-    a {
-      color: rgba(0, 0, 0, .45);
-      transition: all .3s;
-
-      &:hover {
-        color: rgba(0, 0, 0, .85);
-      }
-    }
-
-    a:not(:last-child) {
-      margin-right: 40px;
-    }
-  }
-
-  .v-footer-copyright {
+  a {
     color: rgba(0, 0, 0, .45);
-    font-size: 14px;
+    transition: all .3s;
+
+    &:hover {
+      color: rgba(0, 0, 0, .85);
+    }
   }
+
+  a:not(:last-child) {
+    margin-right: 40px;
+  }
+}
+
+.v-footer-copyright {
+  color: rgba(0, 0, 0, .45);
+  font-size: 14px;
+}
 </style>

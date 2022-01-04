@@ -116,7 +116,7 @@ export function getQueryObject(url) {
 }
 
 /**
- * @param {string} input value
+ * @param {string} str value
  * @returns {number} output value
  */
 export function byteLength(str) {
@@ -329,7 +329,7 @@ export function createUniqueString() {
 
 /**
  * Check if an element has a class
- * @param {HTMLElement} elm
+ * @param {HTMLElement} ele
  * @param {string} cls
  * @returns {boolean}
  */
@@ -339,7 +339,7 @@ export function hasClass(ele, cls) {
 
 /**
  * Add class to element
- * @param {HTMLElement} elm
+ * @param {HTMLElement} ele
  * @param {string} cls
  */
 export function addClass(ele, cls) {
@@ -348,7 +348,7 @@ export function addClass(ele, cls) {
 
 /**
  * Remove class from element
- * @param {HTMLElement} elm
+ * @param {HTMLElement} ele
  * @param {string} cls
  */
 export function removeClass(ele, cls) {
@@ -356,4 +356,11 @@ export function removeClass(ele, cls) {
     const reg = new RegExp('(\\s|^)' + cls + '(\\s|$)')
     ele.className = ele.className.replace(reg, ' ')
   }
+}
+
+// 判断类型
+export function is(val, type) {
+  const typeArr = Array.isArray(type) ? type : [type]
+  const valType = Object.prototype.toString.call(val)
+  return typeArr.some(type => `[object ${type}]` === valType)
 }

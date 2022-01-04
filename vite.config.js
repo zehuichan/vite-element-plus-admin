@@ -1,5 +1,6 @@
 import path from 'path'
 import pkg from './package.json'
+import dayjs from 'dayjs'
 import { loadEnv } from 'vite'
 import { wrapperEnv } from './build/utils'
 import { createVitePlugins } from './build/plugin'
@@ -10,7 +11,7 @@ const { name, version } = pkg
 const __APP_INFO__ = {
   name,
   version,
-  lastBuildTime: new Date(),
+  lastBuildTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
 }
 
 function resolve(dir) {
@@ -25,11 +26,13 @@ export default ({ command, mode }) => {
 
   const viteEnv = wrapperEnv(env)
 
-  const { VITE_PORT, VITE_PROXY, VITE_DROP_CONSOLE } = viteEnv
+  const { VITE_PORT, VITE_PUBLIC_PATH, VITE_PROXY, VITE_DROP_CONSOLE } = viteEnv
 
   const isBuild = command === 'build'
 
   return {
+    base: VITE_PUBLIC_PATH,
+    root: root,
     define: {
       __APP_INFO__: JSON.stringify(__APP_INFO__),
     },
@@ -37,9 +40,7 @@ export default ({ command, mode }) => {
     resolve: {
       alias: {
         '@': resolve('src')
-      },
-      dedupe: ['vue'],
-      extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
+      }
     },
     server: {
       host: true,
@@ -47,8 +48,9 @@ export default ({ command, mode }) => {
       proxy: createProxy(VITE_PROXY)
     },
     build: {
-      target: 'es2015',
-      outDir: 'dist',
+      minify: false,
+      // target: 'es2015',
+      // outDir: 'dist',
       terserOptions: {
         compress: {
           keep_infinity: true,
@@ -61,9 +63,9 @@ export default ({ command, mode }) => {
       chunkSizeWarningLimit: 2000,
     },
     optimizeDeps: {
-      include: [],
-      exclude: [
-        'vue-demi'
+      include: [
+        '@vue/runtime-core',
+        '@vue/shared',
       ]
     },
   }
