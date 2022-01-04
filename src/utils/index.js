@@ -132,8 +132,9 @@ export function byteLength(str) {
 }
 
 /**
- * @param {Array} actual
- * @returns {Array}
+ *
+ * @param {array} actual
+ * @returns []
  */
 export function cleanArray(actual) {
   const newArray = []
@@ -147,7 +148,7 @@ export function cleanArray(actual) {
 
 /**
  * @param {Object} json
- * @returns {Array}
+ * @returns {string}
  */
 export function param(json) {
   if (!json) return ''
