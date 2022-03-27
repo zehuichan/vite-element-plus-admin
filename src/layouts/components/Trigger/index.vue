@@ -11,7 +11,7 @@
 
 <script>
 import { defineComponent, ref } from 'vue'
-import { Expand, Fold } from '@element-plus/icons'
+import { Expand, Fold } from '@element-plus/icons-vue'
 
 export default defineComponent({
   name: 'Trigger',
