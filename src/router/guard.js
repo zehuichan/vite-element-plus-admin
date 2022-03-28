@@ -1,16 +1,13 @@
-import { store } from '@/store'
-import { useTitle } from '@/hooks'
+import { useTitle } from '@vueuse/core'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-
 
 export function setupRouterGuard(router) {
   // start progress bar
   NProgress.start()
   router.beforeEach(async (to, from) => {
-
     // set page title
-    document.title = useTitle(to.meta.title)
+    useTitle(to.meta.title)
   })
 
   router.afterEach((to, from) => {

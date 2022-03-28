@@ -8,7 +8,7 @@ const RouteView = {
   render: (h) => h('router-view')
 }
 
-const routes = [
+const constantRoutes = [
   {
     path: '/',
     component: BasicLayout,
@@ -23,68 +23,44 @@ const routes = [
     ]
   },
   {
-    path: '/nested',
-    component: BasicLayout,
-    name: 'nested',
-    redirect: '/nested/menu1',
-    meta: {
-      title: 'Nested',
-      icon: 'nested'
-    },
-    children: [
-      {
-        path: '/nested/menu1',
-        component: () => import('@/views/nested/index.vue'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: '/nested/menu1/menu1-1',
-            component: () => import('@/views/nested/index.vue'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: '/nested/menu1/menu1-2',
-            component: RouteView,
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/index.vue'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/index.vue'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: '/nested/menu1/menu1-3',
-            component: () => import('@/views/nested/index.vue'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
-      },
-      {
-        path: '/nested/menu2',
-        component: () => import('@/views/nested/index.vue'),
-        name: 'Menu2',
-        meta: { title: 'Menu2' }
-      }
-    ]
+    path: '/login',
+    component: () => import('@/views/login/index.vue'),
+    hidden: true
   },
+  {
+    path: '/auth-redirect',
+    component: () => import('@/views/login/auth-redirect.vue'),
+    hidden: true
+  },
+  {
+    path: '/401',
+    component: () => import('@/views/error-page/401.vue'),
+    hidden: true
+  },
+  {
+    path: '/404',
+    component: () => import('@/views/error-page/404.vue'),
+    hidden: true
+  },
+  {
+    path: '/500',
+    component: () => import('@/views/error-page/500.vue'),
+    hidden: true
+  }
+]
+
+/**
+ * asyncRoutes
+ * the routes that need to be dynamically loaded based on user roles
+ */
+export const asyncRoutes = [
+  // 404 page must be placed at the end !!!
+  { path: '/:path(.*)*', redirect: '/404' }
 ]
 
 export const router = createRouter({
   history: createWebHashHistory(),
-  routes
+  routes: constantRoutes
 })
 
 // config router
