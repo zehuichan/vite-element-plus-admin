@@ -8,20 +8,7 @@ const RouteView = {
   render: (h) => h('router-view')
 }
 
-const constantRoutes = [
-  {
-    path: '/',
-    component: BasicLayout,
-    redirect: '/dashboard',
-    children: [
-      {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index.vue'),
-        name: 'dashboard',
-        meta: { title: '仪表板', hidden: true },
-      },
-    ]
-  },
+export const constantRoutes = [
   {
     path: '/login',
     component: () => import('@/views/login/index.vue'),
@@ -46,7 +33,7 @@ const constantRoutes = [
     path: '/500',
     component: () => import('@/views/error-page/500.vue'),
     hidden: true
-  }
+  },
 ]
 
 /**

@@ -20,8 +20,8 @@ http.interceptors.request.use(
 http.interceptors.response.use(
   (response) => {
     const res = response.data
-    if (res.status !== 1) {
-      ElMessage.error(`status:${res.status}, ${res.msg}`)
+    if (res.code !== 200) {
+      ElMessage.error(`status:${res.code}, ${res.msg}`)
       return Promise.reject(res.msg)
     } else {
       return response.data

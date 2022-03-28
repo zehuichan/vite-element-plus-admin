@@ -1,6 +1,5 @@
 import { defineComponent, h } from 'vue'
 import { useRoute } from 'vue-router'
-import { ElMenu } from 'element-plus'
 import MenuItem from './item'
 import MenuLink from './link'
 
