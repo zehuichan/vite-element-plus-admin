@@ -46,8 +46,7 @@ const mutations = {
   },
   DEL_ALL_VISITED_VIEWS: state => {
     // keep affix tags
-    const affixTags = state.visitedViews.filter(tag => tag.meta.affix)
-    state.visitedViews = affixTags
+    state.visitedViews = state.visitedViews.filter(tag => tag.meta.affix)
   },
   DEL_ALL_CACHED_VIEWS: state => {
     state.cachedViews = []
