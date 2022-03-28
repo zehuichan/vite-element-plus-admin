@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <el-form
-      ref="loginForm"
+      ref="loginFormRef"
       :model="loginForm"
       :rules="loginRules"
       class="login-form"
@@ -22,6 +22,7 @@
           type="text"
           tabindex="1"
           auto-complete="on"
+          clearable
         />
       </el-form-item>
 
@@ -34,7 +35,8 @@
           tabindex="2"
           auto-complete="on"
           show-password
-          @keyup.enter.native="handleLogin"
+          clearable
+          @keyup.enter.native="login"
         />
       </el-form-item>
 
@@ -43,79 +45,68 @@
         type="primary"
         size="large"
         style="width:100%;margin-bottom:30px;"
-        @click.native.prevent="handleLogin"
+        @click.native.prevent="login"
       >
         Login
       </el-button>
 
       <div class="tips">
         <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
+        <span>password: any</span>
       </div>
 
     </el-form>
   </div>
 </template>
 
-<script>
-// utils
+<script setup>
+import { reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { validUsername } from '@/utils/validate'
+import { useUserStore } from '@/store/modules/user'
 
-export default {
-  name: 'Login',
-  data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
+const userStore = useUserStore()
+const router = useRouter()
+
+const validateUsername = (rule, value, callback) => {
+  if (!validUsername(value)) {
+    callback(new Error('Please enter the correct user name'))
+  } else {
+    callback()
+  }
+}
+const validatePassword = (rule, value, callback) => {
+  if (value.length < 6) {
+    callback(new Error('The password can not be less than 6 digits'))
+  } else {
+    callback()
+  }
+}
+const loginFormRef = ref()
+const loginForm = reactive({
+  username: 'admin',
+  password: '111111'
+})
+const loginRules = reactive({
+  username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+  password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+})
+const loading = ref(false)
+const redirect = ref(undefined)
+
+const login = async () => {
+  try {
+    loading.value = true
+    const valid = await loginFormRef.value.validate()
+    if (valid) {
+      console.log('submit!')
+      await userStore.login(loginForm)
+      await router.push({ path: redirect.value || '/' })
+      loading.value = false
     }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
-      } else {
-        callback()
-      }
-    }
-    return {
-      loginForm: {
-        username: 'admin',
-        password: '111111'
-      },
-      loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
-      },
-      loading: false,
-      redirect: undefined
-    }
-  },
-  watch: {
-    $route: {
-      handler: function (route) {
-        this.redirect = route.query && route.query.redirect
-      },
-      immediate: true
-    }
-  },
-  methods: {
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    }
+  } catch (error) {
+    console.log('error submit!', error)
+    loading.value = false
   }
 }
 </script>
