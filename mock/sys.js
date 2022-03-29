@@ -4,6 +4,7 @@ const menu = [
   {
     path: '/dashboard',
     name: 'Dashboard',
+    component: 'dashboard',
     meta: {
       title: '仪表板', icon: 'el-icon-odometer', affix: true, roles: ['admin']
     }
@@ -11,6 +12,7 @@ const menu = [
   {
     path: '/documentation',
     name: 'Documentation',
+    component: 'documentation',
     meta: {
       title: '文档', icon: 'el-icon-document', affix: true, roles: ['admin']
     }
@@ -23,25 +25,25 @@ const menu = [
     children: [
       {
         path: '/ums/user',
-        component: 'User',
+        component: 'user',
         name: 'User',
         meta: { title: '用户管理', roles: ['admin'] }
       },
       {
         path: '/ums/role',
-        component: 'Role',
+        component: 'role',
         name: 'Role',
         meta: { title: '角色管理', roles: ['admin'] }
       },
       {
         path: '/ums/menu',
-        component: 'Menu',
+        component: 'menu',
         name: 'Menu',
         meta: { title: '菜单管理', roles: ['admin'] }
       },
       {
         path: '/ums/dictionary',
-        component: 'Dictionary',
+        component: 'dictionary',
         name: 'Dictionary',
         meta: { title: '字典管理', roles: ['admin'] }
       },
