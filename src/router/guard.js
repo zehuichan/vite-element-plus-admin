@@ -35,6 +35,7 @@ export function setupRouterGuard(router) {
             const routes = await permissionStore.generateRoutes()
 
             routes.forEach((route) => {
+              console.log(route)
               router.addRoute(route)
             })
 

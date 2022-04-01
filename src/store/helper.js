@@ -17,6 +17,8 @@ export function asyncImportRoute(routes) {
     if (route.children && route.children.length > 0) {
       tmp.children = asyncImportRoute(route.children)
     }
+
+    res.push(tmp)
   })
 
   return res

@@ -17,7 +17,7 @@ export const usePermissionStore = defineStore({
         let permissionRouters
         const { data } = await menu()
         const routers = asyncImportRoute(data)
-        return Promise.resolve([])
+        return Promise.resolve(routers)
       } catch (error) {
 
       }
