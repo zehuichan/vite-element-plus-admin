@@ -1,11 +1,13 @@
 <template>
-  account
+  name: 'Dashboard',
 </template>
 
 <script>
-export default {
-  name: 'Account'
-}
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  name: 'Account',
+})
 </script>
 
 <style scoped>

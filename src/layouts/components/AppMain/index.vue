@@ -1,14 +1,20 @@
 <template>
-  AppMain
-  <router-view></router-view>
+  <router-view v-slot="{Component, route}">
+    <keep-alive>
+      <component
+        :is="Component"
+        :key="key"
+      />
+    </keep-alive>
+  </router-view>
 </template>
 
-<script>
-import { defineComponent } from 'vue'
+<script setup>
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 
-export default defineComponent({
-  name: 'AppMain'
-})
+const route = useRoute()
+const key = computed(() => route.path)
 </script>
 
 <style scoped>

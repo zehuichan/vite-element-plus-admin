@@ -39,6 +39,7 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter()
+    console.log(router.options.routes)
     return {
       routes: router.options.routes
     }
