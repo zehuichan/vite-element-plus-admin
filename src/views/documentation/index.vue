@@ -1,5 +1,5 @@
 <template>
-  dashboard
+  documentation
 </template>
 
 <script setup>
