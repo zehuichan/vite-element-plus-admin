@@ -3,7 +3,7 @@
     v-if="child && !hasMultiChild(child)"
     :index="child.path"
   >
-    <template #title>{{ child.meta?.title }}</template>
+    <template #title>{{ child.meta?.title }} {{ child.path }}</template>
   </el-menu-item>
   <el-sub-menu v-else :index="child.path" popper-append-to-body>
     <template #title>
@@ -21,8 +21,6 @@
 import path from 'path'
 import { computed, defineComponent } from 'vue'
 import { isExternal } from '@/utils/validate'
-import MenuItem from './item'
-import MenuLink from './link'
 
 export default defineComponent({
   name: 'MenuItem',
@@ -40,8 +38,6 @@ export default defineComponent({
     const child = computed(() => {
       return props.item.meta?.hidden ? undefined : props.item
     })
-
-    console.log(child.value)
 
     const hasMultiChild = (item) => {
       return item.children
@@ -64,10 +60,6 @@ export default defineComponent({
       hasMultiChild,
       resolvePath
     }
-  },
-  components: {
-    MenuItem,
-    MenuLink
   }
 })
 </script>

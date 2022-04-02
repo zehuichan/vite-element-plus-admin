@@ -5,7 +5,7 @@
         <Logo/>
         <div style="flex: 1 1 0; overflow: hidden auto;">
           <el-scrollbar wrap-class="scrollbar-wrapper">
-            <Menu :routes="routes"/>
+            <Menu :routes="permissionStore.menu"/>
           </el-scrollbar>
         </div>
         <Trigger/>
@@ -25,7 +25,7 @@
 
 <script>
 import { defineComponent } from 'vue'
-import { useRouter } from 'vue-router'
+import { usePermissionStore } from '@/store/modules/permission'
 import { Logo, Menu, Trigger, Header, AppMain } from './components'
 
 export default defineComponent({
@@ -38,12 +38,11 @@ export default defineComponent({
     AppMain
   },
   setup() {
-    const router = useRouter()
-    console.log(router.options.routes)
+    const permissionStore = usePermissionStore()  // 获取权限模块
     return {
-      routes: router.options.routes
+      permissionStore
     }
-  },
+  }
 })
 </script>
 
