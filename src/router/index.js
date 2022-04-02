@@ -1,13 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 
-// basic components
-import BasicLayout from '@/layouts/index.vue'
-
-const RouteView = {
-  name: 'RouteView',
-  render: (h) => h('router-view')
-}
-
 export const constantRoutes = [
   {
     path: '/login',

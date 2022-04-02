@@ -1,5 +1,6 @@
+import { markRaw } from 'vue'
 import Layout from '@/layouts/index.vue'
 
-export {
-  Layout
+export default {
+  Layout: markRaw(Layout)
 }

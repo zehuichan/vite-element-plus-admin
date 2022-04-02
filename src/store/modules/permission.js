@@ -7,17 +7,16 @@ export const usePermissionStore = defineStore({
   id: 'permission',
   state: () => {
     return {
-      routes: []
+      menu: []
     }
   },
   actions: {
     async generateRoutes() {
       try {
-        let accessedRoutes
-        let permissionRouters
         const { data } = await menu()
-        const routers = constantRoutes.concat(asyncImportRoute(data)).concat(asyncRoutes)
-        return Promise.resolve(routers)
+        this.menu = asyncImportRoute(data)
+        const routes = constantRoutes.concat(this.menu).concat(asyncRoutes)
+        return Promise.resolve(routes)
       } catch (error) {
 
       }
