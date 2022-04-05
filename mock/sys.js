@@ -4,21 +4,84 @@ const menu = [
   {
     path: '/dashboard',
     name: 'Dashboard',
-    component: '/dashboard/index',
+    component: 'LAYOUT',
     meta: {
-      title: '仪表板', icon: 'el-icon-odometer', affix: true, roles: ['admin']
-    }
+      title: '仪表板', icon: 'el-icon-odometer', affix: true, alwaysShow: true, roles: ['admin']
+    },
+    children: [
+      {
+        path: '/dashboard',
+        name: 'Dashboard',
+        component: '/dashboard/index',
+        meta: {
+          title: '仪表板', icon: 'el-icon-odometer', affix: true, roles: ['admin']
+        },
+      }
+    ]
   },
   {
     path: '/documentation',
     name: 'Documentation',
-    component: '/documentation/index',
+    component: 'LAYOUT',
     meta: {
-      title: '文档', icon: 'el-icon-document', affix: true, roles: ['admin']
-    }
+      title: '文档', icon: 'el-icon-document', affix: true, alwaysShow: true, roles: ['admin']
+    },
+    children: [
+      {
+        path: '/documentation',
+        name: 'Documentation',
+        component: '/documentation/index',
+        meta: {
+          title: '文档', icon: 'el-icon-document', affix: true, roles: ['admin']
+        },
+      }
+    ]
+  },
+  {
+    path: '/nested',
+    name: 'Nested',
+    component: 'LAYOUT',
+    meta: {
+      title: '嵌套菜单', icon: 'el-icon-document', roles: ['admin']
+    },
+    children: [
+      {
+        path: '/nested/menu/menu1-1',
+        component: '/nested/index',
+        name: 'Menu1-1',
+        meta: { title: 'Menu 1-1', roles: ['admin'] },
+      },
+      {
+        path: '/nested/menu/menu1-2',
+        name: 'Menu1-2',
+        meta: { title: 'Menu 1-2', roles: ['admin'] },
+        children: [
+          {
+            path: '/nested/menu/menu1-2-1',
+            component: '/nested/index',
+            name: 'Menu1-2-1',
+            meta: { title: 'Menu 1-2-1', roles: ['admin'] },
+          },
+          {
+            path: '/nested/menu/menu1-2-2',
+            component: '/nested/index',
+            name: 'Menu1-2-2',
+            meta: { title: 'Menu 1-2-2', roles: ['admin'], },
+          }
+        ]
+      },
+      {
+        path: '/nested/menu/menu1-3',
+        component: '/nested/index',
+        name: 'Menu1-3',
+        meta: { title: 'Menu 1-3', roles: ['admin'], },
+      },
+    ]
   },
   {
     path: '/upms',
+    name: 'Upms',
+    component: 'LAYOUT',
     meta: {
       title: '权限管理', icon: 'el-icon-setting', roles: ['admin']
     },
@@ -45,7 +108,7 @@ const menu = [
         path: '/upms/dictionary',
         component: '/upms/dictionary/index',
         name: 'Dictionary',
-        meta: { title: '字典管理', roles: ['admin'] }
+        meta: { title: '字典管理', hidden: false, roles: ['admin'] }
       },
     ]
   }

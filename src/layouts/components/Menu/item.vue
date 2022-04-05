@@ -1,16 +1,27 @@
 <template>
   <el-menu-item
-    v-if="child && !hasMultiChild(child)"
-    :index="child.path"
+    v-if="!hasMultiChild(item) && getShowMenu"
+    :index="item.path"
   >
-    <template #title>{{ child.meta?.title }} {{ child.path }}</template>
-  </el-menu-item>
-  <el-sub-menu v-else :index="child.path" popper-append-to-body>
+    <el-icon>
+      <location/>
+    </el-icon>
     <template #title>
-      <span>{{ child.meta?.title }}</span>
+      <span>{{ item.meta?.title }}</span>
+    </template>
+  </el-menu-item>
+  <el-sub-menu
+    v-if="hasMultiChild(item) && getShowMenu"
+    :index="item.path"
+  >
+    <template #title>
+      <el-icon>
+        <location/>
+      </el-icon>
+      <span>{{ item.meta?.title }}</span>
     </template>
     <menu-item
-      v-for="sub in child.children"
+      v-for="sub in item.children || []"
       :key="sub.path"
       :item="sub"
     />
@@ -21,9 +32,13 @@
 import path from 'path'
 import { computed, defineComponent } from 'vue'
 import { isExternal } from '@/utils/validate'
+import { Location } from '@element-plus/icons-vue'
 
 export default defineComponent({
   name: 'MenuItem',
+  components:{
+    Location
+  },
   props: {
     item: {
       type: Object,
@@ -35,14 +50,15 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const child = computed(() => {
-      return props.item.meta?.hidden ? undefined : props.item
-    })
+    const getShowMenu = computed(() => !props.item.meta?.hidden)
 
     const hasMultiChild = (item) => {
-      return item.children
-        ? item.children.filter((item) => !item.meta?.hidden).length > 1
-        : false
+      return (
+        !item.meta?.hidden &&
+        Reflect.has(item, 'children') &&
+        !!item.children &&
+        item.children.length > 0
+      )
     }
 
     const resolvePath = (routePath) => {
@@ -56,14 +72,10 @@ export default defineComponent({
     }
 
     return {
-      child,
+      getShowMenu,
       hasMultiChild,
       resolvePath
     }
   }
 })
 </script>
-
-<style scoped>
-
-</style>

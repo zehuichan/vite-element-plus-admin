@@ -40,6 +40,7 @@ export function setupRouterGuard(router) {
 
             next({ ...to, replace: true })
           } catch (error) {
+            console.log(error)
             next(`/login?redirect=${to.path}`)
           }
         }

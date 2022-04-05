@@ -18,6 +18,10 @@
       border: 0;
     }
 
+    .el-menu:not(.el-menu--collapse) {
+      width: $width;
+    }
+
     .el-menu-item {
       &:hover {
         color: $activeTextColor;

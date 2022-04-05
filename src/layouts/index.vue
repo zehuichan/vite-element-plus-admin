@@ -5,7 +5,7 @@
         <Logo/>
         <div style="flex: 1 1 0; overflow: hidden auto;">
           <el-scrollbar wrap-class="scrollbar-wrapper">
-            <Menu :routes="permissionStore.menu"/>
+            <Menu :routes="permissionStore.menu" :collapse="false"/>
           </el-scrollbar>
         </div>
         <Trigger/>

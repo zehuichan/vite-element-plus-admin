@@ -1,7 +1,7 @@
 <template>
   <el-menu
-    :defaultActive="defaultActive"
     mode="vertical"
+    :defaultActive="defaultActive"
     :collapse="collapse"
     :backgroundColor="variables.backgroundColor"
     :textColor="variables.textColor"
@@ -16,7 +16,6 @@ import { defineComponent } from 'vue'
 import { useRoute } from 'vue-router'
 import { useExtractICSS } from '@/hooks'
 import MenuItem from './item.vue'
-import MenuLink from './link'
 
 export default defineComponent({
   name: 'Menu',
@@ -30,7 +29,7 @@ export default defineComponent({
       default: true,
     },
   },
-  setup(props, { slots }) {
+  setup() {
     const route = useRoute()
     return {
       defaultActive: route?.path,
@@ -38,8 +37,7 @@ export default defineComponent({
     }
   },
   components: {
-    MenuItem,
-    MenuLink
+    MenuItem
   }
 })
 </script>

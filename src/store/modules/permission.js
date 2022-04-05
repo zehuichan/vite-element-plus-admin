@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { constantRoutes, asyncRoutes } from '@/router'
 import { menu } from '@/api/sys'
-import { asyncImportRoute } from '../helper'
+import { flatMultiLevelRoutes, transformObjToRoute, transformRouteToMenu } from '../helper'
 
 export const usePermissionStore = defineStore({
   id: 'permission',
@@ -14,11 +14,17 @@ export const usePermissionStore = defineStore({
     async generateRoutes() {
       try {
         const { data } = await menu()
-        this.menu = asyncImportRoute(data)
-        const routes = constantRoutes.concat(this.menu).concat(asyncRoutes)
-        return Promise.resolve(routes)
+        let routeList = []
+        // Dynamically introduce components
+        routeList = transformObjToRoute(data)
+        // Convert multi-level routing to level 2 routing
+        routeList = flatMultiLevelRoutes(routeList)
+        // 前端菜单
+        this.menu = transformRouteToMenu(data)
+        console.log(this.menu)
+        return Promise.resolve([...constantRoutes, ...asyncRoutes, ...routeList])
       } catch (error) {
-
+        console.log(error)
       }
     }
   }
