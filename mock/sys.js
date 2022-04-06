@@ -46,36 +46,37 @@ const menu = [
     },
     children: [
       {
-        path: '/nested/menu/menu1-1',
-        component: '/nested/index',
-        name: 'Menu1-1',
-        meta: { title: 'Menu 1-1', roles: ['admin'] },
-      },
-      {
-        path: '/nested/menu/menu1-2',
-        name: 'Menu1-2',
-        meta: { title: 'Menu 1-2', roles: ['admin'] },
+        path: '/nested/menu/menu1',
+        name: 'Menu1',
+        meta: { title: 'Menu1', roles: ['admin'] },
         children: [
           {
-            path: '/nested/menu/menu1-2-1',
-            component: '/nested/index',
-            name: 'Menu1-2-1',
-            meta: { title: 'Menu 1-2-1', roles: ['admin'] },
+            path: '/nested/menu/menu1-1',
+            name: 'Menu1-1',
+            meta: { title: 'Menu1-1', roles: ['admin'] },
+            children: [
+              {
+                path: '/nested/menu/menu1-1-1',
+                component: '/nested/index',
+                name: 'Menu1-1-1',
+                meta: { title: 'Menu1-1-1', roles: ['admin'] },
+              }
+            ]
           },
           {
-            path: '/nested/menu/menu1-2-2',
+            path: '/nested/menu/menu1-2',
             component: '/nested/index',
-            name: 'Menu1-2-2',
-            meta: { title: 'Menu 1-2-2', roles: ['admin'], },
+            name: 'Menu1-2',
+            meta: { title: 'Menu1-2', roles: ['admin'], },
           }
         ]
       },
       {
-        path: '/nested/menu/menu1-3',
+        path: '/nested/menu/menu2',
         component: '/nested/index',
-        name: 'Menu1-3',
-        meta: { title: 'Menu 1-3', roles: ['admin'], },
-      },
+        name: 'Menu2',
+        meta: { title: 'Menu2', roles: ['admin'] },
+      }
     ]
   },
   {

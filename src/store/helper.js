@@ -1,22 +1,31 @@
-import LayoutMap, { Layout } from '@/router/constant'
+import LayoutMap, { getParentLayout } from '@/router/constant'
 import { cloneDeep, omit } from 'lodash-es'
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 export function asyncImportRoute(routes) {
   const dynamicViewsModules = import.meta.globEager('../views/**/*.{vue,jsx,tsx}')
-  if (!routes) return
+  const res = []
   routes.forEach((item) => {
-    const { component, children } = item
-    if (component) {
-      const layoutFound = LayoutMap.get(component.toUpperCase())
+    const tmp = {
+      ...item
+    }
+    if (tmp.component) {
+      const layoutFound = LayoutMap.get(tmp.component.toUpperCase())
       if (layoutFound) {
-        item.component = layoutFound
+        tmp.component = layoutFound
       } else {
-        item.component = dynamicImport(dynamicViewsModules, component)
+        tmp.component = tmp.component ? dynamicImport(dynamicViewsModules, tmp.component) : getParentLayout()
       }
     }
-    children && asyncImportRoute(item.children)
+
+    if (tmp.children && tmp.children.length) {
+      tmp.children = asyncImportRoute(tmp.children)
+    }
+
+    res.push(tmp)
   })
+
+  return res
 }
 
 function dynamicImport(dynamicViewsModules, component) {
@@ -43,34 +52,7 @@ function dynamicImport(dynamicViewsModules, component) {
   }
 }
 
-// Turn background objects into routing objects
-export function transformObjToRoute(routeList) {
-  routeList.forEach((route) => {
-    const component = route.component
-    if (component) {
-      if (component.toUpperCase() === 'LAYOUT') {
-        route.component = LayoutMap.get(component.toUpperCase())
-      } else {
-        route.children = [cloneDeep(route)]
-        route.component = Layout
-        route.name = `${route.name}Parent`
-        route.path = ''
-        const meta = route.meta || {}
-        meta.single = true
-        meta.affix = false
-        route.meta = meta
-      }
-    } else {
-      console.warn('请正确配置路由：' + route?.name + '的component属性')
-    }
-    route.children && asyncImportRoute(route.children)
-  })
-  return routeList
-}
-
-/**
- * Convert multi-level routing to level 2 routing
- */
+// 路由降级
 export function flatMultiLevelRoutes(routeModules) {
   const modules = cloneDeep(routeModules)
   for (let index = 0; index < modules.length; index++) {
@@ -83,40 +65,7 @@ export function flatMultiLevelRoutes(routeModules) {
   return modules
 }
 
-// Routing level upgrade
-function promoteRouteLevel(routeModule) {
-  // Use vue-router to splice menus
-  let router = createRouter({
-    routes: [],
-    history: createWebHashHistory(),
-  })
-
-  const routes = router.getRoutes()
-  addToChildren(routes, routeModule.children || [], routeModule)
-  router = null
-
-  routeModule.children = routeModule.children?.map((item) => omit(item, 'children'))
-}
-
-// Add all sub-routes to the secondary route
-function addToChildren(routes, children, routeModule) {
-  for (let index = 0; index < children.length; index++) {
-    const child = children[index]
-    const route = routes.find((item) => item.name === child.name)
-    if (!route) {
-      continue
-    }
-    routeModule.children = routeModule.children || []
-    if (!routeModule.children.find((item) => item.name === route.name)) {
-      routeModule.children?.push(route)
-    }
-    if (child.children?.length) {
-      addToChildren(routes, child.children, routeModule)
-    }
-  }
-}
-
-// Determine whether the level exceeds 2 levels
+// 层级是否大于2
 function isMultipleRoute(routeModule) {
   if (!routeModule || !Reflect.has(routeModule, 'children') || !routeModule.children?.length) {
     return false
@@ -133,6 +82,39 @@ function isMultipleRoute(routeModule) {
     }
   }
   return flag
+}
+
+// 生成二级路由
+function promoteRouteLevel(routeModule) {
+  // Use vue-router to splice menus
+  let router = createRouter({
+    routes: [routeModule],
+    history: createWebHashHistory(),
+  })
+
+  const routes = router.getRoutes()
+  addToChildren(routes, routeModule.children || [], routeModule)
+  router = null
+
+  routeModule.children = routeModule.children?.map((item) => omit(item, 'children'))
+}
+
+// 添加所有子菜单
+function addToChildren(routes, children, routeModule) {
+  for (let index = 0; index < children.length; index++) {
+    const child = children[index]
+    const route = routes.find((item) => item.name === child.name)
+    if (!route) {
+      continue
+    }
+    routeModule.children = routeModule.children || []
+    if (!routeModule.children.find((item) => item.name === route.name)) {
+      routeModule.children?.push(route)
+    }
+    if (child.children?.length) {
+      addToChildren(routes, child.children, routeModule)
+    }
+  }
 }
 
 // 路由转菜单
