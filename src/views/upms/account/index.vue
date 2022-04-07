@@ -1,5 +1,5 @@
 <template>
-  name: 'Dashboard',
+  Account
 </template>
 
 <script>

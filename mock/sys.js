@@ -112,6 +112,22 @@ const menu = [
         meta: { title: '字典管理', hidden: false, roles: ['admin'] }
       },
     ]
+  },
+  {
+    path: '/link',
+    component: 'LAYOUT',
+    meta: {
+      title: 'Github', icon: 'el-icon-odometer', affix: true, alwaysShow: true, roles: ['admin']
+    },
+    children: [
+      {
+        path: 'https://github.com/zehuichan',
+        name: 'Github',
+        meta: {
+          title: 'Github', icon: 'el-icon-odometer', affix: true, roles: ['admin']
+        }
+      }
+    ]
   }
 ]
 

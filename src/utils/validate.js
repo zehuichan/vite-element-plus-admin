@@ -4,10 +4,20 @@
 
 /**
  * @param {string} path
- * @returns {Boolean}
+ * @returns {boolean}
  */
 export function isExternal(path) {
   return /^(https?:|mailto:|tel:)/.test(path)
+}
+
+/**
+ * @param {string} path
+ * @returns {boolean}
+ */
+export function isUrl(path) {
+  const reg =
+    /(((^https?:(?:\/\/)?)(?:[-:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&%@.\w_]*)#?(?:[\w]*))?)$/
+  return reg.test(path)
 }
 
 /**

@@ -1,5 +1,5 @@
 <template>
-  documentation
+  Documentation
 </template>
 
 <script setup>

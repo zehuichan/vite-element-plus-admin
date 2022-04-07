@@ -1,5 +1,5 @@
 <template>
-  role
+  Role
 </template>
 
 <script>

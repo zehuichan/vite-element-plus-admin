@@ -1,31 +1,23 @@
-import LayoutMap, { getParentLayout } from '@/router/constant'
+import LayoutMap, { Layout, getParentLayout } from '@/router/constant'
 import { cloneDeep, omit } from 'lodash-es'
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 export function asyncImportRoute(routes) {
   const dynamicViewsModules = import.meta.globEager('../views/**/*.{vue,jsx,tsx}')
-  const res = []
   routes.forEach((item) => {
-    const tmp = {
-      ...item
-    }
-    if (tmp.component) {
-      const layoutFound = LayoutMap.get(tmp.component.toUpperCase())
+    const { component, name, children } = item
+    if (component) {
+      const layoutFound = LayoutMap.get(component.toUpperCase())
       if (layoutFound) {
-        tmp.component = layoutFound
+        item.component = layoutFound
       } else {
-        tmp.component = tmp.component ? dynamicImport(dynamicViewsModules, tmp.component) : getParentLayout()
+        item.component = dynamicImport(dynamicViewsModules, component)
       }
+    } else if (name) {
+      item.component = getParentLayout()
     }
-
-    if (tmp.children && tmp.children.length) {
-      tmp.children = asyncImportRoute(tmp.children)
-    }
-
-    res.push(tmp)
+    children && asyncImportRoute(children)
   })
-
-  return res
 }
 
 function dynamicImport(dynamicViewsModules, component) {
@@ -117,7 +109,32 @@ function addToChildren(routes, children, routeModule) {
   }
 }
 
-// 路由转菜单
+// 后端数据转路由
+export function transformObjToRoute(routeList) {
+  routeList.forEach((route) => {
+    const component = route.component
+    if (component) {
+      if (component.toUpperCase() === 'LAYOUT') {
+        route.component = LayoutMap.get(component.toUpperCase())
+      } else {
+        route.children = [cloneDeep(route)]
+        route.component = Layout
+        route.name = `${route.name}Parent`
+        route.path = ''
+        const meta = route.meta || {}
+        meta.single = true
+        meta.affix = false
+        route.meta = meta
+      }
+    } else {
+      console.warn('请正确配置路由：' + route?.name + '的component属性')
+    }
+    route.children && asyncImportRoute(route.children)
+  })
+  return routeList
+}
+
+// 后端数据转菜单
 export function transformRouteToMenu(routeList) {
   const menuList = []
   routeList.forEach((item) => {

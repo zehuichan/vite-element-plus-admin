@@ -1,5 +1,5 @@
 <template>
-  role
+  Dictionary
 </template>
 
 <script>

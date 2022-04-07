@@ -1,5 +1,5 @@
 <template>
-  role
+  Menu
 </template>
 
 <script>
