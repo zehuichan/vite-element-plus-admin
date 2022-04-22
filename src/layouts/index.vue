@@ -18,9 +18,9 @@
       <el-main>
         <AppMain/>
       </el-main>
-      <el-backtop/>
     </el-container>
   </el-container>
+  <el-backtop/>
 </template>
 
 <script>

@@ -119,31 +119,23 @@ $bg: #283443;
 $light_gray: #fff;
 $cursor: #fff;
 
-@supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-  .login-container .el-input input {
-    color: $cursor;
-  }
-}
-
 /* reset element-ui css */
 .login-container {
   .el-input {
-
     input {
       background: transparent;
-      color: $light_gray;
       caret-color: $cursor;
 
       &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
-        -webkit-text-fill-color: $cursor !important;
+        -webkit-text-fill-color: #c9d1d9 !important;
+        box-shadow: inherit !important;
       }
     }
   }
 }
 </style>
 
-<style lang="scss" scoped>
+<style lang="scss">
 $bg: #2d3a4b;
 $dark_gray: #889aa4;
 $light_gray: #eee;
@@ -181,7 +173,7 @@ $light_gray: #eee;
     .title {
       font-size: 26px;
       color: $light_gray;
-      margin: 0px auto 40px auto;
+      margin: 0 auto 40px auto;
       text-align: center;
       font-weight: bold;
     }
@@ -191,7 +183,7 @@ $light_gray: #eee;
       position: absolute;
       top: 3px;
       font-size: 18px;
-      right: 0px;
+      right: 0;
       cursor: pointer;
     }
   }
