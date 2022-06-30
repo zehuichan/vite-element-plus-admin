@@ -11,7 +11,7 @@ const { name, version } = pkg
 const __APP_INFO__ = {
   name,
   version,
-  lastBuildTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+  lastBuildTime: dayjs().format(),
 }
 
 function resolve(dir) {

@@ -5,14 +5,13 @@ import cache from '@/utils/cache'
 export const useAppStore = defineStore({
   id: 'app',
   state: () => ({
-      sidebar: {
-        opened: cache.getItem('sidebarStatus') ? !!+cache.getItem('sidebarStatus') : true,
-        withoutAnimation: false
-      },
-      device: 'desktop',
-      size: cache.getItem('size') || 'small'
-    }
-  ),
+    sidebar: {
+      opened: cache.getItem('sidebarStatus') ? !!+cache.getItem('sidebarStatus') : true,
+      withoutAnimation: false
+    },
+    device: 'desktop',
+    size: cache.getItem('size') || 'small'
+  }),
   actions: {
     toggleSideBar() {
       this.sidebar.opened = !this.sidebar.opened

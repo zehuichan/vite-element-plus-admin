@@ -5,11 +5,9 @@ import { flatMultiLevelRoutes, transformObjToRoute, transformRouteToMenu } from 
 
 export const usePermissionStore = defineStore({
   id: 'permission',
-  state: () => {
-    return {
-      menu: []
-    }
-  },
+  state: () => ({
+    menu: []
+  }),
   actions: {
     async generateRoutes() {
       try {

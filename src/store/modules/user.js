@@ -4,16 +4,14 @@ import { getInfo, login } from '@/api/user'
 
 export const useUserStore = defineStore({
   id: 'user',
-  state: () => {
-    return {
-      token: useStorage('token', ''),
-      name: '',
-      avatar: '',
-      introduction: '',
-      roles: [],
-      permissions: [],
-    }
-  },
+  state: () => ({
+    token: useStorage('token', ''),
+    name: '',
+    avatar: '',
+    introduction: '',
+    roles: [],
+    permissions: [],
+  }),
   getters: {
     hasRoles() {
       return this.roles && this.roles.length > 0
