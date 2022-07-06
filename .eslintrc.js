@@ -1,16 +1,17 @@
 const { defineConfig } = require('eslint-define-config')
+
 module.exports = defineConfig({
   root: true,
   env: {
     browser: true,
     node: true,
-    es6: true,
+    es6: true
   },
   parser: 'vue-eslint-parser',
   extends: [
     'plugin:vue/vue3-recommended',
     'prettier',
-    'plugin:prettier/recommended',
+    'plugin:prettier/recommended'
   ],
   rules: {
     'no-new': 'off',
