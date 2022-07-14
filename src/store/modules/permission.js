@@ -1,7 +1,11 @@
 import { defineStore } from 'pinia'
 import { constantRoutes, asyncRoutes } from '@/router'
 import { menu } from '@/api/sys'
-import { flatMultiLevelRoutes, transformObjToRoute, transformRouteToMenu } from '../helper'
+import {
+  flatMultiLevelRoutes,
+  transformObjToRoute,
+  transformRouteToMenu
+} from '../helper'
 
 export const usePermissionStore = defineStore({
   id: 'permission',

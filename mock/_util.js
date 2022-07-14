@@ -3,15 +3,18 @@ export function resultSuccess(data, { msg = 'ok' } = {}) {
     code: 200,
     data,
     msg,
-    type: 'success',
+    type: 'success'
   }
 }
 
-export function resultError(msg = 'Request failed', { code = -1, data = null } = {}) {
+export function resultError(
+  msg = 'Request failed',
+  { code = -1, data = null } = {}
+) {
   return {
     code,
     data,
     msg,
-    type: 'error',
+    type: 'error'
   }
 }

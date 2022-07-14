@@ -3,7 +3,9 @@ import { cloneDeep, omit } from 'lodash-es'
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 export function asyncImportRoute(routes) {
-  const dynamicViewsModules = import.meta.globEager('../views/**/*.{vue,jsx,tsx}')
+  const dynamicViewsModules = import.meta.globEager(
+    '../views/**/*.{vue,jsx,tsx}'
+  )
   routes.forEach((item) => {
     const { component, name, children } = item
     if (component) {
@@ -25,7 +27,10 @@ function dynamicImport(dynamicViewsModules, component) {
   const matchKeys = keys.filter((key) => {
     const k = key.replace('../views', '')
     const startFlag = component.startsWith('/')
-    const endFlag = component.endsWith('.vue') ?? component.endsWith('.jsx') ?? component.endsWith('.tsx')
+    const endFlag =
+      component.endsWith('.vue') ??
+      component.endsWith('.jsx') ??
+      component.endsWith('.tsx')
     const startIndex = startFlag ? 0 : 1
     const lastIndex = endFlag ? k.length : k.lastIndexOf('.')
     return k.substring(startIndex, lastIndex) === component
@@ -59,11 +64,15 @@ export function flatMultiLevelRoutes(routeModules) {
 
 // 层级是否大于2
 function isMultipleRoute(routeModule) {
-  if (!routeModule || !Reflect.has(routeModule, 'children') || !routeModule.children?.length) {
+  if (
+    !routeModule ||
+    !Reflect.has(routeModule, 'children') ||
+    !routeModule.children?.length
+  ) {
     return false
   }
 
-  const children = routeModule.children
+  const { children } = routeModule
 
   let flag = false
   for (let index = 0; index < children.length; index++) {
@@ -81,14 +90,16 @@ function promoteRouteLevel(routeModule) {
   // Use vue-router to splice menus
   let router = createRouter({
     routes: [routeModule],
-    history: createWebHashHistory(),
+    history: createWebHashHistory()
   })
 
   const routes = router.getRoutes()
   addToChildren(routes, routeModule.children || [], routeModule)
   router = null
 
-  routeModule.children = routeModule.children?.map((item) => omit(item, 'children'))
+  routeModule.children = routeModule.children?.map((item) =>
+    omit(item, 'children')
+  )
 }
 
 // 添加所有子菜单
@@ -112,7 +123,7 @@ function addToChildren(routes, children, routeModule) {
 // 后端数据转路由
 export function transformObjToRoute(routeList) {
   routeList.forEach((route) => {
-    const component = route.component
+    const { component } = route
     if (component) {
       if (component.toUpperCase() === 'LAYOUT') {
         route.component = LayoutMap.get(component.toUpperCase())
@@ -138,7 +149,6 @@ export function transformObjToRoute(routeList) {
 export function transformRouteToMenu(routeList) {
   const menuList = []
   routeList.forEach((item) => {
-
     const tmp = {
       ...item
     }

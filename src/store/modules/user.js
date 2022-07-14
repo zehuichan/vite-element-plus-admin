@@ -10,7 +10,7 @@ export const useUserStore = defineStore({
     avatar: '',
     introduction: '',
     roles: [],
-    permissions: [],
+    permissions: []
   }),
   getters: {
     hasRoles() {
@@ -25,7 +25,9 @@ export const useUserStore = defineStore({
     async login(params) {
       try {
         const { username, password } = params
-        const { data: { token } } = await login({ username: username.trim(), password: password })
+        const {
+          data: { token }
+        } = await login({ username: username.trim(), password: password })
         this.setToken(token)
         return Promise.resolve()
       } catch (error) {

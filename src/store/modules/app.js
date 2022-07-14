@@ -6,7 +6,9 @@ export const useAppStore = defineStore({
   id: 'app',
   state: () => ({
     sidebar: {
-      opened: cache.getItem('sidebarStatus') ? !!+cache.getItem('sidebarStatus') : true,
+      opened: cache.getItem('sidebarStatus')
+        ? !!+cache.getItem('sidebarStatus')
+        : true,
       withoutAnimation: false
     },
     device: 'desktop',

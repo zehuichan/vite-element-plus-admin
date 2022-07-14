@@ -5,7 +5,7 @@ const getParentLayout = (_name) => {
   return () =>
     new Promise((resolve) => {
       resolve({
-        name: 'ParentLayout',
+        name: 'ParentLayout'
       })
     })
 }
@@ -15,9 +15,6 @@ const LayoutMap = new Map()
 LayoutMap.set('LAYOUT', Layout)
 LayoutMap.set('BLANK', Blank)
 
-export {
-  Layout,
-  getParentLayout
-}
+export { Layout, getParentLayout }
 
 export default LayoutMap

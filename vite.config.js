@@ -11,7 +11,7 @@ const { name, version } = pkg
 const __APP_INFO__ = {
   name,
   version,
-  lastBuildTime: dayjs().format(),
+  lastBuildTime: dayjs().format()
 }
 
 function resolve(dir) {
@@ -34,7 +34,7 @@ export default ({ command, mode }) => {
     base: VITE_PUBLIC_PATH,
     root: root,
     define: {
-      __APP_INFO__: JSON.stringify(__APP_INFO__),
+      __APP_INFO__: JSON.stringify(__APP_INFO__)
     },
     plugins: createVitePlugins(viteEnv, isBuild),
     resolve: {
@@ -48,7 +48,7 @@ export default ({ command, mode }) => {
       proxy: createProxy(VITE_PROXY)
     },
     esbuild: {
-      pure: VITE_DROP_CONSOLE ? ['console.log', 'debugger'] : [],
+      pure: VITE_DROP_CONSOLE ? ['console.log', 'debugger'] : []
     },
     build: {
       target: 'es2015',
@@ -66,13 +66,10 @@ export default ({ command, mode }) => {
       // },
       // Turning off brotliSize display can slightly reduce packaging time
       brotliSize: false,
-      chunkSizeWarningLimit: 2000,
+      chunkSizeWarningLimit: 2000
     },
     optimizeDeps: {
-      include: [
-        '@vue/runtime-core',
-        '@vue/shared',
-      ]
-    },
+      include: ['@vue/runtime-core', '@vue/shared']
+    }
   }
 }

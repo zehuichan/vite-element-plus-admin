@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 export const constantRoutes = [
-  { path: '/', redirect: '/dashboard', },
+  { path: '/', redirect: '/dashboard' },
   {
     path: '/login',
     component: () => import('@/views/login/index.vue'),
@@ -26,7 +26,7 @@ export const constantRoutes = [
     path: '/500',
     component: () => import('@/views/error-page/500.vue'),
     hidden: true
-  },
+  }
 ]
 
 /**

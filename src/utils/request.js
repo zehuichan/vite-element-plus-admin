@@ -8,10 +8,10 @@ const http = axios.create({
 })
 
 http.interceptors.request.use(
-  config => {
+  (config) => {
     return config
   },
-  error => {
+  (error) => {
     console.log(`err,${error}`)
     return Promise.reject(error)
   }
