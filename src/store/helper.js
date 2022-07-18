@@ -3,9 +3,7 @@ import { cloneDeep, omit } from 'lodash-es'
 import { createRouter, createWebHashHistory } from 'vue-router'
 
 export function asyncImportRoute(routes) {
-  const dynamicViewsModules = import.meta.globEager(
-    '../views/**/*.{vue,jsx,tsx}'
-  )
+  const dynamicViewsModules = import.meta.glob('../views/**/*.{vue,jsx,tsx}')
   routes.forEach((item) => {
     const { component, name, children } = item
     if (component) {
@@ -37,7 +35,7 @@ function dynamicImport(dynamicViewsModules, component) {
   })
   if (matchKeys?.length === 1) {
     const matchKey = matchKeys[0]
-    return dynamicViewsModules[matchKey].default
+    return dynamicViewsModules[matchKey]
   } else if (matchKeys?.length > 1) {
     console.warn(
       'Please do not create `.{vue,jsx,tsx}` files with the same file name in the same hierarchical directory under the views folder. This will cause dynamic introduction failure'
