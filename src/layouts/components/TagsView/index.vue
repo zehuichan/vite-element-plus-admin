@@ -40,7 +40,7 @@
 import { computed, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Draggable from 'vuedraggable'
-import { usePermissionStore, useTabsViewStore } from '@/store'
+import { useTabsViewStore } from '@/store'
 
 const route = useRoute()
 const router = useRouter()
