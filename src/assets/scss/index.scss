@@ -7,7 +7,7 @@ body {
   height: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  text-rendering: optimizelegibility;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -28,8 +28,8 @@ html {
 }
 
 *,
-*:before,
-*:after {
+*::before,
+*::after {
   box-sizing: inherit;
 }
 
@@ -59,7 +59,7 @@ div:focus {
 }
 
 .clearfix {
-  &:after {
+  &::after {
     visibility: hidden;
     display: block;
     font-size: 0;
@@ -86,34 +86,8 @@ div:focus {
   height: 1em;
   min-width: 1em;
   vertical-align: -0.15em;
-  fill: currentColor;
+  fill: currentcolor;
   overflow: hidden;
-}
-
-.ellipsis {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.multi-ellipsis--l2 {
-  display: -webkit-box;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  -webkit-line-clamp: 2;
-
-  /* autoprefixer: ignore next */
-  -webkit-box-orient: vertical;
-}
-
-.multi-ellipsis--l3 {
-  display: -webkit-box;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  -webkit-line-clamp: 3;
-
-  /* autoprefixer: ignore next */
-  -webkit-box-orient: vertical;
 }
 
 // main-container global css
@@ -146,7 +120,7 @@ div:focus {
     float: left;
     margin-bottom: 0;
     padding-right: 12px;
-    color: rgba(0, 0, 0, 0.85);
+    color: rgb(0 0 0 / 85%);
     font-weight: 600;
     font-size: 20px;
     line-height: 32px;
@@ -157,9 +131,6 @@ div:focus {
   @extend .clearfix;
 
   padding: 16px 0;
-}
-
-.base-form {
 }
 
 .btn-tools {
@@ -187,7 +158,7 @@ div:focus {
   }
 
   .info {
-    color: rgba(0, 0, 0, 0.45);
+    color: rgb(0 0 0 / 45%);
     font-size: 20px;
     line-height: 28px;
     margin-bottom: 16px;
@@ -209,14 +180,14 @@ code {
   line-height: 20px !important;
   word-break: break-all;
   white-space: pre-wrap;
-  color: rgba(0, 0, 0, 0.85);
-  background-color: rgb(246, 248, 250) !important;
-  font-family: sfmono-regular, Consolas, liberation mono, Menlo, Courier,
+  color: rgb(0 0 0 / 85%);
+  background-color: rgb(246 248 250) !important;
+  font-family: sfmono-regular, Consolas, 'liberation mono', Menlo, Courier,
     monospace;
 
   &.light {
-    color: rgba(0, 0, 0, 0.85);
-    background-color: rgb(246, 248, 250);
+    color: rgb(0 0 0 / 85%);
+    background-color: rgb(246 248 250);
   }
 
   &.dark {

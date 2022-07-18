@@ -1,9 +1,14 @@
-const prefix = import.meta.env.VITE_WECHAT_APPID
+// token key
+export const TOKEN_KEY = 'TOKEN__'
+// user info key
+export const USER_INFO_KEY = 'USER__INFO__'
+// role info key
+export const ROLES_KEY = 'ROLES__KEY__'
 
 class Cache {
   setItem(key, value) {
     try {
-      localStorage.setItem(prefix + key, JSON.stringify(value))
+      localStorage.setItem(key, JSON.stringify(value))
     } catch (e) {
       console.log(e)
     }
@@ -11,19 +16,19 @@ class Cache {
 
   getItem(key) {
     try {
-      return JSON.parse(localStorage.getItem(prefix + key))
+      return JSON.parse(localStorage.getItem(key))
     } catch (e) {
       return ''
     }
   }
 
   removeItem(key) {
-    return localStorage.removeItem(prefix + key)
+    return localStorage.removeItem(key)
   }
 
   setSession(key, value) {
     try {
-      sessionStorage.setItem(prefix + key, JSON.stringify(value))
+      sessionStorage.setItem(key, JSON.stringify(value))
     } catch (e) {
       console.log(e)
     }
@@ -31,14 +36,14 @@ class Cache {
 
   getSession(key) {
     try {
-      return JSON.parse(sessionStorage.getItem(prefix + key))
+      return JSON.parse(sessionStorage.getItem(key))
     } catch (e) {
       return ''
     }
   }
 
   removeSession(key) {
-    return sessionStorage.removeItem(prefix + key)
+    return sessionStorage.removeItem(key)
   }
 }
 

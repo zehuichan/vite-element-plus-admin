@@ -1,67 +1,68 @@
-import { useTitle, useStorage } from '@vueuse/core'
-// progress
-import NProgress from 'nprogress'
-import 'nprogress/nprogress.css'
-// store
-import { useUserStore } from '@/store/modules/user'
-import { usePermissionStore } from '@/store/modules/permission'
+import { useTitle } from '@vueuse/core'
+import { useUserStoreWithOut } from '@/store/modules/user'
+import { usePermissionStoreWithOut } from '@/store/modules/permission'
 
 // no redirect whitelist
 const whiteList = ['/login', '/auth-redirect']
 
 export function setupRouterGuard(router) {
-  // start progress bar
-  NProgress.start()
-
-  const userStore = useUserStore()
-  const permissionStore = usePermissionStore()
+  const userStore = useUserStoreWithOut()
+  const permissionStore = usePermissionStoreWithOut()
 
   router.beforeEach(async (to, from, next) => {
     // set page title
     useTitle(to.meta.title)
+
+    if (from.path === '/login') {
+      next(to.query?.redirect || '/')
+      return
+    }
+
+    // Whitelist can be directly entered
+    if (whiteList.includes(to.path)) {
+      next()
+      return
+    }
+
     // determine whether the user has logged in
-    const hasToken = useStorage('token')
+    const token = userStore.getToken
 
-    if (hasToken.value) {
-      if (to.path === '/login') {
-        next({ path: '/' })
-      } else {
-        if (userStore.hasRoles) {
-          next()
-        } else {
-          try {
-            await userStore.getInfo()
-
-            const routes = await permissionStore.generateRoutes()
-
-            routes.forEach((route) => {
-              router.addRoute(route)
-            })
-
-            next({ ...to, replace: true })
-          } catch (error) {
-            console.log(error)
-            next(`/login?redirect=${to.path}`)
-          }
+    // token does not exist
+    if (!token) {
+      // redirect login page
+      const redirectData = {
+        path: '/login',
+        replace: true
+      }
+      if (to.path) {
+        redirectData.query = {
+          ...redirectData.query,
+          redirect: to.path
         }
       }
-    } else {
-      if (whiteList.indexOf(to.path) !== -1) {
-        next()
-      } else {
-        next({ path: '/login', replace: true })
-      }
+      next(redirectData)
+      return
     }
-  })
 
-  router.afterEach((to, from) => {
-    // finish progress bar
-    NProgress.done()
-  })
+    if (permissionStore.getIsDynamicAddedRoute) {
+      next()
+      return
+    }
 
-  router.onError((error) => {
-    console.log(error, '路由错误')
-    // finish progress bar
-    NProgress.done()
+    const userInfo = await userStore.getUserInfoAction()
+    console.log('userInfo', userInfo)
+    const routes = await permissionStore.buildRoutesAction()
+    console.log('routes', routes)
+    // 动态添加可访问路由表
+    routes.forEach((item) => {
+      router.addRoute(item)
+    })
+
+    const redirectPath = from.query.redirect || to.path
+    const redirect = decodeURIComponent(redirectPath)
+    const nextData =
+      to.path === redirect ? { ...to, replace: true } : { path: redirect }
+    permissionStore.setDynamicAddedRoute(true)
+    next(nextData)
   })
 }

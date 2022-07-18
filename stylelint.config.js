@@ -18,23 +18,7 @@ module.exports = {
         ignorePseudoElements: ['v-deep']
       }
     ],
-    'at-rule-no-unknown': [
-      true,
-      {
-        ignoreAtRules: [
-          'tailwind',
-          'apply',
-          'variants',
-          'responsive',
-          'screen',
-          'function',
-          'if',
-          'each',
-          'include',
-          'mixin'
-        ]
-      }
-    ],
+    'at-rule-no-unknown': null,
     'no-empty-source': null,
     'string-quotes': null,
     'named-grid-areas-no-invalid': null,

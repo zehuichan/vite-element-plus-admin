@@ -5,7 +5,7 @@
         <Logo />
         <div style="flex: 1 1 0; overflow: hidden auto">
           <el-scrollbar wrap-class="scrollbar-wrapper">
-            <Menu :routes="permissionStore.menu" :collapse="false" />
+            <Menu :routes="permissionStore.menus" :collapse="false" />
           </el-scrollbar>
         </div>
         <Trigger />
@@ -14,6 +14,7 @@
     <el-container>
       <el-header>
         <Header />
+        <TagsView />
       </el-header>
       <el-main>
         <AppMain />
@@ -25,7 +26,7 @@
 
 <script setup>
 import { usePermissionStore } from '@/store'
-import { Logo, Menu, Trigger, Header, AppMain } from './components'
+import { AppMain, Header, Logo, Menu, TagsView, Trigger } from './components'
 
 // 获取权限模块
 const permissionStore = usePermissionStore()
