@@ -9,7 +9,6 @@
       label-position="left"
       size="large"
     >
-
       <div class="title-container">
         <h3 class="title">System Login</h3>
       </div>
@@ -36,7 +35,7 @@
           auto-complete="on"
           show-password
           clearable
-          @keyup.enter.native="login"
+          @keyup.enter="login"
         />
       </el-form-item>
 
@@ -44,17 +43,16 @@
         :loading="loading"
         type="primary"
         size="large"
-        style="width:100%;margin-bottom:30px;"
-        @click.native.prevent="login"
+        style="width: 100%; margin-bottom: 30px"
+        @click.prevent="login"
       >
         Login
       </el-button>
 
       <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
+        <span style="margin-right: 20px">username: admin</span>
         <span>password: any</span>
       </div>
-
     </el-form>
   </div>
 </template>

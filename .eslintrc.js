@@ -1,18 +1,11 @@
-const { defineConfig } = require('eslint-define-config')
-
-module.exports = defineConfig({
+module.exports = {
   root: true,
   env: {
     browser: true,
     node: true,
     es6: true
   },
-  parser: 'vue-eslint-parser',
-  extends: [
-    'plugin:vue/vue3-recommended',
-    'prettier',
-    'plugin:prettier/recommended'
-  ],
+  extends: ['plugin:vue/vue3-recommended', 'plugin:prettier/recommended'],
   rules: {
     'no-new': 'off',
     'no-shadow': 'off',
@@ -23,6 +16,7 @@ module.exports = defineConfig({
     'default-case': 'off',
     'prefer-template': 'off',
     'consistent-return': 'off',
+    'no-use-before-define': 'off',
     'no-param-reassign': 'off',
     'no-nested-ternary': 'off',
     'no-underscore-dangle': 'off',
@@ -37,6 +31,8 @@ module.exports = defineConfig({
     'import/prefer-default-export': 'off',
     'import/no-extraneous-dependencies': 'off',
     // eslint-plugin-vue
+    'vue/script-setup-uses-vars': 'error',
+    'vue/custom-event-name-casing': 'off',
     'vue/no-v-html': 'off',
     'vue/attributes-order': 'off',
     'vue/require-v-for-key': 'off',
@@ -45,4 +41,4 @@ module.exports = defineConfig({
     'vue/multi-word-component-names': 'off',
     'vue/return-in-computed-property': 'off'
   }
-})
+}

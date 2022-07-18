@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 
 export const useErrorLogStore = defineStore({
-  id: 'errorLog',
+  id: 'error-log',
   state: () => ({
     logs: []
   }),

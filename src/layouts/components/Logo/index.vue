@@ -6,7 +6,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'Logo',
+  name: 'Logo'
 })
 </script>
 
@@ -17,6 +17,6 @@ export default defineComponent({
   align-items: center;
   padding: 16px;
   cursor: pointer;
-  transition: padding .3s cubic-bezier(.645, .045, .355, 1);
+  transition: padding 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 </style>

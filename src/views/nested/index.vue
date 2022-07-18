@@ -1,26 +1,24 @@
 <template>
   <div>
     <div class="app-header">
-      <el-page-header @back="goBack"/>
+      <el-page-header @back="goBack" />
     </div>
     <div class="app-container">
       <code>
-        {{$route.meta}}
+        {{ $route.meta }}
       </code>
     </div>
   </div>
 </template>
 
 <script>
-  export default {
-    methods: {
-      async goBack() {
-        this.$router.back()
-      }
+export default {
+  methods: {
+    async goBack() {
+      this.$router.back()
     }
   }
+}
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

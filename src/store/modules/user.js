@@ -1,26 +1,52 @@
 import { defineStore } from 'pinia'
-import { useStorage } from '@vueuse/core'
 import { getInfo, login } from '@/api/user'
+import { store } from '..'
+import cache, { ROLES_KEY, TOKEN_KEY, USER_INFO_KEY } from '@/utils/cache'
 
 export const useUserStore = defineStore({
   id: 'user',
   state: () => ({
-    token: useStorage('token', ''),
-    name: '',
-    avatar: '',
-    introduction: '',
-    roles: [],
-    permissions: []
+    token: undefined,
+    userInfo: null,
+    roleList: [],
+    sessionTimeout: false,
+    lastUpdateTime: 0
   }),
   getters: {
-    hasRoles() {
-      return this.roles && this.roles.length > 0
+    getToken() {
+      return this.token || cache.getItem(TOKEN_KEY)
+    },
+    getUserInfo() {
+      return this.userInfo || cache.getItem(USER_INFO_KEY)
+    },
+    getRoleList() {
+      return this.roleList.length > 0 ? this.roleList : cache.getItem(ROLES_KEY)
+    },
+    getSessionTimeout() {
+      return !!this.sessionTimeout
     }
   },
   actions: {
     setToken(token) {
       this.token = token ? token : ''
-      useStorage('token', token)
+      cache.setItem(TOKEN_KEY, token)
+    },
+    setRoleList(roleList) {
+      this.roleList = roleList
+      cache.setItem(ROLES_KEY, roleList)
+    },
+    setUserInfo(info) {
+      this.userInfo = info
+      this.lastUpdateTime = new Date().getTime()
+      cache.setItem(USER_INFO_KEY, info)
+    },
+    setSessionTimeout(flag) {
+      this.sessionTimeout = flag
+    },
+    resetState() {
+      this.token = ''
+      this.userInfo = null
+      this.roleList = []
     },
     async login(params) {
       try {
@@ -30,35 +56,34 @@ export const useUserStore = defineStore({
         } = await login({ username: username.trim(), password: password })
         this.setToken(token)
         return Promise.resolve()
-      } catch (error) {
-        return Promise.reject(error)
+      } catch (e) {
+        return Promise.reject(e)
       }
     },
-    async getInfo() {
+    async getUserInfoAction() {
       try {
-        const { data } = await getInfo(this.token)
-
-        if (!data) {
-          return Promise.reject('Verification failed, please Login again.')
-        }
-
-        const { roles, permissions, name, avatar, introduction } = data
+        const token = this.getToken
+        const { data } = await getInfo(token)
+        const { roles = [] } = data
 
         // roles must be a non-empty array
         if (!roles || roles.length <= 0) {
-          return Promise.reject('getInfo: roles must be a non-null array!')
+          data.roles = []
+          this.setRoleList([])
+        } else {
+          this.setRoleList(roles)
         }
 
-        this.roles = roles
-        this.permissions = permissions
-        this.name = name
-        this.avatar = avatar
-        this.introduction = introduction
-
+        this.setUserInfo(data)
         return Promise.resolve(data)
-      } catch (error) {
-        return Promise.reject(error)
+      } catch (e) {
+        return Promise.reject(e)
       }
     }
   }
 })
+
+// Need to be used outside the setup
+export function useUserStoreWithOut() {
+  return useUserStore(store)
+}

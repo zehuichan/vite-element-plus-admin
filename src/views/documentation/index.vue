@@ -1,11 +1,5 @@
-<template>
-  Documentation
-</template>
+<template>Documentation</template>
 
-<script setup>
+<script setup></script>
 
-</script>
-
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>

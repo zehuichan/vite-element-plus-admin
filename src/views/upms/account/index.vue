@@ -1,15 +1,11 @@
-<template>
-  Account
-</template>
+<template>Account</template>
 
 <script>
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'Account',
+  name: 'Account'
 })
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

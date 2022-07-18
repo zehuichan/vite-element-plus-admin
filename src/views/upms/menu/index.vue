@@ -1,13 +1,5 @@
-<template>
-  Menu
-</template>
+<template>Menu</template>
 
-<script>
-export default {
-  name: 'Menu'
-}
-</script>
+<script setup></script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -1,5 +1,4 @@
-export { default as useDict } from './useDict'
-export { default as useEventListener } from './useEventListener'
-export { default as useExpose } from './useExpose'
-export { default as useExtractICSS } from './useExtractICSS'
-export { default as useResize } from './useResize'
+import useExpose from './useExpose'
+import useResize from './useResize'
+
+export { useExpose, useResize }

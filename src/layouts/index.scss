@@ -1,4 +1,8 @@
-@import "@/assets/scss/variables.scss";
+// sidebar
+$backgroundColor: #001529;
+$textColor: hsla(0, 0%, 100%, 0.65);
+$activeTextColor: hsla(0, 0%, 100%, 0.95);
+$width: 208px;
 
 .basic-layout {
   width: 100%;

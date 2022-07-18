@@ -32,6 +32,7 @@ export const useAppStore = defineStore({
   }
 })
 
-export function useAppStoreWithInstall() {
+// Need to be used outside the setup
+export function useAppStoreWithOut() {
   return useAppStore(store)
 }

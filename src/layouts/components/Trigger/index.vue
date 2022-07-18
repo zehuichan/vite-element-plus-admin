@@ -1,10 +1,10 @@
 <template>
   <div class="trigger tap-active" @click="trigger">
     <el-icon :size="16" v-if="opened">
-      <Expand/>
+      <Expand />
     </el-icon>
     <el-icon :size="16" v-if="!opened">
-      <fold/>
+      <fold />
     </el-icon>
   </div>
 </template>

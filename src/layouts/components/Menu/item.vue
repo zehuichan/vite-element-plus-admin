@@ -1,30 +1,20 @@
 <template>
-  <el-menu-item
-    v-if="!hasMultiChild(item) && getShowMenu"
-    :index="item.path"
-  >
+  <el-menu-item v-if="!hasMultiChild(item) && getShowMenu" :index="item.path">
     <el-icon>
-      <location/>
+      <location />
     </el-icon>
     <template #title>
       <span>{{ item.meta?.title }}</span>
     </template>
   </el-menu-item>
-  <el-sub-menu
-    v-if="hasMultiChild(item) && getShowMenu"
-    :index="item.path"
-  >
+  <el-sub-menu v-if="hasMultiChild(item) && getShowMenu" :index="item.path">
     <template #title>
       <el-icon>
-        <location/>
+        <location />
       </el-icon>
       <span>{{ item.meta?.title }}</span>
     </template>
-    <menu-item
-      v-for="sub in item.children || []"
-      :key="sub.path"
-      :item="sub"
-    />
+    <menu-item v-for="sub in item.children || []" :key="sub.path" :item="sub" />
   </el-sub-menu>
 </template>
 
@@ -36,13 +26,13 @@ import { Location } from '@element-plus/icons-vue'
 
 export default defineComponent({
   name: 'MenuItem',
-  components:{
+  components: {
     Location
   },
   props: {
     item: {
       type: Object,
-      required: true,
+      required: true
     },
     basePath: {
       type: String,

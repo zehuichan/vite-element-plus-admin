@@ -1,15 +1,5 @@
-<template>
-  Header
-</template>
+<template>Header</template>
 
-<script>
-import { defineComponent } from 'vue'
+<script setup></script>
 
-export default defineComponent({
-  name: 'Header',
-})
-</script>
-
-<style>
-
-</style>
+<style></style>

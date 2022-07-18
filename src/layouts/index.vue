@@ -2,51 +2,35 @@
   <el-container class="basic-layout">
     <el-aside class="basic-layout__aside" width="208">
       <div class="basic-layout__aside-content">
-        <Logo/>
-        <div style="flex: 1 1 0; overflow: hidden auto;">
+        <Logo />
+        <div style="flex: 1 1 0; overflow: hidden auto">
           <el-scrollbar wrap-class="scrollbar-wrapper">
-            <Menu :routes="permissionStore.menu" :collapse="false"/>
+            <Menu :routes="permissionStore.menu" :collapse="false" />
           </el-scrollbar>
         </div>
-        <Trigger/>
+        <Trigger />
       </div>
     </el-aside>
     <el-container>
       <el-header>
-        <Header/>
+        <Header />
       </el-header>
       <el-main>
-        <AppMain/>
+        <AppMain />
       </el-main>
     </el-container>
   </el-container>
-  <el-backtop/>
+  <el-backtop />
 </template>
 
-<script>
-import { defineComponent } from 'vue'
-import { usePermissionStore } from '@/store/modules/permission'
+<script setup>
+import { usePermissionStore } from '@/store'
 import { Logo, Menu, Trigger, Header, AppMain } from './components'
 
-export default defineComponent({
-  name: 'BasicLayout',
-  components: {
-    Logo,
-    Menu,
-    Trigger,
-    Header,
-    AppMain
-  },
-  setup() {
-    const permissionStore = usePermissionStore()  // 获取权限模块
-    return {
-      permissionStore
-    }
-  }
-})
+// 获取权限模块
+const permissionStore = usePermissionStore()
 </script>
 
 <style lang="scss">
-@import "./index.scss";
+@import './index.scss';
 </style>
-

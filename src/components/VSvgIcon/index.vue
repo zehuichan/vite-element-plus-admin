@@ -1,6 +1,11 @@
 <template>
-  <svg :class="[classPrefix, 'iconfont']" :style="{ fontSize: addUnit(size) }" aria-hidden="true" v-bind="$attrs">
-    <use :xlink:href="`#${name}`"/>
+  <svg
+    :class="[classPrefix, 'iconfont']"
+    :style="{ fontSize: addUnit(size) }"
+    aria-hidden="true"
+    v-bind="$attrs"
+  >
+    <use :xlink:href="`#${name}`" />
   </svg>
 </template>
 

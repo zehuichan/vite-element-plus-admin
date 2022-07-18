@@ -13,7 +13,7 @@
     </div>
     <div class="v-footer-copyright">
       Copyright
-      <v-svg-icon name="icon-copyright"/>
+      <v-svg-icon name="icon-copyright" />
       {{ copyright }}
     </div>
   </div>
@@ -50,11 +50,11 @@ export default {
   margin-bottom: 8px;
 
   a {
-    color: rgba(0, 0, 0, .45);
-    transition: all .3s;
+    color: rgba(0, 0, 0, 0.45);
+    transition: all 0.3s;
 
     &:hover {
-      color: rgba(0, 0, 0, .85);
+      color: rgba(0, 0, 0, 0.85);
     }
   }
 
@@ -64,7 +64,7 @@ export default {
 }
 
 .v-footer-copyright {
-  color: rgba(0, 0, 0, .45);
+  color: rgba(0, 0, 0, 0.45);
   font-size: 14px;
 }
 </style>
