@@ -14,7 +14,7 @@
       >
         <div ref="navScroll" class="tabs-card-scroll">
           <Draggable
-            :list="tabsList"
+            :list="tabList"
             animation="300"
             item-key="fullPath"
             class="flex"
@@ -65,7 +65,7 @@ const getSimpleRoute = (route) => {
 }
 
 // 标签页列表
-const tabsList = computed(() => tabsViewStore.tabsList)
+const tabList = computed(() => tabsViewStore.tabList)
 const whiteList = ['Login', 'Redirect', 'ErrorPage']
 
 watch(
@@ -73,7 +73,7 @@ watch(
   (to) => {
     if (whiteList.includes(route.name)) return
     state.activeKey = to
-    tabsViewStore.addTabs(getSimpleRoute(route))
+    tabsViewStore.addTab(getSimpleRoute(route))
   },
   { immediate: true }
 )

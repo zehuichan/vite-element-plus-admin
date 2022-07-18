@@ -10,60 +10,61 @@ function retainAffixRoute(list) {
 export const useTabsViewStore = defineStore({
   id: 'tabs-view',
   state: () => ({
-    tabsList: []
+    cacheTabList: new Set(),
+    tabList: []
   }),
   actions: {
     initTabs(routes) {
       // 初始化标签页
-      this.tabsList = routes
+      this.tabList = routes
     },
-    addTabs(route) {
+    addTab(route) {
       // 添加标签页
       if (whiteList.includes(route.name)) return false
-      const isExists = this.tabsList.some(
+      const isExists = this.tabList.some(
         (item) => item.fullPath == route.fullPath
       )
       if (!isExists) {
-        this.tabsList.push(route)
+        this.tabList.push(route)
       }
       return true
     },
     closeLeftTabs(route) {
       // 关闭左侧
-      const index = this.tabsList.findIndex(
+      const index = this.tabList.findIndex(
         (item) => item.fullPath == route.fullPath
       )
-      this.tabsList = this.tabsList.filter(
+      this.tabList = this.tabList.filter(
         (item, i) => i >= index || (item?.meta?.affix ?? false)
       )
     },
     closeRightTabs(route) {
       // 关闭右侧
-      const index = this.tabsList.findIndex(
+      const index = this.tabList.findIndex(
         (item) => item.fullPath == route.fullPath
       )
-      this.tabsList = this.tabsList.filter(
+      this.tabList = this.tabList.filter(
         (item, i) => i <= index || (item?.meta?.affix ?? false)
       )
     },
     closeOtherTabs(route) {
       // 关闭其他
-      this.tabsList = this.tabsList.filter(
+      this.tabList = this.tabList.filter(
         (item) =>
           item.fullPath == route.fullPath || (item?.meta?.affix ?? false)
       )
     },
     closeCurrentTab(route) {
       // 关闭当前页
-      const index = this.tabsList.findIndex(
+      const index = this.tabList.findIndex(
         (item) => item.fullPath == route.fullPath
       )
-      this.tabsList.splice(index, 1)
+      this.tabList.splice(index, 1)
     },
     closeAllTabs() {
       // 关闭全部
-      console.log(retainAffixRoute(this.tabsList))
-      this.tabsList = retainAffixRoute(this.tabsList)
+      console.log(retainAffixRoute(this.tabList))
+      this.tabList = retainAffixRoute(this.tabList)
     }
   }
 })

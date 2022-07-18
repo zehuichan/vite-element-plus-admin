@@ -13,8 +13,8 @@ export function setupRouterGuard(router) {
     // set page title
     useTitle(to.meta.title)
 
-    if (from.path === '/login') {
-      next(to.query?.redirect || '/')
+    if (from.path === '/login' && to.name === 'ErrorPage') {
+      next('/')
       return
     }
 
@@ -29,6 +29,11 @@ export function setupRouterGuard(router) {
 
     // token does not exist
     if (!token) {
+      // You can access without permissions. You need to set the routing meta.ignoreAuth to true
+      if (to.meta.ignoreAuth) {
+        next()
+        return
+      }
       // redirect login page
       const redirectData = {
         path: '/login',
@@ -58,11 +63,16 @@ export function setupRouterGuard(router) {
       router.addRoute(item)
     })
 
+    permissionStore.setDynamicAddedRoute(true)
+
     const redirectPath = from.query.redirect || to.path
     const redirect = decodeURIComponent(redirectPath)
     const nextData =
       to.path === redirect ? { ...to, replace: true } : { path: redirect }
-    permissionStore.setDynamicAddedRoute(true)
     next(nextData)
+  })
+
+  router.onError((error) => {
+    console.log(error, '路由错误')
   })
 }
