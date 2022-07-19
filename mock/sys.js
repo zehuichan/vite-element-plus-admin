@@ -31,7 +31,7 @@ const menu = [
         component: '/documentation/index',
         meta: {
           title: '文档',
-          icon: 'el-icon-document',
+          icon: 'Document',
           affix: true,
           alwaysShow: true,
           roles: ['admin']
@@ -45,7 +45,7 @@ const menu = [
     component: 'LAYOUT',
     meta: {
       title: '嵌套菜单',
-      icon: 'el-icon-document',
+      icon: 'Document',
       roles: ['admin']
     },
     children: [
@@ -89,7 +89,7 @@ const menu = [
     component: 'LAYOUT',
     meta: {
       title: '权限管理',
-      icon: 'el-icon-setting',
+      icon: 'Setting',
       roles: ['admin']
     },
     children: [
@@ -124,7 +124,7 @@ const menu = [
     component: 'LAYOUT',
     meta: {
       title: 'Github',
-      icon: 'el-icon-odometer',
+      icon: 'Odometer',
       affix: true,
       alwaysShow: true,
       roles: ['admin']
@@ -135,7 +135,7 @@ const menu = [
         name: 'Github',
         meta: {
           title: 'Github',
-          icon: 'el-icon-odometer',
+          icon: 'Odometer',
           affix: true,
           roles: ['admin']
         }
