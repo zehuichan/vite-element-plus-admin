@@ -5,13 +5,6 @@ const menu = [
     path: '/dashboard',
     name: 'Dashboard',
     component: 'LAYOUT',
-    meta: {
-      title: '仪表板',
-      icon: 'el-icon-odometer',
-      affix: true,
-      alwaysShow: true,
-      roles: ['admin']
-    },
     children: [
       {
         path: '/dashboard',
@@ -19,8 +12,9 @@ const menu = [
         component: '/dashboard/index',
         meta: {
           title: '仪表板',
-          icon: 'el-icon-odometer',
+          icon: 'Odometer',
           affix: true,
+          alwaysShow: true,
           roles: ['admin']
         }
       }
@@ -30,13 +24,6 @@ const menu = [
     path: '/documentation',
     name: 'Documentation',
     component: 'LAYOUT',
-    meta: {
-      title: '文档',
-      icon: 'el-icon-document',
-      affix: true,
-      alwaysShow: true,
-      roles: ['admin']
-    },
     children: [
       {
         path: '/documentation',
@@ -46,6 +33,7 @@ const menu = [
           title: '文档',
           icon: 'el-icon-document',
           affix: true,
+          alwaysShow: true,
           roles: ['admin']
         }
       }

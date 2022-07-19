@@ -1,2 +1,11 @@
-export { default as VFooter } from './VFooter/index.vue'
-export { default as VSvgIcon } from './VSvgIcon/index.vue'
+const components = []
+
+export function registerComponents(app) {
+  components.map((item) => {
+    if (item.install) {
+      app.use(item)
+    } else if (item.name) {
+      app.component(item.name, item)
+    }
+  })
+}

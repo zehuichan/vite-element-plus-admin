@@ -1,14 +1,16 @@
 <template>
   <el-menu
     mode="vertical"
-    :defaultActive="defaultActive"
+    :default-active="defaultActive"
     :collapse="collapse"
-    :backgroundColor="variables.backgroundColor"
-    :textColor="variables.textColor"
-    :activeTextColor="variables.activeTextColor"
+    :background-color="variables.backgroundColor"
+    :text-color="variables.textColor"
+    :active-text-color="variables.activeTextColor"
     @select="onSelect"
   >
-    <menu-item v-for="route in routes" :key="route.path" :item="route" />
+    <template v-for="route in routes" :key="route.path">
+      <menu-item :item="route" />
+    </template>
   </el-menu>
 </template>
 

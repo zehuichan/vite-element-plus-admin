@@ -3,6 +3,6 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 export function configElementPlusPlugin() {
   return Components({
-    resolvers: [ElementPlusResolver()],
+    resolvers: [ElementPlusResolver()]
   })
 }

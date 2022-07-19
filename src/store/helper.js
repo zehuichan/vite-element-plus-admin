@@ -146,12 +146,13 @@ export function transformObjToRoute(routeList) {
 // 后端数据转菜单
 export function transformRouteToMenu(routeList) {
   const menuList = []
+
   routeList.forEach((item) => {
     const tmp = {
       ...item
     }
 
-    if (tmp.meta.alwaysShow || tmp?.children.length === 1) {
+    if (tmp?.children.length === 1) {
       const realItem = tmp?.children?.[0]
       realItem && menuList.push(realItem)
     } else {

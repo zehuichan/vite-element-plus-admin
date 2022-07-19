@@ -14,7 +14,7 @@
       >
         <div ref="navScroll" class="tabs-card-scroll">
           <Draggable
-            :list="tabList"
+            :list="visitedViews"
             animation="300"
             item-key="fullPath"
             class="flex"
@@ -65,7 +65,7 @@ const getSimpleRoute = (route) => {
 }
 
 // 标签页列表
-const tabList = computed(() => tabsViewStore.tabList)
+const visitedViews = computed(() => tabsViewStore.visitedViews)
 const whiteList = ['Login', 'Redirect', 'ErrorPage']
 
 watch(

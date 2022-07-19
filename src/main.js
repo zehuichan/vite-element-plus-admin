@@ -11,12 +11,14 @@ import { setupStore } from './store'
 import { router, setupRouter } from './router'
 import { setupRouterGuard } from './router/guard'
 import { setupErrorLog } from './plugins/error-log'
+import { registerComponents } from './components'
 
 async function bootstrap() {
   const app = createApp(App)
 
-  setupElementPlus(app)
   setupStore(app)
+  setupElementPlus(app)
+  registerComponents(app)
   setupRouter(app)
   setupRouterGuard(router)
   setupErrorLog(app)

@@ -1,25 +1,21 @@
-import path from 'path'
-import pkg from './package.json'
-import dayjs from 'dayjs'
-import { loadEnv } from 'vite'
-import { wrapperEnv } from './build/utils'
+import { defineConfig, loadEnv } from 'vite'
+import { pathResolve, wrapperEnv } from './build/utils'
 import { createVitePlugins } from './build/plugin'
 import { createProxy } from './build/proxy'
+
+import pkg from './package.json'
+import dayjs from 'dayjs'
 
 const { name, version } = pkg
 
 const __APP_INFO__ = {
   name,
   version,
-  lastBuildTime: dayjs().format()
+  lastBuildTime: dayjs().format('YYYY-MM-DD HH:mm:ss')
 }
 
-function resolve(dir) {
-  return path.resolve(__dirname, dir)
-}
-
-// https://vitejs.dev/config/
-export default ({ command, mode }) => {
+// https://cn.vitejs.dev/config/
+export default defineConfig(({ command, mode }) => {
   const root = process.cwd()
 
   const env = loadEnv(mode, root)
@@ -39,7 +35,7 @@ export default ({ command, mode }) => {
     plugins: createVitePlugins(viteEnv, isBuild),
     resolve: {
       alias: {
-        '@': resolve('src')
+        '@': pathResolve('./src')
       }
     },
     server: {
@@ -72,4 +68,4 @@ export default ({ command, mode }) => {
       include: ['@vue/runtime-core', '@vue/shared']
     }
   }
-}
+})
