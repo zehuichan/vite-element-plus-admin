@@ -92,8 +92,6 @@ function promoteRouteLevel(routeModule) {
   })
 
   const routes = router.getRoutes()
-  console.log(routes)
-  return false
   addToChildren(routes, routeModule.children || [], routeModule)
   router = null
 
