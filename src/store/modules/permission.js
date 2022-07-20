@@ -6,7 +6,7 @@ import {
   flatMultiLevelRoutes,
   transformObjToRoute,
   transformRouteToMenu
-} from '../helper'
+} from '@/router/generator-routers'
 import { store } from '..'
 
 export const usePermissionStore = defineStore({

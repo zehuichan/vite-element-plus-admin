@@ -92,6 +92,8 @@ function promoteRouteLevel(routeModule) {
   })
 
   const routes = router.getRoutes()
+  console.log(routes)
+  return false
   addToChildren(routes, routeModule.children || [], routeModule)
   router = null
 
@@ -144,21 +146,20 @@ export function transformObjToRoute(routeList) {
 }
 
 // 后端数据转菜单
-export function transformRouteToMenu(routeList) {
-  const menuList = []
+export function transformRouteToMenu(routeModList, routerMapping = false) {
+  // 借助 lodash 深拷贝
+  const cloneRouteModList = cloneDeep(routeModList)
+  const routeList = []
 
-  routeList.forEach((item) => {
-    const tmp = {
-      ...item
-    }
-
-    if (tmp?.children.length === 1) {
-      const realItem = tmp?.children?.[0]
-      realItem && menuList.push(realItem)
+  // 对路由项进行修改
+  cloneRouteModList.forEach((item) => {
+    if (item?.children.length === 1) {
+      const realItem = item?.children?.[0]
+      realItem && routeList.push(realItem)
     } else {
-      menuList.push(tmp)
+      routeList.push(item)
     }
   })
 
-  return menuList
+  return routeList
 }
