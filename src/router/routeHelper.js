@@ -1,11 +1,23 @@
-import LayoutMap, { Layout, getParentLayout } from '@/router/constant'
+import { Layout, Blank, getParentLayout } from '@/router/constant'
 import { cloneDeep, omit } from 'lodash-es'
 import { createRouter, createWebHashHistory } from 'vue-router'
 
+const LayoutMap = new Map()
+
+LayoutMap.set('LAYOUT', Layout)
+LayoutMap.set('BLANK', Blank)
+
+let dynamicViewsModules
+
 export function asyncImportRoute(routes) {
-  const dynamicViewsModules = import.meta.glob('../views/**/*.{vue,jsx,tsx}')
+  dynamicViewsModules = import.meta.glob('../views/**/*.{vue,jsx,tsx}')
+  if (!routes) return
   routes.forEach((item) => {
-    const { component, name, children } = item
+    if (!item.component) {
+      item.component = 'Blank'
+    }
+    const { component, name } = item
+    const { children } = item
     if (component) {
       const layoutFound = LayoutMap.get(component.toUpperCase())
       if (layoutFound) {
@@ -50,11 +62,15 @@ function dynamicImport(dynamicViewsModules, component) {
 // 路由降级
 export function flatMultiLevelRoutes(routeModules) {
   const modules = cloneDeep(routeModules)
+
   for (let index = 0; index < modules.length; index++) {
     const routeModule = modules[index]
+    // 判断级别是否 多级 路由
     if (!isMultipleRoute(routeModule)) {
+      // 声明终止当前循环， 即跳过此次循环，进行下一轮
       continue
     }
+    // 路由等级提升
     promoteRouteLevel(routeModule)
   }
   return modules
@@ -90,8 +106,8 @@ function promoteRouteLevel(routeModule) {
     routes: [routeModule],
     history: createWebHashHistory()
   })
-
   const routes = router.getRoutes()
+  // 将所有子路由添加到二级路由
   addToChildren(routes, routeModule.children || [], routeModule)
   router = null
 
@@ -112,6 +128,7 @@ function addToChildren(routes, children, routeModule) {
     if (!routeModule.children.find((item) => item.name === route.name)) {
       routeModule.children?.push(route)
     }
+
     if (child.children?.length) {
       addToChildren(routes, child.children, routeModule)
     }
@@ -143,21 +160,17 @@ export function transformObjToRoute(routeList) {
   return routeList
 }
 
-// 后端数据转菜单
-export function transformRouteToMenu(routeModList, routerMapping = false) {
-  // 借助 lodash 深拷贝
-  const cloneRouteModList = cloneDeep(routeModList)
-  const routeList = []
-
-  // 对路由项进行修改
-  cloneRouteModList.forEach((item) => {
-    if (item?.children.length === 1) {
-      const realItem = item?.children?.[0]
-      realItem && routeList.push(realItem)
-    } else {
-      routeList.push(item)
-    }
-  })
-
-  return routeList
+export function getRawRoute(route) {
+  if (!route) return route
+  const { matched, ...opt } = route
+  return {
+    ...opt,
+    matched: matched
+      ? matched.map((item) => ({
+          meta: item.meta,
+          name: item.name,
+          path: item.path
+        }))
+      : undefined
+  }
 }

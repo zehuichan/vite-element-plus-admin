@@ -1,11 +1,17 @@
 import { useTitle } from '@vueuse/core'
+import { useNProgress } from '@vueuse/integrations/useNProgress'
 import { useUserStoreWithOut } from '@/store/modules/user'
 import { usePermissionStoreWithOut } from '@/store/modules/permission'
 
 // no redirect whitelist
 const whiteList = ['/login', '/auth-redirect']
 
-export function setupRouterGuard(router) {
+export function setupGuard(router) {
+  createPermissionGuard(router)
+  createProgressGuard(router)
+}
+
+export function createPermissionGuard(router) {
   const userStore = useUserStoreWithOut()
   const permissionStore = usePermissionStoreWithOut()
 
@@ -74,5 +80,16 @@ export function setupRouterGuard(router) {
 
   router.onError((error) => {
     console.log(error, '路由错误')
+  })
+}
+
+export function createProgressGuard(router) {
+  const { isLoading } = useNProgress()
+  router.beforeEach((to, from, next) => {
+    isLoading.value = true
+    next()
+  })
+  router.afterEach(() => {
+    isLoading.value = false
   })
 }

@@ -1,12 +1,9 @@
 import { toRaw } from 'vue'
 import { defineStore } from 'pinia'
-import { constantRoutes, asyncRoutes } from '@/router'
+import { constantRoutes } from '@/router'
 import { menu } from '@/api/sys'
-import {
-  flatMultiLevelRoutes,
-  transformObjToRoute,
-  transformRouteToMenu
-} from '@/router/generator-routers'
+import { flatMultiLevelRoutes, transformObjToRoute } from '@/router/routeHelper'
+import { transformRouteToMenu } from '@/router/menuHelper'
 import { store } from '..'
 
 export const usePermissionStore = defineStore({
@@ -41,25 +38,25 @@ export const usePermissionStore = defineStore({
     },
     async buildRoutesAction() {
       try {
-        let routes = []
         let routeList = []
-        let menus = []
-        const { data } = await menu()
+
+        const res = await menu()
+        routeList = res.data
+
         // Dynamically introduce components
         // 动态引入组件
-        routeList = transformObjToRoute(data)
+        routeList = transformObjToRoute(routeList)
 
         // Background routing to menu structure
         // 后台路由到菜单结构
-        menus = transformRouteToMenu(data)
+        const menus = transformRouteToMenu(routeList)
 
         // Convert multi-level routing to level 2 routing
         // 将多级路由转换为 2 级路由
         routeList = flatMultiLevelRoutes(routeList)
-        routes = [...constantRoutes, ...asyncRoutes, ...routeList]
-        this.setRouters(routes)
+        this.setRouters(routeList)
         this.setMenus(menus)
-        return toRaw(routes)
+        return toRaw(routeList)
       } catch (error) {
         console.log(error)
       }

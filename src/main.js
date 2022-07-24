@@ -9,7 +9,7 @@ import './assets/scss/index.scss'
 import { setupElementPlus } from './plugins/element-plus'
 import { setupStore } from './store'
 import { router, setupRouter } from './router'
-import { setupRouterGuard } from './router/guard'
+import { setupGuard } from './router/guard'
 import { setupErrorLog } from './plugins/error-log'
 import { registerComponents } from './components'
 
@@ -20,7 +20,7 @@ async function bootstrap() {
   setupElementPlus(app)
   registerComponents(app)
   setupRouter(app)
-  setupRouterGuard(router)
+  setupGuard(router)
   setupErrorLog(app)
   app.mount('#app')
 }

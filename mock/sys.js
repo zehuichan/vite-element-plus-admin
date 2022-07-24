@@ -5,6 +5,9 @@ const menu = [
     path: '/dashboard',
     name: 'Dashboard',
     component: 'LAYOUT',
+    meta: {
+      single: true
+    },
     children: [
       {
         path: '/dashboard',
@@ -13,9 +16,7 @@ const menu = [
         meta: {
           title: '仪表板',
           icon: 'Odometer',
-          affix: true,
-          alwaysShow: true,
-          roles: ['admin']
+          affix: true
         }
       }
     ]
@@ -24,6 +25,9 @@ const menu = [
     path: '/documentation',
     name: 'Documentation',
     component: 'LAYOUT',
+    meta: {
+      single: true
+    },
     children: [
       {
         path: '/documentation',
@@ -31,10 +35,7 @@ const menu = [
         component: '/documentation/index',
         meta: {
           title: '文档',
-          icon: 'Document',
-          affix: true,
-          alwaysShow: true,
-          roles: ['admin']
+          icon: 'Document'
         }
       }
     ]
@@ -45,25 +46,24 @@ const menu = [
     component: 'LAYOUT',
     meta: {
       title: '嵌套菜单',
-      icon: 'Document',
-      roles: ['admin']
+      icon: 'Document'
     },
     children: [
       {
         path: '/nested/menu/menu1',
         name: 'Menu1',
-        meta: { title: 'Menu1', roles: ['admin'] },
+        meta: { title: 'Menu1' },
         children: [
           {
             path: '/nested/menu/menu1-1',
             name: 'Menu1-1',
-            meta: { title: 'Menu1-1', roles: ['admin'] },
+            meta: { title: 'Menu1-1' },
             children: [
               {
                 path: '/nested/menu/menu1-1-1',
                 component: '/nested/index',
                 name: 'Menu1-1-1',
-                meta: { title: 'Menu1-1-1', roles: ['admin'] }
+                meta: { title: 'Menu1-1-1' }
               }
             ]
           },
@@ -71,7 +71,7 @@ const menu = [
             path: '/nested/menu/menu1-2',
             component: '/nested/index',
             name: 'Menu1-2',
-            meta: { title: 'Menu1-2', roles: ['admin'] }
+            meta: { title: 'Menu1-2' }
           }
         ]
       },
@@ -79,7 +79,7 @@ const menu = [
         path: '/nested/menu/menu2',
         component: '/nested/index',
         name: 'Menu2',
-        meta: { title: 'Menu2', roles: ['admin'] }
+        meta: { title: 'Menu2' }
       }
     ]
   },
@@ -89,33 +89,32 @@ const menu = [
     component: 'LAYOUT',
     meta: {
       title: '权限管理',
-      icon: 'Setting',
-      roles: ['admin']
+      icon: 'Setting'
     },
     children: [
       {
         path: '/upms/account',
         component: '/upms/account/index',
         name: 'Account',
-        meta: { title: '用户管理', roles: ['admin'] }
+        meta: { title: '用户管理' }
       },
       {
         path: '/upms/role',
         component: '/upms/role/index',
         name: 'Role',
-        meta: { title: '角色管理', roles: ['admin'] }
+        meta: { title: '角色管理' }
       },
       {
         path: '/upms/menu',
         component: '/upms/menu/index',
         name: 'Menu',
-        meta: { title: '菜单管理', roles: ['admin'] }
+        meta: { title: '菜单管理' }
       },
       {
         path: '/upms/dictionary',
         component: '/upms/dictionary/index',
         name: 'Dictionary',
-        meta: { title: '字典管理', hidden: false, roles: ['admin'] }
+        meta: { title: '字典管理' }
       }
     ]
   },
@@ -123,11 +122,7 @@ const menu = [
     path: '/link',
     component: 'LAYOUT',
     meta: {
-      title: 'Github',
-      icon: 'Odometer',
-      affix: true,
-      alwaysShow: true,
-      roles: ['admin']
+      single: true
     },
     children: [
       {
@@ -135,9 +130,7 @@ const menu = [
         name: 'Github',
         meta: {
           title: 'Github',
-          icon: 'Odometer',
-          affix: true,
-          roles: ['admin']
+          icon: 'Odometer'
         }
       }
     ]

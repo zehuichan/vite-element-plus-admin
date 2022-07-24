@@ -1,7 +1,14 @@
-import Layout from '@/layouts/index.vue'
-import Blank from '@/layouts/blank.vue'
+export const REDIRECT_NAME = 'Redirect'
 
-const getParentLayout = (_name) => {
+export const PARENT_LAYOUT_NAME = 'ParentLayout'
+
+export const PAGE_NOT_FOUND_NAME = 'PageNotFound'
+
+export const Blank = () => import('@/layouts/blank.vue')
+
+export const Layout = () => import('@/layouts/index.vue')
+
+export const getParentLayout = (_name) => {
   return () =>
     new Promise((resolve) => {
       resolve({
@@ -9,12 +16,3 @@ const getParentLayout = (_name) => {
       })
     })
 }
-
-const LayoutMap = new Map()
-
-LayoutMap.set('LAYOUT', Layout)
-LayoutMap.set('BLANK', Blank)
-
-export { Layout, getParentLayout }
-
-export default LayoutMap

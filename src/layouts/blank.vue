@@ -1,10 +1,11 @@
-<script>
-import { h } from 'vue'
+<template>
+  <div></div>
+</template>
 
-export default {
-  name: 'blank',
-  setup(props, { slots }) {
-    return () => h('router-view', props, slots)
-  }
-}
+<script>
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  name: 'Blank'
+})
 </script>

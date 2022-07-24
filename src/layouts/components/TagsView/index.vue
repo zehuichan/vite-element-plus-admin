@@ -41,9 +41,11 @@ import { computed, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Draggable from 'vuedraggable'
 import { useTabsViewStore } from '@/store'
+import { useGo } from '@/hooks/web/usePage'
 
 const route = useRoute()
 const router = useRouter()
+const go = useGo()
 const tabsViewStore = useTabsViewStore()
 const navScroll = ref(null)
 const navWrap = ref(null)
@@ -82,7 +84,7 @@ const handleClick = (e) => {
   const { fullPath } = e
   if (fullPath === route.fullPath) return
   state.activeKey = fullPath
-  router.replace(e)
+  go(state.activeKey, true)
 }
 </script>
 
@@ -141,8 +143,8 @@ const handleClick = (e) => {
         overflow: hidden;
 
         &-item {
-          background: v-bind(getCardColor);
-          color: v-bind(getBaseColor);
+          background: #fff;
+          color: #1f2225;
           height: 32px;
           padding: 6px 16px 4px;
           border-radius: 3px;
@@ -182,7 +184,7 @@ const handleClick = (e) => {
         }
 
         .active-item {
-          color: v-bind(getAppTheme);
+          color: #2d8cf0;
         }
       }
     }

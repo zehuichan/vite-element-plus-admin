@@ -1,11 +1,36 @@
 import { defineStore } from 'pinia'
+import { getRawRoute } from '@/router/routeHelper'
 
 export const useTabsViewStore = defineStore({
   id: 'tabs-view',
   state: () => ({
+    cacheTabList: new Set(),
     visitedViews: []
   }),
+  getters: {
+    getTabList() {
+      return this.visitedViews
+    },
+    getCachedTabList() {
+      return Array.from(this.cacheTabList)
+    }
+  },
   actions: {
+    async updateCacheTab() {
+      const cacheMap = new Set()
+
+      for (const tab of this.visitedViews) {
+        const item = getRawRoute(tab)
+        // Ignore the cache
+        const needCache = !item.meta?.ignoreKeepAlive
+        if (!needCache) {
+          continue
+        }
+        const { name } = item
+        cacheMap.add(name)
+      }
+      this.cacheTabList = cacheMap
+    },
     addTab(route) {
       // 添加标签页
       const isExists = this.visitedViews.some(
@@ -13,6 +38,7 @@ export const useTabsViewStore = defineStore({
       )
       if (isExists) return
       this.visitedViews.push(route)
+      this.updateCacheTab()
     },
     closeLeftTabs(route) {
       // 关闭左侧

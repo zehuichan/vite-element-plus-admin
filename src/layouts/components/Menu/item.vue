@@ -1,6 +1,6 @@
 <template>
   <el-menu-item v-if="!hasMultiChild(item) && getShowMenu" :index="item.path">
-    <el-icon v-if="item.meta.icon">
+    <el-icon v-if="item.meta?.icon">
       <component :is="item.meta.icon" />
     </el-icon>
     <template #title>
@@ -9,7 +9,7 @@
   </el-menu-item>
   <el-sub-menu v-if="hasMultiChild(item) && getShowMenu" :index="item.path">
     <template #title>
-      <el-icon v-if="item.meta.icon">
+      <el-icon v-if="item.meta?.icon">
         <component :is="item.meta.icon" />
       </el-icon>
       <span>{{ item.meta?.title }}</span>
