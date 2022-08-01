@@ -1,6 +1,8 @@
 import { Layout, Blank, getParentLayout } from '@/router/constant'
 import { cloneDeep, omit } from 'lodash-es'
 import { createRouter, createWebHashHistory } from 'vue-router'
+import { treeMap } from '@/utils/treeHelper'
+import { joinParentPath } from '@/router/menuHelper'
 
 const LayoutMap = new Map()
 
@@ -135,6 +137,36 @@ function addToChildren(routes, children, routeModule) {
   }
 }
 
+// 递归清洗后端数据
+export function routerGenerator(routerMap) {
+  // 提取树指定结构
+  const list = treeMap(routerMap, {
+    conversion: (node) => {
+      let redirect
+      if (node.children && node.children.length > 0) {
+        //如果未定义 redirect 默认第一个子路由为 redirect
+        redirect = node.children[0].path
+      }
+
+      return {
+        meta: {
+          title: node.title,
+          icon: node.icon,
+          hideChildrenInMenu: node.children?.length === 1,
+          hideMenu: !Boolean(node.display)
+        },
+        name: node.subtitle,
+        component: node.component,
+        path: node.path,
+        redirect
+      }
+    }
+  })
+
+  joinParentPath(list)
+  return cloneDeep(list)
+}
+
 // 后端数据转路由
 export function transformObjToRoute(routeList) {
   routeList.forEach((route) => {
@@ -158,19 +190,4 @@ export function transformObjToRoute(routeList) {
     route.children && asyncImportRoute(route.children)
   })
   return routeList
-}
-
-export function getRawRoute(route) {
-  if (!route) return route
-  const { matched, ...opt } = route
-  return {
-    ...opt,
-    matched: matched
-      ? matched.map((item) => ({
-          meta: item.meta,
-          name: item.name,
-          path: item.path
-        }))
-      : undefined
-  }
 }

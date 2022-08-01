@@ -4,7 +4,7 @@ import App from './App.vue'
 // A modern alternative to CSS resets
 import 'normalize.css/normalize.css'
 // global css
-import './assets/scss/index.scss'
+import './styles/index.scss'
 
 import { setupElementPlus } from './plugins/element-plus'
 import { setupStore } from './store'

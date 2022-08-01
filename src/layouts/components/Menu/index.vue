@@ -18,7 +18,7 @@
 import { computed, unref } from 'vue'
 import { useRouter } from 'vue-router'
 import MenuItem from './item.vue'
-import { isUrl } from '@/utils/validate'
+import { isUrl } from '@/utils/is'
 import defaultSettings from '@/settings'
 
 defineProps({
@@ -37,8 +37,8 @@ const { push, currentRoute } = useRouter()
 const defaultActive = computed(() => {
   const { meta, path } = unref(currentRoute)
   // if set path, the sidebar will highlight the path you set
-  if (meta?.activeMenu) {
-    return meta.activeMenu
+  if (meta.currentActiveMenu) {
+    return meta.currentActiveMenu
   }
   return path
 })

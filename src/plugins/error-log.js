@@ -1,5 +1,5 @@
 import { useErrorLogStore } from '@/store/modules/errorLog'
-import { is } from '../utils'
+import { isArray, isString } from '@/utils/is'
 import settings from '../settings'
 
 // you can set in settings.js
@@ -8,10 +8,10 @@ const { errorLog: needErrorLog } = settings
 
 function checkNeed() {
   const env = process.env.NODE_ENV
-  if (is(needErrorLog, 'String')) {
+  if (isString(needErrorLog)) {
     return env === needErrorLog
   }
-  if (is(needErrorLog, 'Array')) {
+  if (isArray(needErrorLog)) {
     return needErrorLog.includes(env)
   }
   return false

@@ -14,7 +14,11 @@
       </el-icon>
       <span>{{ item.meta?.title }}</span>
     </template>
-    <menu-item v-for="sub in item.children || []" :key="sub.path" :item="sub" />
+    <menu-item
+      v-for="childrenItem in item.children || []"
+      :key="childrenItem.path"
+      :item="childrenItem"
+    />
   </el-sub-menu>
 </template>
 
@@ -27,14 +31,14 @@ export default defineComponent({
     item: Object
   },
   setup(props) {
-    const getShowMenu = computed(() => !props.item.meta?.hidden)
+    const getShowMenu = computed(() => !props.item.meta?.hideMenu)
 
-    const hasMultiChild = (item) => {
+    const hasMultiChild = (menuTreeItem) => {
       return (
-        !item.meta?.hidden &&
-        Reflect.has(item, 'children') &&
-        !!item.children &&
-        item.children.length > 0
+        !menuTreeItem.meta?.hideChildrenInMenu &&
+        Reflect.has(menuTreeItem, 'children') &&
+        !!menuTreeItem.children &&
+        menuTreeItem.children.length > 0
       )
     }
 

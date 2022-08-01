@@ -15,7 +15,7 @@ const menu = [
         component: '/dashboard/index',
         meta: {
           title: '仪表板',
-          icon: 'Odometer',
+          icon: 'odometer',
           affix: true
         }
       }
@@ -35,7 +35,7 @@ const menu = [
         component: '/documentation/index',
         meta: {
           title: '文档',
-          icon: 'Document'
+          icon: 'document'
         }
       }
     ]

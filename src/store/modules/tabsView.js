@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { getRawRoute } from '@/router/routeHelper'
+import { getRawRoute } from '@/utils'
 
 export const useTabsViewStore = defineStore({
   id: 'tabs-view',

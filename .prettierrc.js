@@ -4,6 +4,6 @@ module.exports = {
   singleQuote: true,
   trailingComma: 'none',
   proseWrap: 'never',
-  htmlWhitespaceSensitivity: 'css',
+  htmlWhitespaceSensitivity: 'strict',
   endOfLine: 'lf'
 }
