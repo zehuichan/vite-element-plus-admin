@@ -7,11 +7,13 @@ export const ROLES_KEY = 'ROLES__KEY__'
 // project config key
 export const PROJ_CFG_KEY = 'PROJ__CFG__KEY__'
 
+export const MULTIPLE_TABS_KEY = 'MULTIPLE_TABS__KEY__'
+
 // 默认缓存期限为7天
 const DEFAULT_CACHE_TIME = 60 * 60 * 24 * 7
 
-class Cache {
-  setItem(key, value, expire = DEFAULT_CACHE_TIME) {
+export class Cache {
+  static setItem(key, value, expire = DEFAULT_CACHE_TIME) {
     const stringData = JSON.stringify({
       value,
       expire: expire !== null ? new Date().getTime() + expire * 1000 : null
@@ -19,7 +21,7 @@ class Cache {
     localStorage.setItem(key, stringData)
   }
 
-  getItem(key, def = null) {
+  static getItem(key, def = null) {
     const item = localStorage.getItem(key)
     if (item) {
       try {
@@ -37,13 +39,11 @@ class Cache {
     return def
   }
 
-  removeItem(key) {
+  static removeItem(key) {
     localStorage.removeItem(key)
   }
 
-  clear() {
+  static clear() {
     localStorage.clear()
   }
 }
-
-export default new Cache()

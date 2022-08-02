@@ -2,10 +2,10 @@
   <el-menu
     mode="vertical"
     :default-active="defaultActive"
-    :collapse="collapse"
-    :background-color="variables.backgroundColor"
-    :text-color="variables.textColor"
-    :active-text-color="variables.activeTextColor"
+    :collapse="getCollapsed"
+    :background-color="getMenuBackgroundColor"
+    :text-color="getMenuTextColor"
+    :active-text-color="getMenuActiveTextColor"
     @select="onSelect"
   >
     <template v-for="route in routes" :key="route.path">
@@ -14,42 +14,66 @@
   </el-menu>
 </template>
 
-<script setup>
-import { computed, unref } from 'vue'
+<script>
+import { computed, defineComponent, unref } from 'vue'
 import { useRouter } from 'vue-router'
+
 import MenuItem from './item.vue'
+
 import { isUrl } from '@/utils/is'
-import defaultSettings from '@/settings/projectSetting'
+import { useGo } from '@/hooks/web/usePage'
+import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 
-defineProps({
-  routes: Array,
-  defaultOpeneds: Array,
-  uniqueOpened: Boolean,
-  collapse: Boolean,
-  collapseTransition: {
-    type: Boolean,
-    default: true
+export default defineComponent({
+  components: {
+    MenuItem
+  },
+  props: {
+    routes: Array,
+    defaultOpeneds: Array,
+    uniqueOpened: Boolean,
+    collapse: Boolean,
+    collapseTransition: {
+      type: Boolean,
+      default: true
+    }
+  },
+  setup() {
+    const {
+      getCollapsed,
+      getMenuBackgroundColor,
+      getMenuTextColor,
+      getMenuActiveTextColor
+    } = useMenuSetting()
+    const { currentRoute } = useRouter()
+    const { push } = useGo()
+
+    const defaultActive = computed(() => {
+      const { meta, path } = unref(currentRoute)
+      // if set path, the sidebar will highlight the path you set
+      if (meta.currentActiveMenu) {
+        return meta.currentActiveMenu
+      }
+      return path
+    })
+
+    const onSelect = (index) => {
+      if (isUrl(index)) {
+        window.open(index)
+      } else {
+        push(index)
+      }
+    }
+
+    return {
+      getCollapsed,
+      getMenuBackgroundColor,
+      getMenuTextColor,
+      getMenuActiveTextColor,
+
+      defaultActive,
+      onSelect
+    }
   }
 })
-
-const { push, currentRoute } = useRouter()
-
-const defaultActive = computed(() => {
-  const { meta, path } = unref(currentRoute)
-  // if set path, the sidebar will highlight the path you set
-  if (meta.currentActiveMenu) {
-    return meta.currentActiveMenu
-  }
-  return path
-})
-
-const variables = computed(() => defaultSettings.sidebar)
-
-const onSelect = (index) => {
-  if (isUrl(index)) {
-    window.open(index)
-  } else {
-    push(index)
-  }
-}
 </script>

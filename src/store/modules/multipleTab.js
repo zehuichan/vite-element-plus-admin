@@ -1,14 +1,20 @@
-import { unref } from 'vue'
+import { toRaw, unref } from 'vue'
 import { defineStore } from 'pinia'
+
 import { getRawRoute } from '@/utils'
+import { Cache, MULTIPLE_TABS_KEY } from '@/utils/cache'
 
 import { useRedo } from '@/hooks/web/usePage'
+
+import projectSetting from '@/settings/projectSetting'
+
+const cacheTab = projectSetting.multiTabsSetting.cache
 
 export const useTabsViewStore = defineStore({
   id: 'multiple-tab',
   state: () => ({
     cacheTabList: new Set(),
-    tabList: [],
+    tabList: cacheTab ? Cache.getItem(MULTIPLE_TABS_KEY) : [],
     // Index of the last moved tab
     lastDragEndIndex: 0
   }),
@@ -39,6 +45,13 @@ export const useTabsViewStore = defineStore({
       }
       this.cacheTabList = cacheMap
     },
+    clearCacheTabs() {
+      this.cacheTabList = new Set()
+    },
+    resetState() {
+      this.tabList = []
+      this.clearCacheTabs()
+    },
     async refreshPage(router) {
       const { currentRoute } = router
       const route = unref(currentRoute)
@@ -51,13 +64,47 @@ export const useTabsViewStore = defineStore({
       await redo()
     },
     addTab(route) {
+      const { path, name, fullPath, params, query, meta } = getRawRoute(route)
+      let updateIndex = -1
       // 添加标签页
-      const isExists = this.visitedViews.some(
-        (item) => item.fullPath == route.fullPath
-      )
-      if (isExists) return
-      this.visitedViews.push(route)
+      const tabHasExits = this.tabList.some((tab, index) => {
+        updateIndex = index
+        return (tab.fullPath || tab.path) === (fullPath || path)
+      })
+      if (tabHasExits) {
+        const curTab = toRaw(this.tabList)[updateIndex]
+        if (!curTab) {
+          return
+        }
+        curTab.params = params || curTab.params
+        curTab.query = query || curTab.query
+        curTab.fullPath = fullPath || curTab.fullPath
+        this.tabList.splice(updateIndex, 1, curTab)
+      } else {
+        // Add tab
+        // 获取动态路由打开数，超过 0 即代表需要控制打开数
+        const dynamicLevel = meta?.dynamicLevel ?? -1
+        if (dynamicLevel > 0) {
+          // 如果动态路由层级大于 0 了，那么就要限制该路由的打开数限制了
+          // 首先获取到真实的路由，使用配置方式减少计算开销.
+          // const realName: string = path.match(/(\S*)\//)![1];
+          const realPath = meta?.realPath ?? ''
+          // 获取到已经打开的动态路由数, 判断是否大于某一个值
+          if (
+            this.tabList.filter((e) => e.meta?.realPath ?? '' === realPath)
+              .length >= dynamicLevel
+          ) {
+            // 关闭第一个
+            const index = this.tabList.findIndex(
+              (item) => item.meta.realPath === realPath
+            )
+            index !== -1 && this.tabList.splice(index, 1)
+          }
+        }
+        this.tabList.push(route)
+      }
       this.updateCacheTab()
+      cacheTab && Cache.setItem(MULTIPLE_TABS_KEY, this.tabList)
     },
     closeLeftTabs(route) {
       // 关闭左侧

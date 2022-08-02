@@ -7,18 +7,28 @@
   </router-view>
 </template>
 
-<script setup>
-import { computed, unref } from 'vue'
+<script>
+import { computed, defineComponent, unref } from 'vue'
 import { useTabsViewStore } from '@/store'
 import defaultSettings from '@/settings/projectSetting'
 
-const tabsViewStore = useTabsViewStore()
+export default defineComponent({
+  name: 'AppMain',
+  setup() {
+    const tabsViewStore = useTabsViewStore()
 
-const openCache = computed(() => defaultSettings.openKeepAlive)
-const getCaches = computed(() => {
-  if (!unref(openCache)) {
-    return []
+    const openCache = computed(() => defaultSettings.openKeepAlive)
+    const getCaches = computed(() => {
+      if (!unref(openCache)) {
+        return []
+      }
+      return tabsViewStore.getCachedTabList
+    })
+
+    return {
+      openCache,
+      getCaches
+    }
   }
-  return tabsViewStore.getCachedTabList
 })
 </script>

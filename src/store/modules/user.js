@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { store } from '..'
 
 import { getInfo, login } from '@/api/user'
-import cache, { ROLES_KEY, TOKEN_KEY, USER_INFO_KEY } from '@/utils/cache'
+import { Cache, ROLES_KEY, TOKEN_KEY, USER_INFO_KEY } from '@/utils/cache'
 
 export const useUserStore = defineStore({
   id: 'user',
@@ -15,13 +15,13 @@ export const useUserStore = defineStore({
   }),
   getters: {
     getToken() {
-      return this.token || cache.getItem(TOKEN_KEY)
+      return this.token || Cache.getItem(TOKEN_KEY)
     },
     getUserInfo() {
-      return this.userInfo || cache.getItem(USER_INFO_KEY)
+      return this.userInfo || Cache.getItem(USER_INFO_KEY)
     },
     getRoleList() {
-      return this.roleList.length > 0 ? this.roleList : cache.getItem(ROLES_KEY)
+      return this.roleList.length > 0 ? this.roleList : Cache.getItem(ROLES_KEY)
     },
     getSessionTimeout() {
       return !!this.sessionTimeout
@@ -30,16 +30,16 @@ export const useUserStore = defineStore({
   actions: {
     setToken(token) {
       this.token = token ? token : ''
-      cache.setItem(TOKEN_KEY, token)
+      Cache.setItem(TOKEN_KEY, token)
     },
     setRoleList(roleList) {
       this.roleList = roleList
-      cache.setItem(ROLES_KEY, roleList)
+      Cache.setItem(ROLES_KEY, roleList)
     },
     setUserInfo(info) {
       this.userInfo = info
       this.lastUpdateTime = new Date().getTime()
-      cache.setItem(USER_INFO_KEY, info)
+      Cache.setItem(USER_INFO_KEY, info)
     },
     setSessionTimeout(flag) {
       this.sessionTimeout = flag
