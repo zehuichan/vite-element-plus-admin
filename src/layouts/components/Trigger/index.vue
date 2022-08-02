@@ -1,37 +1,22 @@
 <template>
   <div class="trigger tap-active" @click="trigger">
-    <el-icon :size="16" v-if="opened">
+    <el-icon v-if="opened">
       <Expand />
     </el-icon>
-    <el-icon :size="16" v-if="!opened">
+    <el-icon v-if="!opened">
       <fold />
     </el-icon>
   </div>
 </template>
 
-<script>
-import { defineComponent, ref } from 'vue'
-import { Expand, Fold } from '@element-plus/icons-vue'
+<script setup>
+import { ref } from 'vue'
 
-export default defineComponent({
-  name: 'Trigger',
-  setup() {
-    const opened = ref(true)
+const opened = ref(true)
 
-    const trigger = () => {
-      opened.value = !opened.value
-    }
-
-    return {
-      opened,
-      trigger
-    }
-  },
-  components: {
-    Expand,
-    Fold
-  }
-})
+const trigger = () => {
+  opened.value = !opened.value
+}
 </script>
 
 <style>

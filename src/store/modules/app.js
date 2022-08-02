@@ -1,33 +1,32 @@
 import { defineStore } from 'pinia'
-import { store } from '@/store'
-import cache from '@/utils/cache'
+import { store } from '..'
+
+import cache, { PROJ_CFG_KEY } from '@/utils/cache'
+import { deepMerge } from '@/utils'
 
 export const useAppStore = defineStore({
   id: 'app',
   state: () => ({
-    sidebar: {
-      opened: cache.getItem('sidebarStatus')
-        ? !!+cache.getItem('sidebarStatus')
-        : true,
-      withoutAnimation: false
-    },
-    device: 'desktop',
-    size: cache.getItem('size') || 'small'
+    projectConfig: cache.getItem(PROJ_CFG_KEY)
   }),
-  actions: {
-    toggleSideBar() {
-      this.sidebar.opened = !this.sidebar.opened
-      this.sidebar.withoutAnimation = false
-      if (this.sidebar.opened) {
-        cache.setItem('sidebarStatus', 1)
-      } else {
-        cache.setItem('sidebarStatus', 0)
-      }
+  getters: {
+    getProjectConfig() {
+      return this.projectConfig
     },
-    closeSideBar(withoutAnimation) {
-      cache.setItem('sidebarStatus', 0)
-      this.sidebar.opened = false
-      this.sidebar.withoutAnimation = withoutAnimation
+    getHeaderSetting() {
+      return this.getProjectConfig.headerSetting
+    },
+    getMenuSetting() {
+      return this.getProjectConfig.menuSetting
+    },
+    getMultiTabsSetting() {
+      return this.getProjectConfig.multiTabsSetting
+    }
+  },
+  actions: {
+    setProjectConfig(config) {
+      this.projectConfig = deepMerge(this.projectConfig || {}, config)
+      cache.setItem(PROJ_CFG_KEY, this.projectConfig)
     }
   }
 })

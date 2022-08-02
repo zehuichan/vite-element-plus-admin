@@ -1,25 +1,33 @@
+import { unref } from 'vue'
 import { defineStore } from 'pinia'
 import { getRawRoute } from '@/utils'
 
+import { useRedo } from '@/hooks/web/usePage'
+
 export const useTabsViewStore = defineStore({
-  id: 'tabs-view',
+  id: 'multiple-tab',
   state: () => ({
     cacheTabList: new Set(),
-    visitedViews: []
+    tabList: [],
+    // Index of the last moved tab
+    lastDragEndIndex: 0
   }),
   getters: {
     getTabList() {
-      return this.visitedViews
+      return this.tabList
     },
     getCachedTabList() {
       return Array.from(this.cacheTabList)
+    },
+    getLastDragEndIndex() {
+      return this.lastDragEndIndex
     }
   },
   actions: {
     async updateCacheTab() {
       const cacheMap = new Set()
 
-      for (const tab of this.visitedViews) {
+      for (const tab of this.tabList) {
         const item = getRawRoute(tab)
         // Ignore the cache
         const needCache = !item.meta?.ignoreKeepAlive
@@ -30,6 +38,17 @@ export const useTabsViewStore = defineStore({
         cacheMap.add(name)
       }
       this.cacheTabList = cacheMap
+    },
+    async refreshPage(router) {
+      const { currentRoute } = router
+      const route = unref(currentRoute)
+      const { name } = route
+      const findTab = this.getCachedTabList.find((item) => item === name)
+      if (findTab) {
+        this.cacheTabList.delete(findTab)
+      }
+      const redo = useRedo(router)
+      await redo()
     },
     addTab(route) {
       // 添加标签页

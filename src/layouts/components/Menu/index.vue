@@ -19,7 +19,7 @@ import { computed, unref } from 'vue'
 import { useRouter } from 'vue-router'
 import MenuItem from './item.vue'
 import { isUrl } from '@/utils/is'
-import defaultSettings from '@/settings'
+import defaultSettings from '@/settings/projectSetting'
 
 defineProps({
   routes: Array,

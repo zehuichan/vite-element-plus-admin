@@ -1,9 +1,13 @@
-<template>Sider</template>
+<template>
+  <div>Sider</div>
+</template>
 
 <script>
-export default {
-  name: 'Index'
-}
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  name: 'Sider'
+})
 </script>
 
 <style></style>

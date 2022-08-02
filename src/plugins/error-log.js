@@ -1,6 +1,6 @@
 import { useErrorLogStore } from '@/store/modules/errorLog'
 import { isArray, isString } from '@/utils/is'
-import settings from '../settings'
+import settings from '../settings/projectSetting'
 
 // you can set in settings.js
 // errorLog: 'production' | ['production', 'development']

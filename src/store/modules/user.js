@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
-import { getInfo, login } from '@/api/user'
 import { store } from '..'
+
+import { getInfo, login } from '@/api/user'
 import cache, { ROLES_KEY, TOKEN_KEY, USER_INFO_KEY } from '@/utils/cache'
 
 export const useUserStore = defineStore({

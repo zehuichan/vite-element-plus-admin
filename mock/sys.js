@@ -4,41 +4,20 @@ const menu = [
   {
     path: '/dashboard',
     name: 'Dashboard',
-    component: 'LAYOUT',
+    component: '/dashboard/index',
     meta: {
-      single: true
-    },
-    children: [
-      {
-        path: '/dashboard',
-        name: 'Dashboard',
-        component: '/dashboard/index',
-        meta: {
-          title: '仪表板',
-          icon: 'odometer',
-          affix: true
-        }
-      }
-    ]
+      title: '仪表板',
+      icon: 'odometer'
+    }
   },
   {
     path: '/documentation',
     name: 'Documentation',
-    component: 'LAYOUT',
+    component: '/documentation/index',
     meta: {
-      single: true
-    },
-    children: [
-      {
-        path: '/documentation',
-        name: 'Documentation',
-        component: '/documentation/index',
-        meta: {
-          title: '文档',
-          icon: 'document'
-        }
-      }
-    ]
+      title: '文档',
+      icon: 'document'
+    }
   },
   {
     path: '/nested',

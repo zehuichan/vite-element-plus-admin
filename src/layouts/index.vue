@@ -14,7 +14,7 @@
     <el-container>
       <el-header>
         <Header />
-        <TagsView />
+        <Tabs />
       </el-header>
       <el-main>
         <AppMain />
@@ -26,7 +26,7 @@
 
 <script setup>
 import { usePermissionStore } from '@/store'
-import { AppMain, Header, Logo, Menu, TagsView, Trigger } from './components'
+import { AppMain, Header, Logo, Menu, Tabs, Trigger } from './components'
 
 // 获取权限模块
 const permissionStore = usePermissionStore()

@@ -10,7 +10,7 @@
 <script setup>
 import { computed, unref } from 'vue'
 import { useTabsViewStore } from '@/store'
-import defaultSettings from '@/settings'
+import defaultSettings from '@/settings/projectSetting'
 
 const tabsViewStore = useTabsViewStore()
 
