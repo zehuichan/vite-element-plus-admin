@@ -7,6 +7,7 @@ export function useMenuSetting() {
 
   const getMenuFixed = computed(() => appStore.getMenuSetting.fixed)
   const getCollapsed = computed(() => appStore.getMenuSetting.collapsed)
+  const getAccordion = computed(() => appStore.getMenuSetting.accordion)
   const getMenuBackgroundColor = computed(
     () => appStore.getMenuSetting.backgroundColor
   )
@@ -32,6 +33,7 @@ export function useMenuSetting() {
 
     getMenuFixed,
     getCollapsed,
+    getAccordion,
     getMenuBackgroundColor,
     getMenuTextColor,
     getMenuActiveTextColor,

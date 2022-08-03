@@ -1,4 +1,6 @@
-const components = []
+import AppProvider from './AppProvider'
+
+const components = [AppProvider]
 
 export function registerComponents(app) {
   components.map((item) => {

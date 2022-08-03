@@ -4,10 +4,12 @@ import { store } from '..'
 import { Cache, PROJ_CFG_KEY } from '@/utils/cache'
 import { deepMerge } from '@/utils'
 
+import projectConfig from '@/settings/projectSetting'
+
 export const useAppStore = defineStore({
   id: 'app',
   state: () => ({
-    projectConfig: Cache.getItem(PROJ_CFG_KEY)
+    projectConfig: Cache.getItem(PROJ_CFG_KEY, projectConfig)
   }),
   getters: {
     getProjectConfig() {

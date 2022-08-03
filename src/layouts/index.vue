@@ -1,37 +1,33 @@
 <template>
   <el-container class="basic-layout">
-    <el-aside class="basic-layout__aside" width="208">
-      <div class="basic-layout__aside-content">
-        <Logo />
-        <div style="flex: 1 1 0; overflow: hidden auto">
-          <el-scrollbar wrap-class="scrollbar-wrapper">
-            <Menu :routes="permissionStore?.menus" :collapse="false" />
-          </el-scrollbar>
-        </div>
-        <Trigger />
-      </div>
-    </el-aside>
-    <el-container>
-      <el-header>
-        <Header />
-        <Tabs />
-      </el-header>
-      <el-main>
-        <AppMain />
-      </el-main>
+    <app-sider />
+    <el-container direction="vertical">
+      <app-header />
+      <app-main />
     </el-container>
   </el-container>
   <el-backtop />
 </template>
 
-<script setup>
-import { usePermissionStore } from '@/store'
-import { AppMain, Header, Logo, Menu, Tabs, Trigger } from './components'
+<script>
+import { defineComponent } from 'vue'
+import AppHeader from './components/AppHeader/index.vue'
+import AppMain from './components/AppMain/index.vue'
+import AppSider from './components/AppSider/index.vue'
 
-// 获取权限模块
-const permissionStore = usePermissionStore()
+export default defineComponent({
+  name: 'BasicLayout',
+  components: {
+    AppHeader,
+    AppMain,
+    AppSider
+  }
+})
 </script>
 
 <style lang="scss">
-@import './index.scss';
+.basic-layout {
+  width: 100%;
+  min-height: 100%;
+}
 </style>

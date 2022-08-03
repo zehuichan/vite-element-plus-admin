@@ -2,7 +2,8 @@
   <el-menu
     mode="vertical"
     :default-active="defaultActive"
-    :collapse="getCollapsed"
+    :collapse="collapse"
+    :unique-opened="getAccordion"
     :background-color="getMenuBackgroundColor"
     :text-color="getMenuTextColor"
     :active-text-color="getMenuActiveTextColor"
@@ -21,18 +22,16 @@ import { useRouter } from 'vue-router'
 import MenuItem from './item.vue'
 
 import { isUrl } from '@/utils/is'
-import { useGo } from '@/hooks/web/usePage'
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 
 export default defineComponent({
+  name: 'AppMenu',
   components: {
     MenuItem
   },
   props: {
     routes: Array,
-    defaultOpeneds: Array,
     uniqueOpened: Boolean,
-    collapse: Boolean,
     collapseTransition: {
       type: Boolean,
       default: true
@@ -41,12 +40,13 @@ export default defineComponent({
   setup() {
     const {
       getCollapsed,
+      getAccordion,
       getMenuBackgroundColor,
       getMenuTextColor,
       getMenuActiveTextColor
     } = useMenuSetting()
-    const { currentRoute } = useRouter()
-    const { push } = useGo()
+
+    const { push, currentRoute } = useRouter()
 
     const defaultActive = computed(() => {
       const { meta, path } = unref(currentRoute)
@@ -56,6 +56,8 @@ export default defineComponent({
       }
       return path
     })
+
+    const collapse = computed(() => {})
 
     const onSelect = (index) => {
       if (isUrl(index)) {
@@ -67,11 +69,13 @@ export default defineComponent({
 
     return {
       getCollapsed,
+      getAccordion,
       getMenuBackgroundColor,
       getMenuTextColor,
       getMenuActiveTextColor,
 
       defaultActive,
+      collapse,
       onSelect
     }
   }

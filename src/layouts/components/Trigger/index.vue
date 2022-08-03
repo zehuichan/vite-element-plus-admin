@@ -1,32 +1,35 @@
 <template>
-  <div class="trigger tap-active" @click="trigger">
-    <el-icon v-if="opened">
-      <Expand />
-    </el-icon>
-    <el-icon v-if="!opened">
-      <fold />
-    </el-icon>
-  </div>
+  <SiderTrigger v-if="sider" />
+  <HeaderTrigger v-else />
 </template>
 
-<script setup>
-import { ref } from 'vue'
+<script>
+import { defineComponent } from 'vue'
+import SiderTrigger from './SiderTrigger.vue'
+import HeaderTrigger from './HeaderTrigger.vue'
 
-const opened = ref(true)
-
-const trigger = () => {
-  opened.value = !opened.value
-}
+export default defineComponent({
+  name: 'Trigger',
+  components: { SiderTrigger, HeaderTrigger },
+  props: {
+    sider: {
+      type: Boolean,
+      default: true
+    }
+  }
+})
 </script>
 
-<style>
+<style lang="scss">
 .trigger {
   display: flex;
-  align-items: center;
-  padding: 8px;
-  height: 48px;
-  box-sizing: border-box;
-  border-top: 1px solid #f0f0f0;
+  height: 100%;
+  padding: 0 10px;
   cursor: pointer;
+  align-items: center;
+
+  svg {
+    width: 16px;
+  }
 }
 </style>

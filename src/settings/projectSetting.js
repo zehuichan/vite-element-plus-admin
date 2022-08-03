@@ -11,7 +11,7 @@ export default {
   // Whether to show footer
   showFooter: false,
 
-  // Header configuration
+  // AppHeader configuration
   headerSetting: {
     // Fixed at the top
     fixed: true,
@@ -25,17 +25,19 @@ export default {
     showSearch: true
   },
 
-  // Menu configuration
+  // AppMenu configuration
   menuSetting: {
     //  Whether to fix the left menu
     fixed: true,
-    // Menu collapse
+    // AppMenu collapse
     collapsed: false,
+    // Turn on accordion mode, only show a menu
+    accordion: true,
 
     backgroundColor: '#001529',
     textColor: 'hsla(0, 0%, 100%, .65)',
     activeTextColor: 'hsla(0, 0%, 100%, .85)',
-    width: '208px'
+    width: '210px'
   },
 
   // Multi-label

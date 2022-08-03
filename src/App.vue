@@ -1,5 +1,7 @@
 <template>
   <el-config-provider>
-    <router-view />
+    <app-provider>
+      <router-view />
+    </app-provider>
   </el-config-provider>
 </template>

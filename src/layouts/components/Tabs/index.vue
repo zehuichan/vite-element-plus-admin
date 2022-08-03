@@ -204,7 +204,6 @@ const handleClick = (e) => {
     background: var(--color);
     border-radius: 2px;
     cursor: pointer;
-    //margin-right: 10px;
 
     &-btn {
       color: var(--color);
