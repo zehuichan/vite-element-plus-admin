@@ -14,12 +14,11 @@
 </template>
 
 <script>
-import { defineComponent, inject } from 'vue'
+import { defineComponent } from 'vue'
 import Sider from './sider.vue'
 
-import { APP_PROVIDER_KEY } from '@/components/AppProvider'
-
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
+import { useAppInject } from '@/hooks/web/useAppInject'
 
 export default defineComponent({
   name: 'AppSider',
@@ -27,8 +26,7 @@ export default defineComponent({
     Sider
   },
   setup() {
-    const { getIsMobile } = inject(APP_PROVIDER_KEY, null)
-
+    const { getIsMobile } = useAppInject()
     const {
       setMenuSetting,
       getCollapsed,
@@ -42,7 +40,6 @@ export default defineComponent({
       })
     }
 
-    console.log(getIsMobile)
     return {
       getIsMobile,
       getCollapsed,

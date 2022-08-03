@@ -1,4 +1,10 @@
+import { createInjectionState } from '@vueuse/core'
 import { createContext, useContext } from '@/hooks/core/useContext'
+
+const [useProvideAppStore, useAppStore] = createInjectionState((options) => {})
+
+export { useProvideAppStore }
+export { useAppStore }
 
 const key = Symbol()
 

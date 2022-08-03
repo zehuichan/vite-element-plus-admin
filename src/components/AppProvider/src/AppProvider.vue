@@ -1,10 +1,9 @@
 <script lang="jsx">
-import { defineComponent, ref, watchEffect } from 'vue'
+import { defineComponent, ref, watch, watchEffect } from 'vue'
 import { breakpointsAntDesign, useBreakpoints } from '@vueuse/core'
 
 import { useAppStore } from '@/store'
-
-export const APP_PROVIDER_KEY = Symbol('AppProvider')
+import { createAppProviderContext } from './useAppContext'
 
 export default defineComponent({
   name: 'AppProvider',
@@ -16,16 +15,20 @@ export default defineComponent({
     const breakpoints = useBreakpoints(breakpointsAntDesign)
     isMobile.value = breakpoints.smaller('lg')
 
-    watchEffect(() => {
-      appStore.setProjectConfig({
-        menuSetting: {
-          collapsed: isMobile.value
-        }
-      })
-    })
+    watch(
+      () => isMobile,
+      (n) => {
+        console.log(n)
+        appStore.setProjectConfig({
+          menuSetting: {
+            collapsed: isMobile.value
+          }
+        })
+      }
+    )
 
     // Inject variables into the global
-    createAppProviderContext({ prefixCls, isMobile })
+    createAppProviderContext({ isMobile })
 
     return () => slots.default?.()
   }

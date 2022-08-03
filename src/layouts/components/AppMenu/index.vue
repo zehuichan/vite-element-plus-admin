@@ -2,7 +2,7 @@
   <el-menu
     mode="vertical"
     :default-active="defaultActive"
-    :collapse="collapse"
+    :collapse="getCollapsed"
     :unique-opened="getAccordion"
     :background-color="getMenuBackgroundColor"
     :text-color="getMenuTextColor"
@@ -57,8 +57,6 @@ export default defineComponent({
       return path
     })
 
-    const collapse = computed(() => {})
-
     const onSelect = (index) => {
       if (isUrl(index)) {
         window.open(index)
@@ -75,7 +73,6 @@ export default defineComponent({
       getMenuActiveTextColor,
 
       defaultActive,
-      collapse,
       onSelect
     }
   }
