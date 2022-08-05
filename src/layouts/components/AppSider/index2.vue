@@ -13,7 +13,7 @@
     </div>
   </div>
   <teleport to="body">
-    <el-overlay v-if="getIsMobile && !getCollapsed" @click="handleClose" />
+    <el-overlay v-show="getIsMobile && !getCollapsed" @click="handleClose" />
   </teleport>
 </template>
 

@@ -1,11 +1,11 @@
 <template>
-  <el-container class="basic-layout">
+  <section class="basic-layout layout-aside">
     <app-sider />
-    <el-container direction="vertical">
+    <section class="basic-layout--container">
       <app-header />
       <app-main />
-    </el-container>
-  </el-container>
+    </section>
+  </section>
   <el-backtop />
 </template>
 
@@ -27,7 +27,14 @@ export default defineComponent({
 
 <style lang="scss">
 .basic-layout {
-  width: 100%;
-  min-height: 100%;
+  &.layout-aside {
+    display: flex;
+  }
+
+  &--container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
 }
 </style>

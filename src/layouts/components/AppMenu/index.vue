@@ -23,6 +23,7 @@ import MenuItem from './item.vue'
 
 import { isUrl } from '@/utils/is'
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
+import { useAppInject } from '@/hooks/web/useAppInject'
 
 export default defineComponent({
   name: 'AppMenu',
@@ -37,7 +38,10 @@ export default defineComponent({
       default: true
     }
   },
-  setup() {
+  emits: ['click'],
+  setup(props, { emit }) {
+    const { getIsMobile } = useAppInject()
+
     const {
       getCollapsed,
       getAccordion,
@@ -57,10 +61,15 @@ export default defineComponent({
       return path
     })
 
+    const collapse = computed(() =>
+      unref(getIsMobile) ? false : unref(getCollapsed)
+    )
+
     const onSelect = (index) => {
       if (isUrl(index)) {
         window.open(index)
       } else {
+        emit('click')
         push(index)
       }
     }
@@ -73,6 +82,7 @@ export default defineComponent({
       getMenuActiveTextColor,
 
       defaultActive,
+      collapse,
       onSelect
     }
   }

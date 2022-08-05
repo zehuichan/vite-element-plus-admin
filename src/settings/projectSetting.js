@@ -36,7 +36,7 @@ export default {
 
     backgroundColor: '#001529',
     textColor: 'hsla(0, 0%, 100%, .65)',
-    activeTextColor: 'hsla(0, 0%, 100%, .85)',
+    activeTextColor: '#1890ff',
     width: '210px'
   },
 

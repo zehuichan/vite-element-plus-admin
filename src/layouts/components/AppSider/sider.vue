@@ -1,12 +1,10 @@
 <template>
-  <el-aside class="basic-layout__aside" :width="getMenuWidth">
-    <div class="basic-layout__aside-content">
-      <AppLogo />
-      <el-scrollbar wrap-class="scrollbar-wrapper">
-        <AppMenu :routes="permissionStore?.menus" />
-      </el-scrollbar>
-    </div>
-  </el-aside>
+  <div class="basic-layout--aside__content with-transition">
+    <!--    <app-logo v-if="!getCollapsed" />-->
+    <el-scrollbar wrap-class="scrollbar-wrapper">
+      <app-menu :routes="permissionStore?.menus" />
+    </el-scrollbar>
+  </div>
 </template>
 
 <script>
@@ -46,36 +44,21 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.basic-layout__aside {
-  min-height: 100%;
-  box-shadow: 2px 0 8px 0 rgb(29 35 41 / 5%);
+.basic-layout--aside__content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 
-  .basic-layout__aside-content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+  .el-menu {
+    border-right: 0;
 
-    .el-menu {
-      border: 0;
-    }
-
-    .el-menu:not(.el-menu--collapse) {
+    &:not(.el-menu--collapse) {
       width: v-bind(getMenuWidth);
     }
+  }
 
-    .el-menu-item {
-      &:hover {
-        color: v-bind(getMenuActiveTextColor);
-      }
-
-      &.is-active {
-        background-color: #2d8cf0;
-      }
-    }
-
-    .scrollbar-wrapper {
-      height: calc(100vh - 57px - 48px);
-    }
+  .scrollbar-wrapper {
+    height: calc(100vh - 57px - 48px);
   }
 }
 </style>
