@@ -7,13 +7,20 @@
     }"
   >
     <div class="basic-layout--aside__content with-transition">
+      <app-logo :collapsed="getCollapsed" />
       <el-scrollbar wrap-class="scrollbar-wrapper">
-        <app-menu :routes="permissionStore?.menus" @click="handleClose" />
+        <app-menu
+          :routes="permissionStore?.menus"
+          @click="handleClose(false)"
+        />
       </el-scrollbar>
     </div>
   </div>
   <teleport to="body">
-    <el-overlay v-if="getIsMobile && !getCollapsed" @click="handleClose" />
+    <el-overlay
+      v-if="getIsMobile && !getCollapsed"
+      @click="handleClose(true)"
+    />
   </teleport>
 </template>
 
@@ -26,7 +33,7 @@ import AppLogo from '../AppLogo/index.vue'
 import AppMenu from '../AppMenu/index.vue'
 
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
-import { useAppInject } from '@/hooks/web/useAppInject'
+import { useAppInjectStore } from '@/hooks/web/useAppProvideStore'
 
 export default defineComponent({
   name: 'AppSider',
@@ -34,7 +41,8 @@ export default defineComponent({
   setup() {
     const permissionStore = usePermissionStore()
 
-    const { getIsMobile } = useAppInject()
+    const { getIsMobile } = useAppInjectStore()
+
     const {
       setMenuSetting,
       getCollapsed,
@@ -42,10 +50,11 @@ export default defineComponent({
       getMenuWidth
     } = useMenuSetting()
 
-    function handleClose() {
-      setMenuSetting({
-        collapsed: true
-      })
+    function handleClose(flag) {
+      flag &&
+        setMenuSetting({
+          collapsed: true
+        })
     }
 
     return {

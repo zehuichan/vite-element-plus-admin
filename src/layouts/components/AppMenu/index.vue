@@ -1,5 +1,6 @@
 <template>
   <el-menu
+    class="el-menu-vertical"
     mode="vertical"
     :default-active="defaultActive"
     :collapse="getCollapsed"
@@ -7,6 +8,7 @@
     :background-color="getMenuBackgroundColor"
     :text-color="getMenuTextColor"
     :active-text-color="getMenuActiveTextColor"
+    :collapse-transition="false"
     @select="onSelect"
   >
     <template v-for="route in routes" :key="route.path">
@@ -23,7 +25,6 @@ import MenuItem from './item.vue'
 
 import { isUrl } from '@/utils/is'
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
-import { useAppInject } from '@/hooks/web/useAppInject'
 
 export default defineComponent({
   name: 'AppMenu',
@@ -32,22 +33,17 @@ export default defineComponent({
   },
   props: {
     routes: Array,
-    uniqueOpened: Boolean,
-    collapseTransition: {
-      type: Boolean,
-      default: true
-    }
+    uniqueOpened: Boolean
   },
   emits: ['click'],
   setup(props, { emit }) {
-    const { getIsMobile } = useAppInject()
-
     const {
       getCollapsed,
       getAccordion,
       getMenuBackgroundColor,
       getMenuTextColor,
-      getMenuActiveTextColor
+      getMenuActiveTextColor,
+      getMenuWidth
     } = useMenuSetting()
 
     const { push, currentRoute } = useRouter()
@@ -60,10 +56,6 @@ export default defineComponent({
       }
       return path
     })
-
-    const collapse = computed(() =>
-      unref(getIsMobile) ? false : unref(getCollapsed)
-    )
 
     const onSelect = (index) => {
       if (isUrl(index)) {
@@ -80,11 +72,13 @@ export default defineComponent({
       getMenuBackgroundColor,
       getMenuTextColor,
       getMenuActiveTextColor,
+      getMenuWidth,
 
       defaultActive,
-      collapse,
       onSelect
     }
   }
 })
 </script>
+
+<style lang="scss"></style>
