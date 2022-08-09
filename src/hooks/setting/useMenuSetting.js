@@ -8,6 +8,7 @@ export function useMenuSetting() {
   const getMenuFixed = computed(() => appStore.getMenuSetting.fixed)
   const getCollapsed = computed(() => appStore.getMenuSetting.collapsed)
   const getAccordion = computed(() => appStore.getMenuSetting.accordion)
+  const getAnimation = computed(() => appStore.getMenuSetting.animation)
   const getMenuBackgroundColor = computed(
     () => appStore.getMenuSetting.backgroundColor
   )
@@ -16,6 +17,9 @@ export function useMenuSetting() {
     () => appStore.getMenuSetting.activeTextColor
   )
   const getMenuWidth = computed(() => appStore.getMenuSetting.width)
+  const getCollapsedWidth = computed(
+    () => appStore.getMenuSetting.collapsedWidth
+  )
 
   function setMenuSetting(menuSetting) {
     appStore.setProjectConfig({ menuSetting })
@@ -34,9 +38,11 @@ export function useMenuSetting() {
     getMenuFixed,
     getCollapsed,
     getAccordion,
+    getAnimation,
     getMenuBackgroundColor,
     getMenuTextColor,
     getMenuActiveTextColor,
-    getMenuWidth
+    getMenuWidth,
+    getCollapsedWidth
   }
 }

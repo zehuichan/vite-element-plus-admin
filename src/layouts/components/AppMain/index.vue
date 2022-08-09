@@ -11,20 +11,26 @@
 
 <script>
 import { computed, defineComponent, unref } from 'vue'
-import { useTabsViewStore } from '@/store'
-import defaultSettings from '@/settings/projectSetting'
+import { useMultipleTabStore } from '@/store'
+import { useRootSetting } from '@/hooks/setting/useRootSetting'
+import { useMultipleTabSetting } from '@/hooks/setting/useMultipleTabSetting'
 
 export default defineComponent({
   name: 'AppMain',
   setup() {
-    const tabsViewStore = useTabsViewStore()
+    const tabStore = useMultipleTabStore()
 
-    const openCache = computed(() => defaultSettings.openKeepAlive)
+    const { getOpenKeepAlive } = useRootSetting()
+    const { getShowMultipleTab } = useMultipleTabSetting()
+
+    const openCache = computed(
+      () => unref(getOpenKeepAlive) && unref(getShowMultipleTab)
+    )
     const getCaches = computed(() => {
-      if (!unref(openCache)) {
+      if (!unref(getOpenKeepAlive)) {
         return []
       }
-      return tabsViewStore.getCachedTabList
+      return tabStore.getCachedTabList
     })
 
     return {

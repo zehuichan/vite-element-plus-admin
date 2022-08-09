@@ -10,13 +10,11 @@ import projectSetting from '@/settings/projectSetting'
 
 const cacheTab = projectSetting.multiTabsSetting.cache
 
-export const useTabsViewStore = defineStore({
+export const useMultipleTabStore = defineStore({
   id: 'multiple-tab',
   state: () => ({
     cacheTabList: new Set(),
-    tabList: cacheTab ? Cache.getItem(MULTIPLE_TABS_KEY) : [],
-    // Index of the last moved tab
-    lastDragEndIndex: 0
+    tabList: cacheTab ? Cache.getItem(MULTIPLE_TABS_KEY) : []
   }),
   getters: {
     getTabList() {
@@ -24,9 +22,6 @@ export const useTabsViewStore = defineStore({
     },
     getCachedTabList() {
       return Array.from(this.cacheTabList)
-    },
-    getLastDragEndIndex() {
-      return this.lastDragEndIndex
     }
   },
   actions: {
@@ -56,6 +51,7 @@ export const useTabsViewStore = defineStore({
       const { currentRoute } = router
       const route = unref(currentRoute)
       const { name } = route
+
       const findTab = this.getCachedTabList.find((item) => item === name)
       if (findTab) {
         this.cacheTabList.delete(findTab)
@@ -64,13 +60,16 @@ export const useTabsViewStore = defineStore({
       await redo()
     },
     addTab(route) {
-      const { path, name, fullPath, params, query, meta } = getRawRoute(route)
+      const { path, fullPath, params, query, meta } = getRawRoute(route)
+
       let updateIndex = -1
-      // 添加标签页
+      // Existing pages, do not add tabs repeatedly
       const tabHasExits = this.tabList.some((tab, index) => {
         updateIndex = index
         return (tab.fullPath || tab.path) === (fullPath || path)
       })
+
+      // If the tab already exists, perform the update operation
       if (tabHasExits) {
         const curTab = toRaw(this.tabList)[updateIndex]
         if (!curTab) {
@@ -106,6 +105,13 @@ export const useTabsViewStore = defineStore({
       this.updateCacheTab()
       cacheTab && Cache.setItem(MULTIPLE_TABS_KEY, this.tabList)
     },
+    async closeTab(tab, route) {
+      // 关闭当前页
+      const index = this.visitedViews.findIndex(
+        (item) => item.fullPath == route.fullPath
+      )
+      this.visitedViews.splice(index, 1)
+    },
     closeLeftTabs(route) {
       // 关闭左侧
       const index = this.visitedViews.findIndex(
@@ -130,13 +136,6 @@ export const useTabsViewStore = defineStore({
         (item) =>
           item.fullPath == route.fullPath || (item?.meta?.affix ?? false)
       )
-    },
-    closeCurrentTab(route) {
-      // 关闭当前页
-      const index = this.visitedViews.findIndex(
-        (item) => item.fullPath == route.fullPath
-      )
-      this.visitedViews.splice(index, 1)
     },
     closeAllTabs() {
       // keep affix tags

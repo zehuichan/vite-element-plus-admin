@@ -25,7 +25,7 @@ const menu = [
     component: 'LAYOUT',
     meta: {
       title: '嵌套菜单',
-      icon: 'Document'
+      icon: 'Menu'
     },
     children: [
       {
@@ -68,7 +68,7 @@ const menu = [
     component: 'LAYOUT',
     meta: {
       title: '权限管理',
-      icon: 'Setting'
+      icon: 'Tools'
     },
     children: [
       {
@@ -109,7 +109,7 @@ const menu = [
         name: 'Github',
         meta: {
           title: 'Github',
-          icon: 'Odometer'
+          icon: 'Link'
         }
       }
     ]

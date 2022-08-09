@@ -1,13 +1,18 @@
 <template>
+  <el-overlay v-if="getIsMobile && !getCollapsed" @click="handleClose(true)" />
+  <!--todo 待优化-->
   <div
-    class="basic-layout--aside"
     :class="{
+      'basic-layout--aside': true,
+      'basic-layout--aside-collapsed': !getIsMobile && getCollapsed,
       'basic-layout--aside-fixed': getIsMobile,
-      'basic-layout--aside-collapse': getIsMobile && !getCollapsed
+      'basic-layout--aside-open': getIsMobile && !getCollapsed,
+      'basic-layout--aside-hide': getIsMobile && getCollapsed,
+      'with-transition': getAnimation
     }"
   >
-    <div class="basic-layout--aside__content with-transition">
-      <app-logo :collapsed="getCollapsed" />
+    <div class="basic-layout--aside__content">
+      <app-logo :collapsed="!getIsMobile && getCollapsed" />
       <el-scrollbar wrap-class="scrollbar-wrapper">
         <app-menu
           :routes="permissionStore?.menus"
@@ -16,12 +21,6 @@
       </el-scrollbar>
     </div>
   </div>
-  <teleport to="body">
-    <el-overlay
-      v-if="getIsMobile && !getCollapsed"
-      @click="handleClose(true)"
-    />
-  </teleport>
 </template>
 
 <script>
@@ -46,15 +45,18 @@ export default defineComponent({
     const {
       setMenuSetting,
       getCollapsed,
+      getAnimation,
       getMenuBackgroundColor,
-      getMenuWidth
+      getMenuWidth,
+      getCollapsedWidth
     } = useMenuSetting()
 
     function handleClose(flag) {
-      flag &&
+      if (flag) {
         setMenuSetting({
           collapsed: true
         })
+      }
     }
 
     return {
@@ -62,8 +64,10 @@ export default defineComponent({
 
       getIsMobile,
       getCollapsed,
+      getAnimation,
       getMenuBackgroundColor,
       getMenuWidth,
+      getCollapsedWidth,
 
       handleClose
     }
@@ -74,23 +78,28 @@ export default defineComponent({
 <style lang="scss">
 .basic-layout--aside {
   position: sticky;
+  left: 0;
   top: 0;
-  z-index: 10;
+  bottom: 0;
+  z-index: 2001;
+  width: v-bind(getMenuWidth);
   height: 100vh;
+
+  &.with-transition {
+    transition: all 0.28s;
+  }
+
+  // reset element-ui css
+  .horizontal-collapse-transition {
+    transition: 0s width ease-in-out, 0s padding-left ease-in-out,
+      0s padding-right ease-in-out;
+  }
 
   &__content {
     display: flex;
     flex-direction: column;
     height: 100%;
     background-color: v-bind(getMenuBackgroundColor);
-
-    &.with-logo {
-      width: v-bind(getMenuWidth);
-    }
-
-    &.with-transition {
-      transition: all 0.3s cubic-bezier(0.55, 0, 0.1, 1);
-    }
 
     .el-menu {
       border-right: 0;
@@ -99,6 +108,10 @@ export default defineComponent({
         width: v-bind(getMenuWidth);
       }
     }
+  }
+
+  &-collapsed {
+    width: v-bind(getCollapsedWidth);
   }
 
   &-fixed {
@@ -110,14 +123,14 @@ export default defineComponent({
     z-index: 2001;
   }
 
-  &-fixed &__content {
-    width: v-bind(getMenuWidth);
-    transform: translateX(-100%);
-  }
-
-  &-collapse &__content {
+  &-open {
     width: v-bind(getMenuWidth);
     transform: translateX(0);
+  }
+
+  &-hide {
+    width: v-bind(getMenuWidth);
+    transform: translateX(-100%);
   }
 }
 </style>

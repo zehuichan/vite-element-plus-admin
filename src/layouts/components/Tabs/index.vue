@@ -14,7 +14,7 @@
       >
         <div ref="navScroll" class="tabs-card-scroll">
           <Draggable
-            :list="visitedViews"
+            :list="getTabsState"
             animation="300"
             item-key="fullPath"
             class="flex"
@@ -36,56 +36,96 @@
   </div>
 </template>
 
-<script setup>
-import { computed, reactive, ref, watch } from 'vue'
+<script>
+import { computed, defineComponent, reactive, ref, unref, watch } from 'vue'
+
 import { useRoute, useRouter } from 'vue-router'
+
 import Draggable from 'vuedraggable'
-import { useTabsViewStore } from '@/store'
+
+import { useMultipleTabStore, useUserStore } from '@/store'
+
 import { useGo } from '@/hooks/web/usePage'
 
-const route = useRoute()
-const router = useRouter()
-const go = useGo()
-const tabsViewStore = useTabsViewStore()
-const navScroll = ref(null)
-const navWrap = ref(null)
+import { REDIRECT_NAME } from '@/router/constant'
 
-const state = reactive({
-  activeKey: route.fullPath,
-  scrollable: false,
-  dropdownX: 0,
-  dropdownY: 0,
-  showDropdown: false,
-  isMultiHeaderFixed: false,
-  multiTabsSetting: true
-})
-
-// 获取简易的路由对象
-const getSimpleRoute = (route) => {
-  const { fullPath, hash, meta, name, params, path, query } = route
-  return { fullPath, hash, meta, name, params, path, query }
-}
-
-// 标签页列表
-const visitedViews = computed(() => tabsViewStore.visitedViews)
-const whiteList = ['Login', 'Redirect', 'ErrorPage']
-
-watch(
-  () => route.fullPath,
-  (to) => {
-    if (whiteList.includes(route.name)) return
-    state.activeKey = to
-    tabsViewStore.addTab(getSimpleRoute(route))
+export default defineComponent({
+  name: 'AppTabs',
+  components: {
+    Draggable
   },
-  { immediate: true }
-)
+  setup() {
+    const navScroll = ref(null)
+    const navWrap = ref(null)
+    const activeKeyRef = ref('')
 
-const handleClick = (e) => {
-  const { fullPath } = e
-  if (fullPath === route.fullPath) return
-  state.activeKey = fullPath
-  go(state.activeKey, true)
-}
+    const tabStore = useMultipleTabStore()
+    const userStore = useUserStore()
+
+    const route = useRoute()
+    const router = useRouter()
+    const go = useGo()
+
+    const state = reactive({
+      activeKey: route.fullPath,
+      scrollable: false,
+      dropdownX: 0,
+      dropdownY: 0,
+      showDropdown: false,
+      isMultiHeaderFixed: false,
+      multiTabsSetting: true
+    })
+
+    // 标签页列表
+    const getTabsState = computed(() => {
+      return tabStore.getTabList.filter((item) => !item.meta?.hideTab)
+    })
+    console.log(getTabsState.value)
+
+    watch(
+      () => route.fullPath,
+      () => {
+        const { name } = route
+        if (name === REDIRECT_NAME || !route || !userStore.getToken) {
+          return
+        }
+
+        const { path, fullPath, meta = {} } = route
+        const { currentActiveMenu, hideTab } = meta
+        const isHide = !hideTab ? null : currentActiveMenu
+        const p = isHide || fullPath || path
+        if (activeKeyRef.value !== p) {
+          activeKeyRef.value = p
+        }
+
+        if (isHide) {
+          const findParentRoute = router
+            .getRoutes()
+            .find((item) => item.path === currentActiveMenu)
+
+          findParentRoute && tabStore.addTab(findParentRoute)
+        } else {
+          tabStore.addTab(unref(route))
+        }
+      },
+      { immediate: true }
+    )
+
+    const handleClick = (e) => {
+      const { fullPath } = e
+      if (fullPath === route.fullPath) return
+      state.activeKey = fullPath
+      go(state.activeKey, true)
+    }
+
+    return {
+      state,
+      getTabsState,
+
+      handleClick
+    }
+  }
+})
 </script>
 
 <style lang="scss">

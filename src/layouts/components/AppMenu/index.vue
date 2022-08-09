@@ -1,9 +1,8 @@
 <template>
   <el-menu
-    class="el-menu-vertical"
     mode="vertical"
     :default-active="defaultActive"
-    :collapse="getCollapsed"
+    :collapse="collapse"
     :unique-opened="getAccordion"
     :background-color="getMenuBackgroundColor"
     :text-color="getMenuTextColor"
@@ -25,6 +24,7 @@ import MenuItem from './item.vue'
 
 import { isUrl } from '@/utils/is'
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
+import { useAppInjectStore } from '@/hooks/web/useAppProvideStore'
 
 export default defineComponent({
   name: 'AppMenu',
@@ -37,6 +37,8 @@ export default defineComponent({
   },
   emits: ['click'],
   setup(props, { emit }) {
+    const { getIsMobile } = useAppInjectStore()
+
     const {
       getCollapsed,
       getAccordion,
@@ -57,6 +59,13 @@ export default defineComponent({
       return path
     })
 
+    const collapse = computed(() => {
+      if (unref(getIsMobile)) {
+        return false
+      }
+      return unref(getCollapsed)
+    })
+
     const onSelect = (index) => {
       if (isUrl(index)) {
         window.open(index)
@@ -75,10 +84,9 @@ export default defineComponent({
       getMenuWidth,
 
       defaultActive,
+      collapse,
       onSelect
     }
   }
 })
 </script>
-
-<style lang="scss"></style>

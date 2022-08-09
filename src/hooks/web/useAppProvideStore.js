@@ -6,7 +6,8 @@ const [useAppProvideStore, useAppInjectStore] = createInjectionState(
     const state = reactive(context)
 
     return {
-      getIsMobile: computed(() => unref(state.isMobile))
+      getIsMobile: computed(() => unref(state.isMobile)),
+      getIsLaptop: computed(() => unref(state.isLaptop))
     }
   }
 )
