@@ -1,6 +1,7 @@
 import AppProvider from './AppProvider'
+import Icon from './Icon'
 
-const components = [AppProvider]
+const components = [AppProvider, Icon]
 
 export function registerComponents(app) {
   components.map((item) => {

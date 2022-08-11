@@ -1,9 +1,9 @@
 <template>
   <section class="basic-layout layout-aside">
     <app-sider />
-    <section class="basic-layout--container">
+    <section class="basic-layout-main">
       <app-header />
-      <app-main />
+      <app-content />
     </section>
   </section>
   <el-backtop />
@@ -12,14 +12,14 @@
 <script>
 import { defineComponent } from 'vue'
 import AppHeader from './components/AppHeader/index.vue'
-import AppMain from './components/AppMain/index.vue'
+import AppContent from './components/AppContent/index.vue'
 import AppSider from './components/AppSider/index.vue'
 
 export default defineComponent({
   name: 'BasicLayout',
   components: {
     AppHeader,
-    AppMain,
+    AppContent,
     AppSider
   }
 })
@@ -27,11 +27,13 @@ export default defineComponent({
 
 <style lang="scss">
 .basic-layout {
+  background-color: #f4f7f9;
+
   &.layout-aside {
     display: flex;
   }
 
-  &--container {
+  &-main {
     flex: 1;
     display: flex;
     flex-direction: column;

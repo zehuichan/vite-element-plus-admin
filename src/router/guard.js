@@ -24,14 +24,18 @@ export function createPermissionGuard(router) {
       return
     }
 
+    // determine whether the user has logged in
+    const token = userStore.getToken
+
     // Whitelist can be directly entered
     if (whiteList.includes(to.path)) {
+      if (to.path === '/login' && token) {
+        next(to.query?.redirect || '/')
+        return
+      }
       next()
       return
     }
-
-    // determine whether the user has logged in
-    const token = userStore.getToken
 
     // token does not exist
     if (!token) {

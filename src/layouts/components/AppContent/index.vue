@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="basic-layout-content">
     <router-view v-slot="{ Component, route }">
       <keep-alive v-if="openCache" :include="getCaches">
         <component :is="Component" :key="route.fullPath" />
@@ -16,7 +16,7 @@ import { useRootSetting } from '@/hooks/setting/useRootSetting'
 import { useMultipleTabSetting } from '@/hooks/setting/useMultipleTabSetting'
 
 export default defineComponent({
-  name: 'AppMain',
+  name: 'AppContent',
   setup() {
     const tabStore = useMultipleTabStore()
 
@@ -40,3 +40,11 @@ export default defineComponent({
   }
 })
 </script>
+
+<style lang="scss">
+.basic-layout-content {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+</style>

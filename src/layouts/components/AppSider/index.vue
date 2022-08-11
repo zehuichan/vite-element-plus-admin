@@ -3,15 +3,15 @@
   <!--todo 待优化-->
   <div
     :class="{
-      'basic-layout--aside': true,
-      'basic-layout--aside-collapsed': !getIsMobile && getCollapsed,
-      'basic-layout--aside-fixed': getIsMobile,
-      'basic-layout--aside-open': getIsMobile && !getCollapsed,
-      'basic-layout--aside-hide': getIsMobile && getCollapsed,
+      'basic-layout-aside': true,
+      'basic-layout-aside__collapsed': !getIsMobile && getCollapsed,
+      'basic-layout-aside__fixed': getIsMobile,
+      'basic-layout-aside__open': getIsMobile && !getCollapsed,
+      'basic-layout-aside__hide': getIsMobile && getCollapsed,
       'with-transition': getAnimation
     }"
   >
-    <div class="basic-layout--aside__content">
+    <div class="basic-layout-aside-content">
       <app-logo :collapsed="!getIsMobile && getCollapsed" />
       <el-scrollbar wrap-class="scrollbar-wrapper">
         <app-menu
@@ -76,7 +76,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.basic-layout--aside {
+.basic-layout-aside {
   position: sticky;
   left: 0;
   top: 0;
@@ -95,7 +95,7 @@ export default defineComponent({
       0s padding-right ease-in-out;
   }
 
-  &__content {
+  &-content {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -110,11 +110,11 @@ export default defineComponent({
     }
   }
 
-  &-collapsed {
+  &__collapsed {
     width: v-bind(getCollapsedWidth);
   }
 
-  &-fixed {
+  &__fixed {
     position: fixed;
     left: 0;
     top: 0;
@@ -123,12 +123,12 @@ export default defineComponent({
     z-index: 2001;
   }
 
-  &-open {
+  &__open {
     width: v-bind(getMenuWidth);
     transform: translateX(0);
   }
 
-  &-hide {
+  &__hide {
     width: v-bind(getMenuWidth);
     transform: translateX(-100%);
   }

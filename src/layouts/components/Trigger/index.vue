@@ -28,6 +28,10 @@ export default defineComponent({
   cursor: pointer;
   align-items: center;
 
+  &:hover {
+    background-color: #f6f6f6;
+  }
+
   svg {
     width: 16px;
   }

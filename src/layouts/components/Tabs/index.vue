@@ -10,7 +10,7 @@
       <div
         ref="navWrap"
         class="tabs-card"
-        :class="{ 'tabs-card-scrollable': state.scrollable }"
+        :class="{ 'tabs-card-scrollable': scrollable }"
       >
         <div ref="navScroll" class="tabs-card-scroll">
           <Draggable
@@ -18,53 +18,83 @@
             animation="300"
             item-key="fullPath"
             class="flex"
+            @end="handleSortTabs"
           >
             <template #item="{ element }">
               <div
                 :id="`tag${element.fullPath.split('/').join('\/')}`"
                 class="tabs-card-scroll-item"
-                :class="{ 'active-item': state.activeKey === element.path }"
+                :class="{ 'active-item': activeKey === element.path }"
                 @click.stop="handleClick(element)"
+                @contextmenu.prevent="handleContextMenu($event, element)"
               >
-                <span>{{ element.meta.title }}</span>
+                <div class="tabs-card-scroll-item__inner">
+                  <span>{{ element.meta.title }}</span>
+                  <icon
+                    v-show="!element.meta.affix && activeKey === element.path"
+                    name="CloseBold"
+                    @click.stop="handleClose(element)"
+                  />
+                </div>
               </div>
             </template>
           </Draggable>
         </div>
       </div>
     </div>
+    <contextmenu
+      ref="contextmenu"
+      v-show="showDropdown"
+      :tab-item="currentTab"
+      :x="dropdownX"
+      :y="dropdownY"
+      @click="showDropdown = false"
+    />
   </div>
 </template>
 
 <script>
-import { computed, defineComponent, reactive, ref, unref, watch } from 'vue'
+import {
+  computed,
+  defineComponent,
+  nextTick,
+  reactive,
+  ref,
+  toRefs,
+  watch
+} from 'vue'
+import { onClickOutside } from '@vueuse/core'
 
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 
 import Draggable from 'vuedraggable'
+import Contextmenu from './contextmenu.vue'
 
-import { useMultipleTabStore, useUserStore } from '@/store'
+import { useMultipleTabStore } from '@/store'
 
 import { useGo } from '@/hooks/web/usePage'
+import { useTabs } from '@/hooks/web/useTabs'
 
 import { REDIRECT_NAME } from '@/router/constant'
 
 export default defineComponent({
   name: 'AppTabs',
   components: {
-    Draggable
+    Draggable,
+    Contextmenu
   },
   setup() {
-    const navScroll = ref(null)
     const navWrap = ref(null)
-    const activeKeyRef = ref('')
+    const navScroll = ref(null)
+    const contextmenu = ref(null)
+    const currentTab = ref(null)
 
     const tabStore = useMultipleTabStore()
-    const userStore = useUserStore()
 
     const route = useRoute()
-    const router = useRouter()
     const go = useGo()
+
+    const { close } = useTabs()
 
     const state = reactive({
       activeKey: route.fullPath,
@@ -77,52 +107,72 @@ export default defineComponent({
     })
 
     // 标签页列表
-    const getTabsState = computed(() => {
-      return tabStore.getTabList.filter((item) => !item.meta?.hideTab)
-    })
-    console.log(getTabsState.value)
+    const getTabsState = computed(() => tabStore.getTabList)
 
     watch(
       () => route.fullPath,
-      () => {
-        const { name } = route
-        if (name === REDIRECT_NAME || !route || !userStore.getToken) {
-          return
-        }
-
-        const { path, fullPath, meta = {} } = route
-        const { currentActiveMenu, hideTab } = meta
-        const isHide = !hideTab ? null : currentActiveMenu
-        const p = isHide || fullPath || path
-        if (activeKeyRef.value !== p) {
-          activeKeyRef.value = p
-        }
-
-        if (isHide) {
-          const findParentRoute = router
-            .getRoutes()
-            .find((item) => item.path === currentActiveMenu)
-
-          findParentRoute && tabStore.addTab(findParentRoute)
-        } else {
-          tabStore.addTab(unref(route))
-        }
+      (to) => {
+        if (route.name === REDIRECT_NAME) return
+        state.activeKey = to
+        tabStore.addTab(route)
       },
       { immediate: true }
     )
 
-    const handleClick = (e) => {
+    function handleClick(e) {
       const { fullPath } = e
       if (fullPath === route.fullPath) return
       state.activeKey = fullPath
       go(state.activeKey, true)
     }
 
+    function handleClose(item) {
+      close(item)
+    }
+
+    async function handleContextMenu(e, item) {
+      state.showDropdown = false
+      currentTab.value = null
+      await nextTick()
+      const menuMinWidth = 105
+      const offsetLeft = navWrap.value.getBoundingClientRect().left // container margin left
+      const { offsetWidth } = navWrap.value // container width
+      const maxLeft = offsetWidth - menuMinWidth // left boundary
+      const left = e.clientX - offsetLeft + 15 // 15: margin right
+
+      if (left > maxLeft) {
+        state.dropdownX = maxLeft
+      } else {
+        state.dropdownX = left
+      }
+
+      state.showDropdown = true
+      state.dropdownY = e.clientY
+      currentTab.value = item
+    }
+
+    function handleSortTabs(evt) {
+      const { oldIndex, newIndex } = evt
+      if (oldIndex === newIndex) {
+        return
+      }
+      tabStore.sortTabs()
+    }
+
+    onClickOutside(contextmenu, () => (state.showDropdown = false))
+
     return {
-      state,
+      ...toRefs(state),
+      navWrap,
+      navScroll,
+      contextmenu,
+      currentTab,
       getTabsState,
 
-      handleClick
+      handleClick,
+      handleClose,
+      handleContextMenu,
+      handleSortTabs
     }
   }
 })
@@ -131,9 +181,10 @@ export default defineComponent({
 <style lang="scss">
 .tabs-view {
   width: 100%;
-  padding: 6px 0;
+  padding: 4px 6px 2px;
   display: flex;
   transition: all 0.2s ease-in-out;
+  background-color: #fff;
 
   &-main {
     height: 32px;
@@ -142,7 +193,6 @@ export default defineComponent({
     min-width: 100%;
 
     .tabs-card {
-      -webkit-box-flex: 1;
       flex-grow: 1;
       flex-shrink: 1;
       overflow: hidden;
@@ -155,14 +205,6 @@ export default defineComponent({
         position: absolute;
         line-height: 32px;
         cursor: pointer;
-
-        .n-icon {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          height: 32px;
-          width: 32px;
-        }
       }
 
       .tabs-card-prev {
@@ -183,48 +225,41 @@ export default defineComponent({
         overflow: hidden;
 
         &-item {
-          background: #fff;
-          color: #1f2225;
-          height: 32px;
-          padding: 6px 16px 4px;
-          border-radius: 3px;
-          margin-right: 6px;
-          cursor: pointer;
           display: inline-block;
           position: relative;
+          cursor: pointer;
+          height: 32px;
+          line-height: 32px;
+          border: 1px solid #f0f0f0;
+          color: #1f2225;
+          background: #fff;
+          padding: 0 8px;
+          font-size: 12px;
+          border-radius: 2px;
+          margin-right: 6px;
           flex: 0 0 auto;
-
-          span {
-            float: left;
-            vertical-align: middle;
-          }
 
           &:hover {
             color: #515a6e;
           }
 
-          .n-icon {
-            height: 22px;
-            width: 21px;
-            margin-right: -6px;
-            position: relative;
-            vertical-align: middle;
-            text-align: center;
-            color: #808695;
+          &__inner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
 
-            &:hover {
-              color: #515a6e !important;
-            }
-
-            svg {
-              height: 21px;
-              display: inline-block;
-            }
+          .el-icon {
+            width: 16px;
+            height: 16px;
+            margin-left: 8px;
           }
         }
 
         .active-item {
-          color: #2d8cf0;
+          color: #fff;
+          background: #0960bd;
+          border: 0;
         }
       }
     }
@@ -232,25 +267,6 @@ export default defineComponent({
     .tabs-card-scrollable {
       padding: 0 32px;
       overflow: hidden;
-    }
-  }
-
-  .tabs-close {
-    min-width: 32px;
-    width: 32px;
-    height: 32px;
-    line-height: 32px;
-    text-align: center;
-    background: var(--color);
-    border-radius: 2px;
-    cursor: pointer;
-
-    &-btn {
-      color: var(--color);
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
   }
 }

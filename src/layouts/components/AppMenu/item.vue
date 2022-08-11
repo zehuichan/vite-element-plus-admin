@@ -1,13 +1,17 @@
 <template>
   <el-menu-item v-if="!hasMultiChild(item) && getShowMenu" :index="item.path">
-    <menu-icon v-show="item.meta?.icon" :name="item.meta.icon" />
+    <icon v-show="item.meta?.icon" :name="item.meta.icon" />
     <template #title>
       <span>{{ item.meta?.title }}</span>
     </template>
   </el-menu-item>
-  <el-sub-menu v-if="hasMultiChild(item) && getShowMenu" :index="item.path">
+  <el-sub-menu
+    class="nest-menu"
+    v-if="hasMultiChild(item) && getShowMenu"
+    :index="item.path"
+  >
     <template #title>
-      <menu-icon v-show="item.meta?.icon" :name="item.meta.icon" />
+      <icon v-show="item.meta?.icon" :name="item.meta.icon" />
       <span>{{ item.meta?.title }}</span>
     </template>
     <menu-item
@@ -20,12 +24,12 @@
 
 <script>
 import { computed, defineComponent } from 'vue'
-import MenuIcon from './icon.vue'
+import Icon from '@/components/Icon'
 
 export default defineComponent({
   name: 'MenuItem',
   components: {
-    MenuIcon
+    Icon
   },
   props: {
     item: Object

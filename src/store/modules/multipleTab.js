@@ -1,12 +1,22 @@
 import { toRaw, unref } from 'vue'
 import { defineStore } from 'pinia'
+import { store } from '..'
 
 import { getRawRoute } from '@/utils'
 import { Cache, MULTIPLE_TABS_KEY } from '@/utils/cache'
 
-import { useRedo } from '@/hooks/web/usePage'
+import { useGo, useRedo } from '@/hooks/web/usePage'
 
 import projectSetting from '@/settings/projectSetting'
+
+const getToTarget = (tabItem) => {
+  const { params, path, query } = tabItem
+  return {
+    params: params || {},
+    path,
+    query: query || {}
+  }
+}
 
 const cacheTab = projectSetting.multiTabsSetting.cache
 
@@ -14,7 +24,9 @@ export const useMultipleTabStore = defineStore({
   id: 'multiple-tab',
   state: () => ({
     cacheTabList: new Set(),
-    tabList: cacheTab ? Cache.getItem(MULTIPLE_TABS_KEY) : []
+    tabList: cacheTab ? Cache.getItem(MULTIPLE_TABS_KEY) || [] : [],
+    // Index of the last moved tab
+    lastDragEndIndex: 0
   }),
   getters: {
     getTabList() {
@@ -22,6 +34,9 @@ export const useMultipleTabStore = defineStore({
     },
     getCachedTabList() {
       return Array.from(this.cacheTabList)
+    },
+    getLastDragEndIndex() {
+      return this.lastDragEndIndex
     }
   },
   actions: {
@@ -47,6 +62,23 @@ export const useMultipleTabStore = defineStore({
       this.tabList = []
       this.clearCacheTabs()
     },
+    goToPage(router) {
+      const go = useGo(router)
+      const len = this.tabList.length
+      const { path } = unref(router.currentRoute)
+
+      let toPath = '/dashboard'
+
+      if (len > 0) {
+        const page = this.tabList[len - 1]
+        const p = page.fullPath || page.path
+        if (p) {
+          toPath = p
+        }
+      }
+      // Jump to the current page and report an error
+      path !== toPath && go(toPath, true)
+    },
     async refreshPage(router) {
       const { currentRoute } = router
       const route = unref(currentRoute)
@@ -60,7 +92,7 @@ export const useMultipleTabStore = defineStore({
       await redo()
     },
     addTab(route) {
-      const { path, fullPath, params, query, meta } = getRawRoute(route)
+      const { path, fullPath, params, query } = getRawRoute(route)
 
       let updateIndex = -1
       // Existing pages, do not add tabs repeatedly
@@ -80,69 +112,143 @@ export const useMultipleTabStore = defineStore({
         curTab.fullPath = fullPath || curTab.fullPath
         this.tabList.splice(updateIndex, 1, curTab)
       } else {
-        // Add tab
-        // 获取动态路由打开数，超过 0 即代表需要控制打开数
-        const dynamicLevel = meta?.dynamicLevel ?? -1
-        if (dynamicLevel > 0) {
-          // 如果动态路由层级大于 0 了，那么就要限制该路由的打开数限制了
-          // 首先获取到真实的路由，使用配置方式减少计算开销.
-          // const realName: string = path.match(/(\S*)\//)![1];
-          const realPath = meta?.realPath ?? ''
-          // 获取到已经打开的动态路由数, 判断是否大于某一个值
-          if (
-            this.tabList.filter((e) => e.meta?.realPath ?? '' === realPath)
-              .length >= dynamicLevel
-          ) {
-            // 关闭第一个
-            const index = this.tabList.findIndex(
-              (item) => item.meta.realPath === realPath
-            )
-            index !== -1 && this.tabList.splice(index, 1)
-          }
-        }
-        this.tabList.push(route)
+        this.tabList.push(getRawRoute(route))
       }
+
       this.updateCacheTab()
       cacheTab && Cache.setItem(MULTIPLE_TABS_KEY, this.tabList)
     },
-    async closeTab(tab, route) {
-      // 关闭当前页
-      const index = this.visitedViews.findIndex(
-        (item) => item.fullPath == route.fullPath
-      )
-      this.visitedViews.splice(index, 1)
+    async closeTab(tab, router) {
+      const close = (route) => {
+        const { fullPath, meta: { affix } = {} } = route
+        if (affix) {
+          return
+        }
+        const index = this.tabList.findIndex(
+          (item) => item.fullPath === fullPath
+        )
+        index !== -1 && this.tabList.splice(index, 1)
+      }
+
+      const { currentRoute, replace } = router
+
+      const { path } = unref(currentRoute)
+      if (path !== tab.path) {
+        // Closed is not the activation tab
+        close(tab)
+        return
+      }
+
+      // Closed is activated atb
+      let toTarget = {}
+
+      const index = this.tabList.findIndex((item) => item.path === path)
+
+      // If the current is the leftmost tab
+      if (index === 0) {
+        // There is only one tab, then jump to the homepage, otherwise jump to the right tab
+        if (this.tabList.length === 1) {
+          toTarget = '/dashboard'
+        } else {
+          //  Jump to the right tab
+          const page = this.tabList[index + 1]
+          toTarget = getToTarget(page)
+        }
+      } else {
+        // Close the current tab
+        const page = this.tabList[index - 1]
+        toTarget = getToTarget(page)
+      }
+      close(currentRoute.value)
+      await replace(toTarget)
     },
-    closeLeftTabs(route) {
-      // 关闭左侧
-      const index = this.visitedViews.findIndex(
-        (item) => item.fullPath == route.fullPath
-      )
-      this.visitedViews = this.visitedViews.filter(
-        (item, i) => i >= index || (item?.meta?.affix ?? false)
+    // Close the tab on the right and jump
+    async closeLeftTabs(route, router) {
+      const index = this.tabList.findIndex((item) => item.path === route.path)
+      if (index > 0) {
+        const leftTabs = this.tabList.slice(0, index)
+        const pathList = []
+        for (const item of leftTabs) {
+          const affix = item?.meta?.affix ?? false
+          if (!affix) {
+            pathList.push(item.fullPath)
+          }
+        }
+        this.bulkCloseTabs(pathList)
+      }
+      this.updateCacheTab()
+    },
+    // Close the tab on the left and jump
+    async closeRightTabs(route, router) {
+      const { path } = getRawRoute(route)
+      const { currentRoute } = router
+      const { path: curPath } = unref(currentRoute)
+      if (path !== curPath) {
+        return
+      }
+      const index = this.tabList.findIndex((item) => item.path === path)
+      const rightTabs = this.tabList.slice(index + 1)
+      for (const tab of rightTabs) {
+        await this.closeTab(tab, router)
+      }
+      this.updateCacheTab()
+    },
+    // Close other tabs
+    closeOtherTabs(route, router) {
+      const closePathList = this.tabList.map((item) => item.fullPath)
+
+      const pathList = []
+
+      for (const path of closePathList) {
+        if (path !== route.fullPath) {
+          const closeItem = this.tabList.find((item) => item.path === path)
+          if (!closeItem) {
+            continue
+          }
+          const affix = closeItem?.meta?.affix ?? false
+          if (!affix) {
+            pathList.push(closeItem.fullPath)
+          }
+        }
+      }
+      this.bulkCloseTabs(pathList)
+      this.updateCacheTab()
+    },
+    async closeAllTab(router) {
+      this.tabList = this.tabList.filter((item) => item?.meta?.affix ?? false)
+      this.clearCacheTabs()
+      this.goToPage(router)
+    },
+
+    // Sort the tabs
+    async sortTabs() {
+      cacheTab && Cache.setItem(MULTIPLE_TABS_KEY, this.tabList)
+      this.lastDragEndIndex = this.lastDragEndIndex + 1
+    },
+    async bulkCloseTabs(pathList) {
+      this.tabList = this.tabList.filter(
+        (item) => !pathList.includes(item.fullPath)
       )
     },
-    closeRightTabs(route) {
-      // 关闭右侧
-      const index = this.visitedViews.findIndex(
-        (item) => item.fullPath == route.fullPath
-      )
-      this.visitedViews = this.visitedViews.filter(
-        (item, i) => i <= index || (item?.meta?.affix ?? false)
-      )
+    async setTabTitle(title, route) {
+      const findTab = this.getTabList.find((item) => item === route)
+      if (findTab) {
+        findTab.meta.title = title
+        await this.updateCacheTab()
+      }
     },
-    closeOtherTabs(route) {
-      // 关闭其他
-      this.visitedViews = this.visitedViews.filter(
-        (item) =>
-          item.fullPath == route.fullPath || (item?.meta?.affix ?? false)
-      )
-    },
-    closeAllTabs() {
-      // keep affix tags
-      const affixTags = state.visitedViews.filter(
-        (tag) => tag?.meta?.affix ?? false
-      )
-      this.visitedViews = affixTags
+    async updateTabPath(fullPath, route) {
+      const findTab = this.getTabList.find((item) => item === route)
+      if (findTab) {
+        findTab.fullPath = fullPath
+        findTab.path = fullPath
+        await this.updateCacheTab()
+      }
     }
   }
 })
+
+// Need to be used outside the setup
+export function useMultipleTabWithOutStore() {
+  return useMultipleTabStore(store)
+}

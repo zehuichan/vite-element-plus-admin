@@ -67,13 +67,14 @@ export function transformRouteToMenu(routeModList, routerMapping = false) {
   // 提取树指定结构
   const list = treeMap(routeList, {
     conversion: (node) => {
-      const { meta: { title, hideMenu = false } = {} } = node
+      const { meta: { title, hideMenu = false, hideTab = false } = {} } = node
 
       return {
         ...(node.meta || {}),
         meta: node.meta,
         name: title,
         hideMenu,
+        hideTab,
         path: node.path,
         ...(node.redirect ? { redirect: node.redirect } : {})
       }

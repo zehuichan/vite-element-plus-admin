@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import { Layout, REDIRECT_NAME } from '@/router/constant'
 
 export const RootRoute = {
   path: '/',
@@ -12,23 +13,39 @@ export const LoginRoute = {
   component: () => import('@/views/login/index.vue')
 }
 
+export const REDIRECT_ROUTE = {
+  path: '/redirect',
+  component: Layout,
+  name: 'RedirectTo',
+  meta: {
+    title: REDIRECT_NAME,
+    hideBreadcrumb: true,
+    hideMenu: true
+  },
+  children: [
+    {
+      path: '/redirect/:path(.*)',
+      name: REDIRECT_NAME,
+      component: () => import('@/views/redirect/index.vue'),
+      meta: {
+        title: REDIRECT_NAME,
+        hideBreadcrumb: true
+      }
+    }
+  ]
+}
+
 /**
  * asyncRoutes
  * the routes that need to be dynamically loaded based on user roles
  */
-export const asyncRoutes = [
-  {
-    path: '/redirect/:path(.*)',
-    name: 'Redirect',
-    component: () => import('@/views/redirect/index.vue')
-  },
-  { path: '/:path(.*)*', redirect: '/404' }
-]
+export const asyncRoutes = [{ path: '/:path(.*)*', redirect: '/404' }]
 
 //普通路由 无需验证权限
 export const constantRoutes = [
   RootRoute,
   LoginRoute,
+  REDIRECT_ROUTE,
   {
     path: '/401',
     name: 'ErrorPage',
