@@ -1,7 +1,10 @@
 import { useTitle } from '@vueuse/core'
 import { useNProgress } from '@vueuse/integrations/useNProgress'
+
 import { useUserStoreWithOut } from '@/store/modules/user'
 import { usePermissionStoreWithOut } from '@/store/modules/permission'
+
+import { PAGE_NOT_FOUND_ROUTE } from '@/router/index'
 
 // no redirect whitelist
 const whiteList = ['/login', '/auth-redirect']
@@ -18,11 +21,6 @@ export function createPermissionGuard(router) {
   router.beforeEach(async (to, from, next) => {
     // set page title
     useTitle(to.meta.title)
-
-    if (from.path === '/login' && to.name === 'ErrorPage') {
-      next('/')
-      return
-    }
 
     // determine whether the user has logged in
     const token = userStore.getToken
@@ -59,6 +57,11 @@ export function createPermissionGuard(router) {
       return
     }
 
+    if (from.path === '/login' && to.name === PAGE_NOT_FOUND_ROUTE.name) {
+      next('/')
+      return
+    }
+
     if (permissionStore.getIsDynamicAddedRoute) {
       next()
       return
@@ -72,14 +75,20 @@ export function createPermissionGuard(router) {
     routes.forEach((item) => {
       router.addRoute(item)
     })
+    router.addRoute(PAGE_NOT_FOUND_ROUTE)
 
     permissionStore.setDynamicAddedRoute(true)
 
-    const redirectPath = from.query.redirect || to.path
-    const redirect = decodeURIComponent(redirectPath)
-    const nextData =
-      to.path === redirect ? { ...to, replace: true } : { path: redirect }
-    next(nextData)
+    // 动态添加路由后，此处应当重定向到fullPath，否则会加载404页面内容
+    if (to.name === PAGE_NOT_FOUND_ROUTE.name) {
+      next({ path: to.fullPath, replace: true, query: to.query })
+    } else {
+      const redirectPath = from.query.redirect || to.path
+      const redirect = decodeURIComponent(redirectPath)
+      const nextData =
+        to.path === redirect ? { ...to, replace: true } : { path: redirect }
+      next(nextData)
+    }
   })
 
   router.onError((error) => {

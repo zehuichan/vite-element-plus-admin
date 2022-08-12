@@ -2,6 +2,7 @@
   <div class="basic-layout-navbar">
     <div class="basic-layout-navbar-left">
       <trigger :sider="false" />
+      <breadcrumb />
     </div>
     <div class="basic-layout-navbar-action"></div>
   </div>
@@ -10,10 +11,11 @@
 <script>
 import { defineComponent } from 'vue'
 import Trigger from '../Trigger/index.vue'
+import Breadcrumb from './breadcrumb.vue'
 
 export default defineComponent({
   name: 'Navbar',
-  components: { Trigger }
+  components: { Trigger, Breadcrumb }
 })
 </script>
 

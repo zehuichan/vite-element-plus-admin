@@ -1,13 +1,18 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import { Layout, REDIRECT_NAME } from '@/router/constant'
+import {
+  ERROR_PAGE,
+  LAYOUT,
+  PAGE_NOT_FOUND_NAME,
+  REDIRECT_NAME
+} from '@/router/constant'
 
-export const RootRoute = {
+export const ROOT_ROUTE = {
   path: '/',
   name: 'Root',
   redirect: '/dashboard'
 }
 
-export const LoginRoute = {
+export const LOGIN_ROUTE = {
   path: '/login',
   name: 'Login',
   component: () => import('@/views/login/index.vue')
@@ -15,7 +20,7 @@ export const LoginRoute = {
 
 export const REDIRECT_ROUTE = {
   path: '/redirect',
-  component: Layout,
+  component: LAYOUT,
   name: 'RedirectTo',
   meta: {
     title: REDIRECT_NAME,
@@ -29,38 +34,42 @@ export const REDIRECT_ROUTE = {
       component: () => import('@/views/redirect/index.vue'),
       meta: {
         title: REDIRECT_NAME,
-        hideBreadcrumb: true
+        hideBreadcrumb: true,
+        hideMenu: true
       }
     }
   ]
 }
 
-/**
- * asyncRoutes
- * the routes that need to be dynamically loaded based on user roles
- */
-export const asyncRoutes = [{ path: '/:path(.*)*', redirect: '/404' }]
+export const PAGE_NOT_FOUND_ROUTE = {
+  path: '/:path(.*)*',
+  name: PAGE_NOT_FOUND_NAME,
+  component: LAYOUT,
+  meta: {
+    title: 'ErrorPage',
+    hideBreadcrumb: true,
+    hideMenu: false
+  },
+  children: [
+    {
+      path: '/:path(.*)*',
+      name: PAGE_NOT_FOUND_NAME,
+      component: ERROR_PAGE,
+      meta: {
+        title: 'ErrorPage',
+        hideBreadcrumb: true,
+        hideMenu: false
+      }
+    }
+  ]
+}
 
 //普通路由 无需验证权限
 export const constantRoutes = [
-  RootRoute,
-  LoginRoute,
+  ROOT_ROUTE,
+  LOGIN_ROUTE,
   REDIRECT_ROUTE,
-  {
-    path: '/401',
-    name: 'ErrorPage',
-    component: () => import('@/views/error-page/401.vue')
-  },
-  {
-    path: '/404',
-    name: 'ErrorPage',
-    component: () => import('@/views/error-page/404.vue')
-  },
-  {
-    path: '/500',
-    name: 'ErrorPage',
-    component: () => import('@/views/error-page/500.vue')
-  }
+  PAGE_NOT_FOUND_ROUTE
 ]
 
 export const router = createRouter({

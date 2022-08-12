@@ -2,7 +2,11 @@ import { toRaw } from 'vue'
 import { defineStore } from 'pinia'
 import { constantRoutes } from '@/router'
 import { menu } from '@/api/sys'
-import { flatMultiLevelRoutes, transformObjToRoute } from '@/router/routeHelper'
+import {
+  flatMultiLevelRoutes,
+  routerGenerator,
+  transformObjToRoute
+} from '@/router/routeHelper'
 import { transformRouteToMenu } from '@/router/menuHelper'
 import { store } from '..'
 
@@ -42,6 +46,9 @@ export const usePermissionStore = defineStore({
 
         const res = await menu()
         routeList = res.data
+
+        // 清洗数据
+        routeList = routerGenerator(routeList)
 
         // Dynamically introduce components
         // 动态引入组件

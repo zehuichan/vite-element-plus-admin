@@ -75,7 +75,7 @@ import { useMultipleTabStore } from '@/store'
 import { useGo } from '@/hooks/web/usePage'
 import { useTabs } from '@/hooks/web/useTabs'
 
-import { REDIRECT_NAME } from '@/router/constant'
+import { PAGE_NOT_FOUND_NAME, REDIRECT_NAME } from '@/router/constant'
 
 export default defineComponent({
   name: 'AppTabs',
@@ -112,7 +112,13 @@ export default defineComponent({
     watch(
       () => route.fullPath,
       (to) => {
-        if (route.name === REDIRECT_NAME) return
+        if (
+          route.name === REDIRECT_NAME ||
+          route.name === PAGE_NOT_FOUND_NAME
+        ) {
+          return
+        }
+
         state.activeKey = to
         tabStore.addTab(route)
       },
