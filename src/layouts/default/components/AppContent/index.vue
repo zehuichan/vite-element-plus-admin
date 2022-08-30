@@ -1,10 +1,15 @@
 <template>
   <div class="basic-layout-content">
     <router-view v-slot="{ Component, route }">
-      <keep-alive v-if="openCache" :include="getCaches">
-        <component :is="Component" :key="route.fullPath" />
-      </keep-alive>
-      <component v-else :is="Component" :key="route.fullPath" />
+      <suspense>
+        <template #default>
+          <keep-alive v-if="openCache" :include="getCaches">
+            <component :is="Component" :key="route.fullPath" />
+          </keep-alive>
+          <component v-else :is="Component" :key="route.fullPath" />
+        </template>
+        <template #fallback> Loading...</template>
+      </suspense>
     </router-view>
   </div>
 </template>

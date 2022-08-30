@@ -3,7 +3,7 @@ import { resultSuccess } from './_util'
 const menu = [
   {
     path: '/dashboard',
-    name: 'Dashboard',
+    name: 'dashboard',
     component: '/dashboard/index',
     meta: {
       title: '仪表板',
@@ -13,7 +13,7 @@ const menu = [
   },
   {
     path: '/documentation',
-    name: 'Documentation',
+    name: 'documentation',
     component: '/documentation/index',
     meta: {
       title: '文档',
@@ -22,7 +22,7 @@ const menu = [
   },
   {
     path: '/nested',
-    name: 'Nested',
+    name: 'nested',
     component: 'LAYOUT',
     meta: {
       title: '嵌套菜单',
@@ -31,18 +31,18 @@ const menu = [
     children: [
       {
         path: '/nested/menu/menu1',
-        name: 'Menu1',
+        name: 'menu1',
         meta: { title: 'Menu1' },
         children: [
           {
             path: '/nested/menu/menu1-1',
-            name: 'Menu1-1',
+            name: 'menu1-1',
             meta: { title: 'Menu1-1' },
             children: [
               {
                 path: '/nested/menu/menu1-1-1',
                 component: '/nested/index',
-                name: 'Menu1-1-1',
+                name: 'menu1-1-1',
                 meta: { title: 'Menu1-1-1' }
               }
             ]
@@ -50,7 +50,7 @@ const menu = [
           {
             path: '/nested/menu/menu1-2',
             component: '/nested/index',
-            name: 'Menu1-2',
+            name: 'menu1-2',
             meta: { title: 'Menu1-2' }
           }
         ]
@@ -58,14 +58,14 @@ const menu = [
       {
         path: '/nested/menu/menu2',
         component: '/nested/index',
-        name: 'Menu2',
+        name: 'menu2',
         meta: { title: 'Menu2' }
       }
     ]
   },
   {
     path: '/upms',
-    name: 'Upms',
+    name: 'upms',
     component: 'LAYOUT',
     meta: {
       title: '权限管理',
@@ -75,25 +75,25 @@ const menu = [
       {
         path: '/upms/account',
         component: '/upms/account/index',
-        name: 'Account',
+        name: 'account',
         meta: { title: '用户管理' }
       },
       {
         path: '/upms/role',
         component: '/upms/role/index',
-        name: 'Role',
+        name: 'role',
         meta: { title: '角色管理' }
       },
       {
         path: '/upms/menu',
         component: '/upms/menu/index',
-        name: 'Menu',
+        name: 'menu',
         meta: { title: '菜单管理' }
       },
       {
         path: '/upms/dictionary',
         component: '/upms/dictionary/index',
-        name: 'Dictionary',
+        name: 'dictionary',
         meta: { title: '字典管理' }
       }
     ]

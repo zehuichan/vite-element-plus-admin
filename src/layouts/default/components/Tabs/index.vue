@@ -22,7 +22,7 @@
           >
             <template #item="{ element }">
               <div
-                :id="`tag${element.fullPath.split('/').join('\/')}`"
+                :id="`tag${element?.fullPath?.split('/').join('\/')}`"
                 class="tabs-card-scroll-item"
                 :class="{ 'active-item': activeKey === element.path }"
                 @click.stop="handleClick(element)"
@@ -62,6 +62,7 @@ import {
   reactive,
   ref,
   toRefs,
+  unref,
   watch
 } from 'vue'
 import { onClickOutside } from '@vueuse/core'
@@ -92,6 +93,7 @@ export default defineComponent({
 
     const tabStore = useMultipleTabStore()
 
+    const router = useRouter()
     const route = useRoute()
     const go = useGo()
 
@@ -122,14 +124,13 @@ export default defineComponent({
 
         state.activeKey = to
         tabStore.addTab(route)
-      },
-      { immediate: true }
+      }
     )
 
     function handleClick(e) {
-      const { fullPath } = e
+      const { path, fullPath } = e
       if (fullPath === route.fullPath) return
-      state.activeKey = fullPath
+      state.activeKey = fullPath || path
       go(state.activeKey, true)
     }
 
@@ -167,6 +168,12 @@ export default defineComponent({
     }
 
     onClickOutside(contextmenu, () => (state.showDropdown = false))
+
+    onMounted(async () => {
+      await nextTick()
+      await tabStore.initTabs(router.getRoutes())
+      await tabStore.addTab(unref(route))
+    })
 
     return {
       ...toRefs(state),

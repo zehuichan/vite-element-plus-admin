@@ -16,8 +16,15 @@ import {
 } from '@/router/constant'
 
 //保留固定路由
-function retainAffixRoute(list) {
-  return list.filter((item) => item?.meta?.affix ?? false)
+function filterAffixTabs(routes) {
+  const tabs = []
+  routes &&
+    routes.forEach((route) => {
+      if (route.meta && route.meta.affix) {
+        tabs.push(toRaw(route))
+      }
+    })
+  return tabs
 }
 
 const getToTarget = (tabItem) => {
@@ -236,6 +243,10 @@ export const useMultipleTabStore = defineStore({
       this.goToPage(router)
     },
 
+    // Initialize the tabs
+    async initTabs(routes) {
+      this.tabList = filterAffixTabs(routes)
+    },
     // Sort the tabs
     async sortTabs() {
       cacheTab && Cache.setItem(MULTIPLE_TABS_KEY, this.tabList)
