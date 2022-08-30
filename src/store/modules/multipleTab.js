@@ -9,6 +9,17 @@ import { useGo, useRedo } from '@/hooks/web/usePage'
 
 import projectSetting from '@/settings/projectSetting'
 
+import {
+  LOGIN_NAME,
+  PAGE_NOT_FOUND_NAME,
+  REDIRECT_NAME
+} from '@/router/constant'
+
+//保留固定路由
+function retainAffixRoute(list) {
+  return list.filter((item) => item?.meta?.affix ?? false)
+}
+
 const getToTarget = (tabItem) => {
   const { params, path, query } = tabItem
   return {
@@ -92,7 +103,12 @@ export const useMultipleTabStore = defineStore({
       await redo()
     },
     addTab(route) {
-      const { path, fullPath, params, query } = getRawRoute(route)
+      const { path, name, fullPath, params, query } = getRawRoute(route)
+
+      // 404 The page does not need to add a tab
+      if ([LOGIN_NAME, REDIRECT_NAME, PAGE_NOT_FOUND_NAME].includes(name)) {
+        return
+      }
 
       let updateIndex = -1
       // Existing pages, do not add tabs repeatedly
@@ -249,6 +265,6 @@ export const useMultipleTabStore = defineStore({
 })
 
 // Need to be used outside the setup
-export function useMultipleTabWithOutStore() {
+export function useMultipleTabStoreWithOut() {
   return useMultipleTabStore(store)
 }

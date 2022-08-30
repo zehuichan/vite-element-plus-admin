@@ -20,6 +20,12 @@ export function useMenuSetting() {
   const getCollapsedWidth = computed(
     () => appStore.getMenuSetting.collapsedWidth
   )
+  const getCalcContentWidth = computed(() => {
+    const width = unref(getCollapsed)
+      ? unref(getCollapsedWidth)
+      : unref(getMenuWidth)
+    return `calc(100% - ${unref(width)})`
+  })
 
   function setMenuSetting(menuSetting) {
     appStore.setProjectConfig({ menuSetting })
@@ -43,6 +49,7 @@ export function useMenuSetting() {
     getMenuTextColor,
     getMenuActiveTextColor,
     getMenuWidth,
-    getCollapsedWidth
+    getCollapsedWidth,
+    getCalcContentWidth
   }
 }

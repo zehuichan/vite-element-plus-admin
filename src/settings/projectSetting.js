@@ -44,7 +44,7 @@ export default {
 
   // Multi-label
   multiTabsSetting: {
-    cache: true,
+    cache: false,
     // Turn on
     show: true,
     // Is it possible to drag and drop sorting tabs

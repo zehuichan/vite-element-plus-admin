@@ -1,7 +1,8 @@
 import AppProvider from './AppProvider'
+import Form from './Form'
 import Icon from './Icon'
 
-const components = [AppProvider, Icon]
+const components = [AppProvider, Form, Icon]
 
 export function registerComponents(app) {
   components.map((item) => {

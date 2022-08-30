@@ -34,9 +34,11 @@ export default defineComponent({
   }
 
   &-main {
-    flex: 1;
     display: flex;
+    flex: auto;
     flex-direction: column;
+    min-height: 0;
+    background: #f0f2f5;
   }
 }
 </style>

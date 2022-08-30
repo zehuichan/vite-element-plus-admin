@@ -2,8 +2,8 @@ import { computed, unref } from 'vue'
 
 import { useAppStore } from '@/store'
 
-import { useMenuSetting } from '/@/hooks/setting/useMenuSetting'
-import { useRootSetting } from '/@/hooks/setting/useRootSetting'
+import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
+import { useRootSetting } from '@/hooks/setting/useRootSetting'
 
 export function useHeaderSetting() {
   const appStore = useAppStore()

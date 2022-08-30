@@ -1,17 +1,36 @@
 import { useTitle } from '@vueuse/core'
 import { useNProgress } from '@vueuse/integrations/useNProgress'
+import 'nprogress/nprogress.css'
+
+import { LOGIN_ROUTE, PAGE_NOT_FOUND_ROUTE } from '@/router'
+import { LOGIN_NAME } from '@/router/constant'
 
 import { useUserStoreWithOut } from '@/store/modules/user'
 import { usePermissionStoreWithOut } from '@/store/modules/permission'
+import { useMultipleTabStoreWithOut } from '@/store/modules/multipleTab'
 
-import { PAGE_NOT_FOUND_ROUTE } from '@/router/index'
+import { removeTabChangeListener, setRouteChange } from '@/utils/routeChange'
 
 // no redirect whitelist
 const whiteList = ['/login', '/auth-redirect']
 
 export function setupGuard(router) {
-  createPermissionGuard(router)
   createProgressGuard(router)
+  createPermissionGuard(router)
+  createStateGuard(router)
+}
+
+export function createProgressGuard(router) {
+  const { isLoading } = useNProgress()
+
+  router.beforeEach((to, from, next) => {
+    isLoading.value = true
+    next()
+  })
+
+  router.afterEach(() => {
+    isLoading.value = false
+  })
 }
 
 export function createPermissionGuard(router) {
@@ -27,7 +46,7 @@ export function createPermissionGuard(router) {
 
     // Whitelist can be directly entered
     if (whiteList.includes(to.path)) {
-      if (to.path === '/login' && token) {
+      if (to.name === LOGIN_ROUTE.name && token) {
         next(to.query?.redirect || '/')
         return
       }
@@ -57,9 +76,22 @@ export function createPermissionGuard(router) {
       return
     }
 
-    if (from.path === '/login' && to.name === PAGE_NOT_FOUND_ROUTE.name) {
+    if (
+      from.name === LOGIN_ROUTE.name &&
+      to.name === PAGE_NOT_FOUND_ROUTE.name
+    ) {
       next('/')
       return
+    }
+
+    // get userinfo while last fetch time is empty
+    if (userStore.getLastUpdateTime === 0) {
+      try {
+        await userStore.getUserInfoAction()
+      } catch (err) {
+        next()
+        return
+      }
     }
 
     if (permissionStore.getIsDynamicAddedRoute) {
@@ -67,15 +99,18 @@ export function createPermissionGuard(router) {
       return
     }
 
-    const userInfo = await userStore.getUserInfoAction()
-    console.log('userInfo', userInfo)
     const routes = await permissionStore.buildRoutesAction()
-    console.log('routes', routes)
+
+    // 默认添加根路由
+    routes.unshift({ path: '/', redirect: routes[0].children[0].path })
+
     // 动态添加可访问路由表
     routes.forEach((item) => {
       router.addRoute(item)
     })
+
     router.addRoute(PAGE_NOT_FOUND_ROUTE)
+    console.log(routes)
 
     permissionStore.setDynamicAddedRoute(true)
 
@@ -90,19 +125,26 @@ export function createPermissionGuard(router) {
       next(nextData)
     }
   })
-
-  router.onError((error) => {
-    console.log(error, '路由错误')
-  })
 }
 
-export function createProgressGuard(router) {
-  const { isLoading } = useNProgress()
-  router.beforeEach((to, from, next) => {
-    isLoading.value = true
-    next()
+export function createStateGuard(router) {
+  const tabStore = useMultipleTabStoreWithOut()
+  const userStore = useUserStoreWithOut()
+  const permissionStore = usePermissionStoreWithOut()
+
+  router.beforeEach(async (to) => {
+    // Notify routing changes
+    setRouteChange(to)
+
+    return true
   })
-  router.afterEach(() => {
-    isLoading.value = false
+
+  router.afterEach((to) => {
+    if (to.name === LOGIN_NAME) {
+      permissionStore.resetState()
+      tabStore.resetState()
+      userStore.resetState()
+      removeTabChangeListener()
+    }
   })
 }

@@ -7,7 +7,8 @@ const menu = [
     component: '/dashboard/index',
     meta: {
       title: '仪表板',
-      icon: 'odometer'
+      icon: 'odometer',
+      affix: true
     }
   },
   {

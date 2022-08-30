@@ -1,5 +1,5 @@
 import { useRouter } from 'vue-router'
-import { unref } from 'vue'
+import { ref, toRaw, unref } from 'vue'
 
 import { useAppStore, useMultipleTabStore } from '@/store'
 

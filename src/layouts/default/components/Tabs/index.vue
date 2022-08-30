@@ -31,7 +31,7 @@
                 <div class="tabs-card-scroll-item__inner">
                   <span>{{ element.meta.title }}</span>
                   <icon
-                    v-show="!element.meta.affix && activeKey === element.path"
+                    v-show="!element.meta.affix"
                     name="CloseBold"
                     @click.stop="handleClose(element)"
                   />
@@ -58,6 +58,7 @@ import {
   computed,
   defineComponent,
   nextTick,
+  onMounted,
   reactive,
   ref,
   toRefs,
@@ -65,7 +66,7 @@ import {
 } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 import Draggable from 'vuedraggable'
 import Contextmenu from './contextmenu.vue'

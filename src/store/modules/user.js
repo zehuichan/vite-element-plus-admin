@@ -25,6 +25,9 @@ export const useUserStore = defineStore({
     },
     getSessionTimeout() {
       return !!this.sessionTimeout
+    },
+    getLastUpdateTime() {
+      return this.lastUpdateTime
     }
   },
   actions: {
@@ -48,6 +51,8 @@ export const useUserStore = defineStore({
       this.token = ''
       this.userInfo = null
       this.roleList = []
+      this.sessionTimeout = false
+      this.lastUpdateTime = 0
     },
     async login(params) {
       try {
@@ -80,6 +85,11 @@ export const useUserStore = defineStore({
       } catch (e) {
         return Promise.reject(e)
       }
+    },
+    logout() {
+      this.setToken(undefined)
+      this.setSessionTimeout(false)
+      this.setUserInfo(null)
     }
   }
 })

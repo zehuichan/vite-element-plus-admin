@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import {
   ERROR_PAGE,
   LAYOUT,
+  LOGIN_NAME,
   PAGE_NOT_FOUND_NAME,
   REDIRECT_NAME
 } from '@/router/constant'
@@ -14,7 +15,7 @@ export const ROOT_ROUTE = {
 
 export const LOGIN_ROUTE = {
   path: '/login',
-  name: 'Login',
+  name: LOGIN_NAME,
   component: () => import('@/views/login/index.vue')
 }
 

@@ -5,6 +5,15 @@ module.exports = {
     node: true,
     es6: true
   },
+  parser: 'vue-eslint-parser',
+  parserOptions: {
+    ecmaVersion: 2020,
+    sourceType: 'module',
+    jsxPragma: 'React',
+    ecmaFeatures: {
+      jsx: true
+    }
+  },
   extends: ['plugin:vue/vue3-recommended', 'plugin:prettier/recommended'],
   rules: {
     'no-new': 'off',
