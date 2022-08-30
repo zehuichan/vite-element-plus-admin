@@ -1,5 +1,7 @@
 <template>
-  <el-input v-model="input" placeholder="Please input" />
+  <div class="app-container">
+    <el-input v-model="input" placeholder="Please input" />
+  </div>
 </template>
 
 <script>
