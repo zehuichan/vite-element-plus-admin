@@ -1,5 +1,5 @@
 import Mock from 'mockjs'
-import { resultSuccess, resultError } from './_util'
+import { resultSuccess } from './_util'
 
 const { Random } = Mock
 

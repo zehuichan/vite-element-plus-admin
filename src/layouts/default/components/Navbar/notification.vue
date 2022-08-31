@@ -1,12 +1,12 @@
 <template>
-  <el-popover v-if="list.length > 0">
+  <el-popover>
     <template #reference>
       <div class="basic-layout-navbar-action__item">
         <icon name="Bell" />
       </div>
     </template>
     <template #default>
-      <div class="notification-list">
+      <div class="notification-list" v-if="list.length > 0">
         <div class="item" v-for="item in list" :key="item.id">
           <el-badge :is-dot="item.status === 0">
             <div class="title">{{ item.type }}</div>
@@ -14,11 +14,11 @@
           </el-badge>
         </div>
       </div>
+      <div v-else class="no-data">
+        <div class="description">暂无数据</div>
+      </div>
     </template>
   </el-popover>
-  <div v-else class="basic-layout-navbar-action__item">
-    <icon name="Bell" />
-  </div>
 </template>
 
 <script>
@@ -61,5 +61,11 @@ export default defineComponent({
     font-size: 12px;
     line-height: 22px;
   }
+}
+
+.no-data {
+  display: flex;
+  justify-content: center;
+  font-size: 12px;
 }
 </style>
