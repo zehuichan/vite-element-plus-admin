@@ -31,7 +31,7 @@
                 <div class="tabs-card-scroll-item__inner">
                   <span>{{ element.meta.title }}</span>
                   <icon
-                    v-show="!element.meta.affix"
+                    v-show="!element.meta.affix && activeKey === element.path"
                     name="CloseBold"
                     @click.stop="handleClose(element)"
                   />

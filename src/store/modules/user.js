@@ -86,7 +86,7 @@ export const useUserStore = defineStore({
         return Promise.reject(e)
       }
     },
-    logout() {
+    async logout() {
       this.setToken(undefined)
       this.setSessionTimeout(false)
       this.setUserInfo(null)

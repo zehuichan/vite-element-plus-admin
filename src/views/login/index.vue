@@ -110,30 +110,6 @@ const login = async () => {
 </script>
 
 <style lang="scss">
-/* 修复input 背景不协调 和光标变色 */
-/* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
-
-$bg: #283443;
-$light_gray: #fff;
-$cursor: #fff;
-
-/* reset element-ui css */
-.login-container {
-  .el-input {
-    input {
-      background: transparent;
-      caret-color: $cursor;
-
-      &:-webkit-autofill {
-        -webkit-text-fill-color: #c9d1d9 !important;
-        box-shadow: inherit !important;
-      }
-    }
-  }
-}
-</style>
-
-<style lang="scss">
 $bg: #2d3a4b;
 $dark_gray: #889aa4;
 $light_gray: #eee;
@@ -174,15 +150,6 @@ $light_gray: #eee;
       margin: 0 auto 40px auto;
       text-align: center;
       font-weight: bold;
-    }
-
-    .set-language {
-      color: #fff;
-      position: absolute;
-      top: 3px;
-      font-size: 18px;
-      right: 0;
-      cursor: pointer;
     }
   }
 }

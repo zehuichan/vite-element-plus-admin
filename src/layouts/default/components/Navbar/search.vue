@@ -4,7 +4,7 @@
   </div>
   <el-dialog
     v-model="visible"
-    custom-class="search-dialog"
+    class="search-dialog"
     width="632px"
     top="60px"
     append-to-body
