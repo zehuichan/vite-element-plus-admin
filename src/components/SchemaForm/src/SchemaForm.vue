@@ -1,11 +1,9 @@
 <template>
   <el-form
+    v-bind="getBindValue"
     ref="formElRef"
     :model="formModel"
-    :label-position="labelPosition"
-    :label-width="labelWidth"
-    v-bind="getBindValue"
-    @keypress.enter="handleEnterPress"
+    @keyup.enter="handleEnterPress"
   >
     <el-row v-bind="getRow">
       <slot name="formHeader"></slot>
@@ -17,7 +15,7 @@
           :form-model="formModel"
           v-model="formModel[schema.field]"
         >
-          <template v-for="item in Object.keys($slots)" #[item]="data">
+          <template #[item]="data" v-for="item in Object.keys($slots)">
             <slot :name="item" v-bind="data || {}"></slot>
           </template>
         </v-form-item>
@@ -28,41 +26,29 @@
 </template>
 
 <script>
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  reactive,
-  ref,
-  unref,
-  watch
-} from 'vue'
+import { computed, defineComponent, onMounted, reactive, ref, unref } from 'vue'
+import { cloneDeep } from 'lodash-es'
 
 import { useFormValues } from './hooks/useFormValues'
 import { useFormEvents } from './hooks/useFormEvents'
 
+import VFormItem from './components/SchemaFormItem.vue'
 import { deepMerge } from '@/utils'
 
-import VFormItem from './components/VFormItem.vue'
-
 export default defineComponent({
-  name: 'VForm',
+  name: 'SchemaForm',
   components: {
     VFormItem
   },
   inheritAttrs: false,
   props: {
-    modelValue: {
-      type: Object,
-      default: () => ({})
-    },
     labelPosition: {
       type: String,
       default: 'right'
     },
     labelWidth: {
       type: [Number, String],
-      default: '80px'
+      default: 'auto'
     },
     // 表单配置规则
     schemas: {
@@ -71,6 +57,10 @@ export default defineComponent({
     },
     size: String,
     disabled: Boolean,
+    rulesMessageJoinLabel: {
+      type: Boolean,
+      default: true
+    },
     autoSubmitOnEnter: {
       type: Boolean,
       default: false
@@ -80,9 +70,9 @@ export default defineComponent({
       default: true
     }
   },
-  emits: ['register', 'input', 'field-value-change'],
+  emits: ['register', 'field-value-change'],
   setup(props, { attrs, emit }) {
-    const formModel = reactive({ ...props.modelValue })
+    const formModel = reactive({})
 
     const defaultValueRef = ref({})
     const propsRef = ref({})
@@ -92,67 +82,71 @@ export default defineComponent({
     const getProps = computed(() => {
       return { ...props, ...unref(propsRef) }
     })
-    // Get uniform row style and Row configuration for the entire form
+
     const getRow = computed(() => {
-      const { baseRowStyle = {}, rowProps } = unref(getProps)
+      const { baseRowStyle = {}, rowProps = { gutter: 20 } } = unref(getProps)
       return {
         style: baseRowStyle,
         ...rowProps
       }
     })
+
     const getBindValue = computed(() => {
       return { ...attrs, ...props, ...unref(getProps) }
     })
 
     const getSchema = computed(() => {
-      return unref(schemaRef) || unref(getProps).schemas
+      const schemas = unref(schemaRef) || unref(getProps).schemas
+      for (const schema of schemas) {
+        const { defaultValue } = schema
+        if (defaultValue) {
+          schema.defaultValue = defaultValue
+        }
+      }
+      return cloneDeep(schemas)
     })
 
-    const { initDefault } = useFormValues({
+    const { handleFormValues, initDefault } = useFormValues({
       defaultValueRef,
       getSchema,
       formModel
     })
 
     const {
-      validate,
+      setFieldsValue,
+      getFieldsValue,
+      updateSchema,
+      resetSchema,
       resetFields,
       clearValidate,
-      scrollToField,
-      validateField
+      validate,
+      validateField,
+      scrollToField
     } = useFormEvents({
       getProps,
       formModel,
       getSchema,
       defaultValueRef,
       formElRef,
-      schemaRef
+      schemaRef,
+      handleFormValues
     })
 
     async function setProps(formProps) {
       propsRef.value = deepMerge(unref(propsRef) || {}, formProps)
     }
 
-    function setFormModel(key, value) {
-      formModel[key] = value
-      emit('field-value-change', key, value)
-    }
-
-    watch(
-      () => formModel,
-      () => {
-        emit('input', formModel)
-      },
-      { immediate: true, deep: true }
-    )
-
     const formAction = {
       setProps,
-      validate,
+      setFieldsValue,
+      getFieldsValue,
+      updateSchema,
+      resetSchema,
       resetFields,
       clearValidate,
-      scrollToField,
-      validateField
+      validate,
+      validateField,
+      scrollToField
     }
 
     function handleEnterPress(e) {
@@ -179,12 +173,12 @@ export default defineComponent({
       getBindValue,
       formModel,
       defaultValueRef,
+      propsRef,
       getSchema,
       getRow,
       getProps,
       formElRef,
       formAction,
-      setFormModel,
 
       handleEnterPress,
       ...formAction

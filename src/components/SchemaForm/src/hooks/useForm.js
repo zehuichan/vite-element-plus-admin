@@ -23,12 +23,11 @@ export function useForm(props) {
 
   function register(instance) {
     // 开发环境下，组件卸载后释放内存
-    if (isProdMode()) {
+    isProdMode() &&
       onUnmounted(() => {
         formRef.value = null
         loadedRef.value = null
       })
-    }
 
     // form 组件实例 instance 已存在
     // 实际上 register 拿到的并不是 组件实例， 只是挂载了一些组件内部方法的 对象 formAction
@@ -42,13 +41,9 @@ export function useForm(props) {
     watch(
       () => props,
       () => {
-        console.log(instance)
         props && instance.setProps(getDynamicProps(props))
       },
-      {
-        immediate: true,
-        deep: true
-      }
+      { immediate: true, deep: true }
     )
   }
 
