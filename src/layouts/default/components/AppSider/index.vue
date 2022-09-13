@@ -28,6 +28,7 @@ import { defineComponent } from 'vue'
 
 import { usePermissionStore } from '@/store'
 
+import { ElOverlay } from 'element-plus'
 import AppLogo from '../AppLogo/index.vue'
 import AppMenu from '../AppMenu/index.vue'
 
@@ -36,7 +37,7 @@ import { useAppInjectStore } from '@/hooks/web/useAppProvideStore'
 
 export default defineComponent({
   name: 'AppSider',
-  components: { AppLogo, AppMenu },
+  components: { ElOverlay, AppLogo, AppMenu },
   setup() {
     const permissionStore = usePermissionStore()
 

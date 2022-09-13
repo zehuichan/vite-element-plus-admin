@@ -12,13 +12,33 @@ const menu = [
     }
   },
   {
-    path: '/documentation',
-    name: 'documentation',
-    component: '/documentation/index',
+    path: '/comp',
+    name: 'comp',
+    component: 'LAYOUT',
     meta: {
-      title: '文档',
-      icon: 'document'
-    }
+      title: '组件',
+      icon: 'Notification'
+    },
+    children: [
+      {
+        path: '/comp/refForm',
+        component: '/comp/refForm',
+        name: 'refForm',
+        meta: { title: 'refForm' }
+      },
+      {
+        path: '/comp/useForm',
+        component: '/comp/useForm',
+        name: 'useForm',
+        meta: { title: 'useForm' }
+      },
+      {
+        path: '/comp/dynamicForm',
+        component: '/comp/dynamicForm',
+        name: 'dynamicForm',
+        meta: { title: 'dynamicForm' }
+      }
+    ]
   },
   {
     path: '/nested',

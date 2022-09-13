@@ -5,7 +5,8 @@ import {
   ElInputNumber,
   ElSelect,
   ElSlider,
-  ElSwitch
+  ElSwitch,
+  ElTimeSelect
 } from 'element-plus'
 import ApiSelect from './components/ApiSelect.vue'
 
@@ -21,7 +22,7 @@ componentMap.set('Cascader', ElCascader)
 componentMap.set('Switch', ElSwitch)
 componentMap.set('Slider', ElSlider)
 
-componentMap.set('TimeSelect', 'el-time-select')
+componentMap.set('TimeSelect', ElTimeSelect)
 componentMap.set('TimePicker', 'el-time-picker')
 componentMap.set('DatePicker', 'el-date-picker')
 
