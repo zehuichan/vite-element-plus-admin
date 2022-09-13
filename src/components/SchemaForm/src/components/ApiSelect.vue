@@ -18,7 +18,7 @@
   </el-select>
 </template>
 <script>
-import { defineComponent, ref, watchEffect, computed, unref, watch } from 'vue'
+import { defineComponent, ref, computed, unref, watch, onMounted } from 'vue'
 
 import { useVModel } from '@vueuse/core'
 
@@ -94,10 +94,6 @@ export default defineComponent({
       }, [])
     })
 
-    watchEffect(() => {
-      props.immediate && !props.alwaysLoad && fetch()
-    })
-
     watch(
       () => props.params,
       () => {
@@ -107,7 +103,6 @@ export default defineComponent({
     )
 
     async function fetch() {
-      console.log('fetch')
       const { api } = props
       if (!api || !isFunction(api)) return
       options.value = []
@@ -148,6 +143,10 @@ export default defineComponent({
     function handleChange(val) {
       state.value = val
     }
+
+    onMounted(() => {
+      props.immediate && !props.alwaysLoad && fetch()
+    })
 
     return {
       state,
