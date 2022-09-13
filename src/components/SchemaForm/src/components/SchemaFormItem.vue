@@ -1,5 +1,7 @@
 <script lang="jsx">
 import { computed, defineComponent, unref } from 'vue'
+import { useVModel } from '@vueuse/core'
+
 import { cloneDeep, upperFirst } from 'lodash-es'
 
 import { componentMap } from '../componentMap'
@@ -7,7 +9,6 @@ import { createPlaceholderMessage } from '../helper'
 
 import { isBoolean, isFunction, isNull } from '@/utils/is'
 import { getSlot } from '@/utils/jsxHelper'
-import { useVModel } from '@vueuse/core'
 
 export default defineComponent({
   name: 'SchemaFormItem',
@@ -225,7 +226,8 @@ export default defineComponent({
         clearable: true,
         size,
         ...unref(getComponentsProps),
-        disabled: unref(getDisable)
+        disabled: unref(getDisable),
+        style: { width: '100%' }
       }
 
       if (
@@ -328,7 +330,7 @@ export default defineComponent({
 
       return (
         isIfShow && (
-          <el-col {...{ attrs: realColProps }} v-show={isShow}>
+          <el-col {...realColProps} v-show={isShow}>
             {getContent()}
           </el-col>
         )

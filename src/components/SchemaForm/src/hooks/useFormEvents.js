@@ -93,16 +93,6 @@ export function useFormEvents(context) {
     schemaRef.value = updateData
   }
 
-  async function resetFields() {
-    await unref(formElRef).resetFields()
-    await nextTick()
-    await clearValidate()
-  }
-
-  async function clearValidate(name) {
-    await unref(formElRef).clearValidate(name)
-  }
-
   async function validate(callback) {
     return await unref(formElRef).validate(callback)
   }
@@ -111,8 +101,18 @@ export function useFormEvents(context) {
     return await unref(formElRef).validateField(prop, callback)
   }
 
+  async function resetFields() {
+    await unref(formElRef).resetFields()
+    await nextTick()
+    await clearValidate()
+  }
+
   async function scrollToField(prop) {
     return await unref(formElRef).scrollToField(prop)
+  }
+
+  async function clearValidate(name) {
+    await unref(formElRef).clearValidate(name)
   }
 
   return {
@@ -121,9 +121,9 @@ export function useFormEvents(context) {
     updateSchema,
     resetSchema,
     resetFields,
-    clearValidate,
     validate,
     validateField,
-    scrollToField
+    scrollToField,
+    clearValidate
   }
 }

@@ -3,12 +3,13 @@
     v-bind="getBindValue"
     ref="formElRef"
     :model="formModel"
+    :validate-on-rule-change="false"
     @keyup.enter="handleEnterPress"
   >
     <el-row v-bind="getRow">
       <slot name="formHeader"></slot>
       <template v-for="schema in getSchema" :key="schema.field">
-        <v-form-item
+        <schema-form-item
           :schema="schema"
           :form-props="getProps"
           :all-default-values="defaultValueRef"
@@ -18,7 +19,7 @@
           <template #[item]="data" v-for="item in Object.keys($slots)">
             <slot :name="item" v-bind="data || {}"></slot>
           </template>
-        </v-form-item>
+        </schema-form-item>
       </template>
       <slot name="formFooter"></slot>
     </el-row>
@@ -26,19 +27,31 @@
 </template>
 
 <script>
-import { computed, defineComponent, onMounted, reactive, ref, unref } from 'vue'
-import { cloneDeep } from 'lodash-es'
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  unref,
+  watch
+} from 'vue'
+import { cloneDeep, pick } from 'lodash-es'
+
+import { formProps } from 'element-plus'
 
 import { useFormValues } from './hooks/useFormValues'
 import { useFormEvents } from './hooks/useFormEvents'
+import { useAutoFocus } from './hooks/useAutoFocus'
 
-import VFormItem from './components/SchemaFormItem.vue'
 import { deepMerge } from '@/utils'
+
+import SchemaFormItem from './components/SchemaFormItem.vue'
 
 export default defineComponent({
   name: 'SchemaForm',
   components: {
-    VFormItem
+    SchemaFormItem
   },
   inheritAttrs: false,
   props: {
@@ -61,20 +74,19 @@ export default defineComponent({
       type: Boolean,
       default: true
     },
-    autoSubmitOnEnter: {
-      type: Boolean,
-      default: false
-    },
+    autoSubmitOnEnter: Boolean,
     autoSetPlaceHolder: {
       type: Boolean,
       default: true
-    }
+    },
+    autoFocusFirstItem: Boolean
   },
   emits: ['register', 'field-value-change'],
   setup(props, { attrs, emit }) {
     const formModel = reactive({})
 
     const defaultValueRef = ref({})
+    const isInitedDefaultRef = ref(false)
     const propsRef = ref({})
     const schemaRef = ref(null)
     const formElRef = ref(null)
@@ -92,7 +104,10 @@ export default defineComponent({
     })
 
     const getBindValue = computed(() => {
-      return { ...attrs, ...props, ...unref(getProps) }
+      return pick(
+        { ...attrs, ...props, ...unref(getProps) },
+        Object.keys(formProps)
+      )
     })
 
     const getSchema = computed(() => {
@@ -110,6 +125,13 @@ export default defineComponent({
       defaultValueRef,
       getSchema,
       formModel
+    })
+
+    useAutoFocus({
+      getSchema,
+      getProps,
+      isInitedDefault: isInitedDefaultRef,
+      formElRef
     })
 
     const {
@@ -131,6 +153,26 @@ export default defineComponent({
       schemaRef,
       handleFormValues
     })
+
+    watch(
+      () => unref(getProps).schemas,
+      (schemas) => {
+        resetSchema(schemas ?? [])
+      }
+    )
+
+    watch(
+      () => getSchema.value,
+      (schema) => {
+        if (unref(isInitedDefaultRef)) {
+          return
+        }
+        if (schema?.length) {
+          initDefault()
+          isInitedDefaultRef.value = true
+        }
+      }
+    )
 
     async function setProps(formProps) {
       propsRef.value = deepMerge(unref(propsRef) || {}, formProps)

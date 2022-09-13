@@ -11,7 +11,6 @@ export function useForm(props) {
 
   async function getForm() {
     const form = unref(formRef)
-    console.log(form)
     if (!form) {
       throw new Error(
         'The form instance has not been obtained, please make sure that the form has been rendered when performing the form operation!'
@@ -48,29 +47,44 @@ export function useForm(props) {
   }
 
   const methods = {
-    async setProps(formProps) {
+    setProps: async (formProps) => {
       const form = await getForm()
       form.setProps(formProps)
     },
-    async validate(callback) {
+    setFieldsValue: async (values) => {
       const form = await getForm()
-      form.validate(callback)
+      form.setFieldsValue(values)
     },
-    async validateField(props, callback) {
-      const form = await getForm()
-      form.validateField(props, callback)
+    getFieldsValue: () => {
+      return unref(formRef)?.getFieldsValue()
     },
-    async resetFields() {
+    resetFields: async () => {
       const form = await getForm()
       form.resetFields()
     },
-    async clearValidate() {
+    updateSchema: async (data) => {
       const form = await getForm()
-      form.clearValidate()
+      form.updateSchema(data)
     },
-    async scrollToField(prop) {
+    resetSchema: async (data) => {
       const form = await getForm()
-      form.scrollToField(prop)
+      form.resetSchema(data)
+    },
+    validate: async (callback) => {
+      const form = await getForm()
+      form.validate(callback)
+    },
+    validateField: async (props, callback) => {
+      const form = await getForm()
+      form.validateField(props, callback)
+    },
+    scrollToField: async (props) => {
+      const form = await getForm()
+      form.scrollToField(props)
+    },
+    clearValidate: async (name) => {
+      const form = await getForm()
+      form.clearValidate(name)
     }
   }
 

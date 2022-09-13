@@ -3,17 +3,17 @@
     <code>Dashboard</code>
   </div>
   <div class="app-container">
-    <div>
+    <el-form-item label="配置">
       <el-button @click="setProps({ size: 'small' })">small</el-button>
       <el-button @click="setProps({ size: 'default' })">default</el-button>
       <el-button @click="setProps({ size: 'large' })">large</el-button>
       <el-button @click="setProps({ disabled: true })">禁用表单</el-button>
       <el-button @click="setProps({ disabled: false })">解除禁用</el-button>
-      <el-button @click="setFieldsValue">setFieldsValue</el-button>
-      <el-button @click="getFieldsValue">getFieldsValue</el-button>
-      <el-button @click="updateSchema">updateSchema</el-button>
-    </div>
-    <schema-form ref="formElRef" :schemas="schemas">
+      <el-button @click="setFieldsValue({ field1: 123123 })"
+        >setFieldsValue</el-button
+      >
+    </el-form-item>
+    <schema-form @register="register">
       <template #f3="{ model, field }">
         <el-input v-model="model[field]" placeholder="自定义slot" />
       </template>
@@ -25,8 +25,9 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 import { optionsListApi } from '@/api'
+import { useForm } from '@/components/SchemaForm'
 
 const schemas = [
   {
@@ -49,8 +50,9 @@ const schemas = [
   },
   {
     field: 'field3',
-    component: 'Select',
+    component: 'Input',
     label: '字段3',
+    slot: 'f3',
     colProps: {
       span: 8
     }
@@ -97,40 +99,20 @@ const schemas = [
 
 export default defineComponent({
   setup() {
-    const formElRef = ref(null)
+    const [register, { setProps, setFieldsValue, getFieldsValue, validate }] =
+      useForm({
+        schemas
+      })
 
     return {
-      formElRef,
+      register,
       schemas,
-      setProps(props) {
-        const formEl = formElRef.value
-        if (!formEl) return
-        formEl.setProps(props)
-      },
-      setFieldsValue() {
-        const formEl = formElRef.value
-        if (!formEl) return
-        formEl.setFieldsValue({ field1: '12312312' })
-      },
-      getFieldsValue() {
-        const formEl = formElRef.value
-        if (!formEl) return
-        console.log(formEl.getFieldsValue())
-      },
-      updateSchema() {
-        const formEl = formElRef.value
-        if (!formEl) return
-        formEl.updateSchema({
-          field: 'field3',
-          label: '字段3 New++'
-        })
-      },
+      setProps,
+      setFieldsValue,
       submit() {
-        const formEl = formElRef.value
-        if (!formEl) return
-        formEl.validate((valid) => {
+        validate(async (valid) => {
           if (valid) {
-            alert('submit!')
+            console.log(getFieldsValue())
           } else {
             return false
           }
