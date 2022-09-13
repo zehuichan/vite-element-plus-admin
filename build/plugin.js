@@ -18,9 +18,9 @@ export function createVitePlugins(viteEnv, isBuild) {
     // have to
     vue(),
     // have to
-    vueJsx(),
-    // element-plus
-    configElementPlusPlugin()
+    vueJsx()
+    // todo element-plus
+    // configElementPlusPlugin()
   ]
 
   // vite-plugin-html
