@@ -3,7 +3,7 @@
     v-bind="$attrs"
     v-model="state"
     :loading="loading"
-    @input="handleChange"
+    @change="handleChange"
     @visible-change="handleFetch"
   >
     <el-option
@@ -103,8 +103,8 @@ export default defineComponent({
     )
 
     async function fetch() {
-      const { api } = props
-      if (!api || !isFunction(api)) return
+      const { api, options: defaultOptions = [] } = props
+      if (defaultOptions.length || !api || !isFunction(api)) return
       options.value = []
       try {
         loading.value = true
