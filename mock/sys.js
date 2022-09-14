@@ -12,6 +12,15 @@ const menu = [
     }
   },
   {
+    path: '/documentation',
+    name: 'Documentation',
+    component: '/documentation/index',
+    meta: {
+      title: '文档',
+      icon: 'document'
+    }
+  },
+  {
     path: '/comp',
     name: 'comp',
     component: 'LAYOUT',
@@ -147,7 +156,7 @@ export default [
   {
     url: '/sys/menu',
     method: 'get',
-    response: (config) => {
+    response: () => {
       return resultSuccess(menu)
     }
   }

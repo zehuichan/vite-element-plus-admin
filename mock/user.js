@@ -28,7 +28,7 @@ export default [
   {
     url: '/user/login',
     method: 'post',
-    response: (config) => {
+    response: () => {
       return resultSuccess(user)
     }
   },
@@ -37,7 +37,7 @@ export default [
   {
     url: '/user/info',
     method: 'get',
-    response: (config) => {
+    response: () => {
       return resultSuccess(user)
     }
   }
