@@ -37,6 +37,12 @@ const menu = [
         component: '/comp/dynamicForm',
         name: 'dynamicForm',
         meta: { title: 'dynamicForm' }
+      },
+      {
+        path: '/comp/appendForm',
+        component: '/comp/appendForm',
+        name: 'appendForm',
+        meta: { title: 'appendForm' }
       }
     ]
   },

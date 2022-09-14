@@ -62,9 +62,8 @@ export default defineComponent({
       }
       if (schema.component === 'Divider') {
         componentProps = Object.assign(
-          { direction: 'horizontal' },
-          componentProps,
-          { contentPosition: 'left' }
+          { direction: 'horizontal', contentPosition: 'left' },
+          componentProps
         )
       }
       return componentProps

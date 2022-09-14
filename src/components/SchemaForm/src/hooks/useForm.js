@@ -70,6 +70,13 @@ export function useForm(props) {
       const form = await getForm()
       form.resetSchema(data)
     },
+    appendSchemaByField: async (schema, prefixField, first) => {
+      const form = await getForm()
+      form.appendSchemaByField(schema, prefixField, first)
+    },
+    removeSchemaByFiled: async (field) => {
+      unref(formRef)?.removeSchemaByFiled(field)
+    },
     validate: async (callback) => {
       const form = await getForm()
       form.validate(callback)
