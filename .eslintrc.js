@@ -14,7 +14,11 @@ module.exports = {
       jsx: true
     }
   },
-  extends: ['plugin:vue/vue3-recommended', 'plugin:prettier/recommended'],
+  extends: [
+    'plugin:vue/vue3-recommended',
+    'eslint:recommended',
+    'plugin:prettier/recommended'
+  ],
   rules: {
     'no-new': 'off',
     'no-shadow': 'off',
