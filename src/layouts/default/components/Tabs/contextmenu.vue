@@ -129,7 +129,7 @@ export default defineComponent({
           refreshPage()
           break
         case TableActionEnum.CLOSE_CURRENT:
-          close(unref(getTargetTab))
+          close(props.tabItem)
           break
         case TableActionEnum.CLOSE_LEFT:
           closeLeft()

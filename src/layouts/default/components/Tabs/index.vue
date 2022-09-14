@@ -62,7 +62,6 @@ import {
   reactive,
   ref,
   toRefs,
-  unref,
   watch
 } from 'vue'
 import { onClickOutside } from '@vueuse/core'
@@ -78,6 +77,8 @@ import { useGo } from '@/hooks/web/usePage'
 import { useTabs } from '@/hooks/web/useTabs'
 
 import { PAGE_NOT_FOUND_NAME, REDIRECT_NAME } from '@/router/constant'
+
+import { getRawRoute } from '@/utils'
 
 export default defineComponent({
   name: 'AppTabs',
@@ -172,7 +173,7 @@ export default defineComponent({
     onMounted(async () => {
       await nextTick()
       await tabStore.initTabs(router.getRoutes())
-      await tabStore.addTab(unref(route))
+      await tabStore.addTab(route)
     })
 
     return {
