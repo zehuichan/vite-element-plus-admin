@@ -78,8 +78,6 @@ import { useTabs } from '@/hooks/web/useTabs'
 
 import { PAGE_NOT_FOUND_NAME, REDIRECT_NAME } from '@/router/constant'
 
-import { getRawRoute } from '@/utils'
-
 export default defineComponent({
   name: 'AppTabs',
   components: {
@@ -129,6 +127,7 @@ export default defineComponent({
     )
 
     function handleClick(e) {
+      state.showDropdown = false
       const { path, fullPath } = e
       if (fullPath === route.fullPath) return
       state.activeKey = fullPath || path
