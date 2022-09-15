@@ -36,7 +36,7 @@ export default {
 
     animation: true,
     backgroundColor: '#001529',
-    textColor: 'hsla(0, 0%, 100%, .65)',
+    textColor: '#ffffffb3',
     activeTextColor: '#1890ff',
     width: '210px',
     collapsedWidth: '64px'

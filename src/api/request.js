@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { ElMessageBox, ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus'
+import { Cache, TOKEN_KEY } from '@/utils/cache'
 
 // create an axios instance
 const http = axios.create({
@@ -9,6 +10,10 @@ const http = axios.create({
 
 http.interceptors.request.use(
   (config) => {
+    const token = Cache.getItem(TOKEN_KEY)
+    if (token) {
+      config.headers.Authorization = token
+    }
     return config
   },
   (error) => {

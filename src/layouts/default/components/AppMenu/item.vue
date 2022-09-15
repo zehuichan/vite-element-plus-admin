@@ -1,6 +1,6 @@
 <template>
   <el-menu-item v-if="!hasMultiChild(item) && getShowMenu" :index="item.path">
-    <icon v-show="item.meta?.icon" :name="item.meta.icon" />
+    <icon v-if="item.meta?.icon" :name="item.meta.icon" />
     <template #title>
       <span>{{ item.meta?.title }}</span>
     </template>
@@ -11,7 +11,7 @@
     :index="item.path"
   >
     <template #title>
-      <icon v-show="item.meta?.icon" :name="item.meta.icon" />
+      <icon v-if="item.meta?.icon" :name="item.meta.icon" />
       <span>{{ item.meta?.title }}</span>
     </template>
     <menu-item
@@ -53,3 +53,9 @@ export default defineComponent({
   }
 })
 </script>
+
+<style>
+.el-sub-menu .horizontal-collapse-transition {
+  transition: none !important;
+}
+</style>

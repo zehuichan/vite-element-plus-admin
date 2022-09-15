@@ -7,7 +7,6 @@
     :background-color="getMenuBackgroundColor"
     :text-color="getMenuTextColor"
     :active-text-color="getMenuActiveTextColor"
-    :collapse-transition="false"
     @select="onSelect"
   >
     <template v-for="route in routes" :key="route.path">
@@ -92,18 +91,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.el-menu-item {
+.el-menu-item:not(.is-active) {
   &:hover {
-    background-color: #263445 !important;
-  }
-}
-
-.nest-menu .el-sub-menu > .el-sub-menu__title,
-.el-sub-menu .el-menu-item {
-  background-color: #000c17 !important;
-
-  &:hover {
-    background-color: #263445 !important;
+    color: #fff;
   }
 }
 </style>

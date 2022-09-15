@@ -68,8 +68,7 @@ export const useUserStore = defineStore({
     },
     async getUserInfoAction() {
       try {
-        const token = this.getToken
-        const { data } = await getInfo(token)
+        const { data } = await getInfo()
         const { roles = [] } = data
 
         // roles must be a non-empty array
