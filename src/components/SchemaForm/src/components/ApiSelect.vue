@@ -1,21 +1,16 @@
 <template>
-  <el-select
+  <el-select-v2
     v-bind="$attrs"
     v-model="state"
     :loading="loading"
+    :options="getOptions"
     @change="handleChange"
     @visible-change="handleFetch"
   >
-    <el-option
-      v-for="item in getOptions"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value"
-    />
     <template #[item]="data" v-for="item in Object.keys($slots)">
       <slot :name="item" v-bind="data || {}" />
     </template>
-  </el-select>
+  </el-select-v2>
 </template>
 <script>
 import { defineComponent, ref, computed, unref, watch, onMounted } from 'vue'

@@ -1,5 +1,5 @@
 <template>
-  <el-icon>
+  <el-icon v-bind="$attrs">
     <component :is="name" />
   </el-icon>
 </template>
