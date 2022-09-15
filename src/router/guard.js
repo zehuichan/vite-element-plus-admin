@@ -9,8 +9,6 @@ import { useUserStoreWithOut } from '@/store/modules/user'
 import { usePermissionStoreWithOut } from '@/store/modules/permission'
 import { useMultipleTabStoreWithOut } from '@/store/modules/multipleTab'
 
-import { removeTabChangeListener, setRouteChange } from '@/utils/routeChange'
-
 // no redirect whitelist
 const whiteList = ['/login', '/auth-redirect']
 
@@ -132,19 +130,11 @@ export function createStateGuard(router) {
   const userStore = useUserStoreWithOut()
   const permissionStore = usePermissionStoreWithOut()
 
-  router.beforeEach(async (to) => {
-    // Notify routing changes
-    setRouteChange(to)
-
-    return true
-  })
-
   router.afterEach((to) => {
     if (to.name === LOGIN_NAME) {
       permissionStore.resetState()
       tabStore.resetState()
       userStore.resetState()
-      removeTabChangeListener()
     }
   })
 }
