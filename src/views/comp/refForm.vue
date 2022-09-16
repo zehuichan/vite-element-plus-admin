@@ -16,6 +16,25 @@
       </template>
     </schema-form>
   </div>
+  <div class="app-container">
+    <schema-form ref="formRef" :schemas="schemas">
+      <template #f3="{ model, field }">
+        <el-input v-model="model[field]" placeholder="自定义slot" />
+      </template>
+      <template #formFooter>
+        <el-col>
+          <div style="display: flex">
+            <el-button>重置</el-button>
+            <div class="flex-grow"></div>
+            <div>
+              <el-button>重置</el-button>
+              <el-button type="primary">查询</el-button>
+            </div>
+          </div>
+        </el-col>
+      </template>
+    </schema-form>
+  </div>
 </template>
 
 <script>
@@ -68,3 +87,9 @@ export default defineComponent({
   }
 })
 </script>
+
+<style>
+.flex-grow {
+  flex-grow: 1;
+}
+</style>
