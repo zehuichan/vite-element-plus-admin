@@ -3,16 +3,14 @@ import { isArray, isNullOrUnDef, isObject, isString } from '@/utils/is'
 import { cloneDeep, uniqBy } from 'lodash-es'
 import { deepMerge } from '@/utils'
 
-export function useFormEvents(context) {
-  const {
-    formModel,
-    getSchema,
-    defaultValueRef,
-    formElRef,
-    schemaRef,
-    handleFormValues
-  } = context
-
+export function useFormEvents({
+  emit,
+  formModel,
+  getSchema,
+  formElRef,
+  schemaRef,
+  handleFormValues
+}) {
   //设置表单值
   async function setFieldsValue(values) {
     const schemas = unref(getSchema)
@@ -151,6 +149,18 @@ export function useFormEvents(context) {
     await unref(formElRef).clearValidate(name)
   }
 
+  async function handleEnter() {
+    const formEl = unref(formElRef)
+    if (!formEl) return
+    try {
+      const values = await validate()
+      const res = handleFormValues(values)
+      emit('enter', res)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   function _removeSchemaByFiled(field, schemaList) {
     if (isString(field)) {
       const index = schemaList.findIndex((schema) => schema.field === field)
@@ -193,10 +203,11 @@ export function useFormEvents(context) {
     resetSchema,
     appendSchemaByField,
     removeSchemaByFiled,
-    resetFields,
     validate,
     validateField,
+    resetFields,
     scrollToField,
-    clearValidate
+    clearValidate,
+    handleEnter
   }
 }

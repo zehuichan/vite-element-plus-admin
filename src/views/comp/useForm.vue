@@ -9,8 +9,10 @@
       <el-button @click="setFieldsValue({ field1: 123123 })">
         setFieldsValue
       </el-button>
+      <el-button @click="getFieldsValue"> getFieldsValue</el-button>
+      <el-button @click="handleChange">handleChange</el-button>
     </el-form-item>
-    <schema-form @register="register">
+    <schema-form :model="modelRef" @register="register">
       <template #f3="{ model, field }">
         <el-input v-model="model[field]" placeholder="自定义slot" />
       </template>
@@ -19,7 +21,7 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { optionsListApi } from '@/api'
 import { useForm } from '@/components/SchemaForm'
 
@@ -93,14 +95,25 @@ const schemas = [
 
 export default defineComponent({
   setup() {
-    const [register, { setProps, setFieldsValue }] = useForm({
+    const modelRef = ref({})
+
+    const [register, { setProps, setFieldsValue, getFieldsValue }] = useForm({
       schemas
     })
 
+    function handleChange() {
+      modelRef.value = { field2: 123123 }
+    }
+
     return {
+      modelRef,
       register,
       setProps,
-      setFieldsValue
+      setFieldsValue,
+      getFieldsValue() {
+        console.log(getFieldsValue())
+      },
+      handleChange
     }
   }
 })

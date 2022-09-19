@@ -4,7 +4,7 @@
     ref="formElRef"
     :model="formModel"
     :validate-on-rule-change="false"
-    @keyup.enter="handleEnterPress"
+    @keyup.enter.stop="handleEnterPress"
   >
     <el-row v-bind="getRow">
       <slot name="formHeader"></slot>
@@ -17,7 +17,7 @@
           v-model="formModel[schema.field]"
         >
           <template #[item]="data" v-for="item in Object.keys($slots)">
-            <slot :name="item" v-bind="data || {}"></slot>
+            <slot :name="item" v-bind="data || {}" />
           </template>
         </schema-form-item>
       </template>
@@ -55,6 +55,10 @@ export default defineComponent({
   },
   inheritAttrs: false,
   props: {
+    model: {
+      type: Object,
+      default: () => ({})
+    },
     labelPosition: {
       type: String,
       default: 'right'
@@ -81,7 +85,7 @@ export default defineComponent({
     },
     autoFocusFirstItem: Boolean
   },
-  emits: ['register', 'field-value-change'],
+  emits: ['register', 'field-value-change', 'enter'],
   setup(props, { attrs, emit }) {
     const formModel = reactive({})
 
@@ -145,8 +149,10 @@ export default defineComponent({
       clearValidate,
       validate,
       validateField,
-      scrollToField
+      scrollToField,
+      handleEnter
     } = useFormEvents({
+      emit,
       getProps,
       formModel,
       getSchema,
@@ -155,6 +161,15 @@ export default defineComponent({
       schemaRef,
       handleFormValues
     })
+
+    watch(
+      () => unref(getProps).model,
+      (model) => {
+        if (!model) return
+        setFieldsValue(model)
+      },
+      { immediate: true }
+    )
 
     watch(
       () => unref(getProps).schemas,
@@ -192,7 +207,8 @@ export default defineComponent({
       clearValidate,
       validate,
       validateField,
-      scrollToField
+      scrollToField,
+      handleEnter
     }
 
     function handleEnterPress(e) {
@@ -205,7 +221,7 @@ export default defineComponent({
           target.tagName &&
           target.tagName.toUpperCase() == 'INPUT'
         ) {
-          console.log('submit')
+          handleEnter()
         }
       }
     }
@@ -227,7 +243,11 @@ export default defineComponent({
       formAction,
 
       handleEnterPress,
-      ...formAction
+      ...formAction,
+
+      log(e) {
+        console.log(e)
+      }
     }
   }
 })

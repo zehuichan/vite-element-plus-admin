@@ -139,13 +139,13 @@ export default defineComponent({
         const msg = rule.message || defaultMsg
         if (value === undefined || isNull(value)) {
           // 空值
-          return callback(new Error(msg))
+          callback(new Error(msg))
         } else if (Array.isArray(value) && value.length === 0) {
           // 数组类型
-          return callback(new Error(msg))
+          callback(new Error(msg))
         } else if (typeof value === 'string' && value.trim() === '') {
           // 空字符串
-          return callback(new Error(msg))
+          callback(new Error(msg))
         } else if (
           typeof value === 'object' &&
           Reflect.has(value, 'checked') &&
@@ -156,9 +156,9 @@ export default defineComponent({
           value.halfChecked.length === 0
         ) {
           // 非关联选择的tree组件
-          return callback(new Error(msg))
+          callback(new Error(msg))
         }
-        return callback()
+        callback()
       }
 
       const getRequired = isFunction(required)
@@ -235,10 +235,10 @@ export default defineComponent({
         ) &&
         component === 'DatePicker'
       ) {
-        propsData.startPlaceholder =
-          unref(getComponentsProps)?.startPlaceholder || '开始时间'
-        propsData.endPlaceholder =
-          unref(getComponentsProps)?.endPlaceholder || '结束时间'
+        const [startPlaceholder, endPlaceholder] =
+          unref(getComponentsProps)?.placeholder
+        propsData.startPlaceholder = startPlaceholder || '开始时间'
+        propsData.endPlaceholder = endPlaceholder || '结束时间'
       } else {
         propsData.placeholder = unref(getComponentsProps)?.placeholder || label
       }
@@ -275,10 +275,15 @@ export default defineComponent({
     function renderItem() {
       const { itemProps, slot, render, field, label, component } = props.schema
 
+      // todo
+      if (!componentMap.has(component)) {
+        return null
+      }
+
       if (component === 'Divider') {
         return (
           <el-col span={24}>
-            <el-divider {...unref(getComponentsProps)}></el-divider>
+            <el-divider {...unref(getComponentsProps)}>{label}</el-divider>
           </el-col>
         )
       } else {
@@ -295,7 +300,7 @@ export default defineComponent({
             prop={field}
             label={label}
             rules={handleRules()}
-            {...{ attrs: itemProps }}
+            {...itemProps}
           >
             {getContent()}
           </el-form-item>
@@ -304,15 +309,9 @@ export default defineComponent({
     }
 
     return () => {
-      const {
-        colProps = {},
-        colSlot,
-        renderColContent,
-        component
-      } = props.schema
-      if (!componentMap.has(component)) {
-        return null
-      }
+      const { colProps = {}, colSlot, renderColContent } = props.schema
+
+      // todo
 
       const { baseColProps = {} } = props.formProps
       const realColProps = { ...baseColProps, ...colProps }

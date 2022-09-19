@@ -1,18 +1,16 @@
 <template>
   <div class="app-container">
-    <el-form-item label="配置">
-      <el-button @click="setProps({ size: 'small' })">small</el-button>
-      <el-button @click="setProps({ size: 'default' })">default</el-button>
-      <el-button @click="setProps({ size: 'large' })">large</el-button>
-      <el-button @click="setProps({ disabled: true })">禁用表单</el-button>
-      <el-button @click="setProps({ disabled: false })">解除禁用</el-button>
-      <el-button @click="setFieldsValue({ field1: 123123 })">
-        setFieldsValue
-      </el-button>
-    </el-form-item>
-    <schema-form ref="formRef" :schemas="schemas">
-      <template #f3="{ model, field }">
-        <el-input v-model="model[field]" placeholder="自定义slot" />
+    <schema-form ref="formRef" :schemas="schemas" auto-submit-on-enter>
+      <template #actions>
+        <div style="display: flex">
+          <el-button>导入</el-button>
+          <el-button>导出</el-button>
+          <div class="flex-grow"></div>
+          <div>
+            <el-button>重置</el-button>
+            <el-button type="primary">查询</el-button>
+          </div>
+        </div>
       </template>
     </schema-form>
   </div>
@@ -29,7 +27,6 @@ const schemas = [
     colProps: {
       span: 8
     },
-    defaultValue: 123,
     required: true
   },
   {
@@ -44,10 +41,13 @@ const schemas = [
     field: 'field3',
     component: 'Input',
     label: '字段3',
-    slot: 'f3',
     colProps: {
       span: 8
     }
+  },
+  {
+    field: 'actions',
+    colSlot: 'actions'
   }
 ]
 
@@ -68,3 +68,9 @@ export default defineComponent({
   }
 })
 </script>
+
+<style>
+.flex-grow {
+  flex-grow: 1;
+}
+</style>

@@ -57,6 +57,12 @@ const menu = [
             component: '/comp/appendForm',
             name: 'appendForm',
             meta: { title: 'appendForm' }
+          },
+          {
+            path: 'searchForm',
+            component: '/comp/searchForm',
+            name: 'searchForm',
+            meta: { title: 'searchForm' }
           }
         ]
       }

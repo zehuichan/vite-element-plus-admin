@@ -36,6 +36,7 @@ module.exports = {
     'no-unused-expressions': 'off',
     'no-restricted-globals': 'off',
     'class-methods-use-this': 'off',
+    'no-unsafe-optional-chaining': 'off',
     'prefer-destructuring': ['error', { object: true, array: false }],
     // eslint-plugin-import
     'import/order': 'off',
