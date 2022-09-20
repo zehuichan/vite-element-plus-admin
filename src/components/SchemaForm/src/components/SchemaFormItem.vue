@@ -30,10 +30,6 @@ export default defineComponent({
     formModel: {
       type: Object,
       default: () => ({})
-    },
-    setFormModel: {
-      type: Function,
-      default: null
     }
   },
   setup(props, { emit, slots }) {
