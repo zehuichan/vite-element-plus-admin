@@ -36,31 +36,31 @@ const menu = [
         children: [
           {
             path: 'refForm',
-            component: '/comp/refForm',
+            component: '/comp/schemaform/refForm',
             name: 'refForm',
             meta: { title: 'refForm' }
           },
           {
             path: 'useForm',
-            component: '/comp/useForm',
+            component: '/comp/schemaform/useForm',
             name: 'useForm',
             meta: { title: 'useForm' }
           },
           {
             path: 'dynamicForm',
-            component: '/comp/dynamicForm',
+            component: '/comp/schemaform/dynamicForm',
             name: 'dynamicForm',
             meta: { title: 'dynamicForm' }
           },
           {
             path: 'appendForm',
-            component: '/comp/appendForm',
+            component: '/comp/schemaform/appendForm',
             name: 'appendForm',
             meta: { title: 'appendForm' }
           },
           {
             path: 'searchForm',
-            component: '/comp/searchForm',
+            component: '/comp/schemaform/searchForm',
             name: 'searchForm',
             meta: { title: 'searchForm' }
           }
