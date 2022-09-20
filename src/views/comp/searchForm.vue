@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <schema-form ref="formRef" :schemas="schemas" auto-submit-on-enter>
+    <schema-form auto-submit-on-enter @register="register" @enter="handelQuery">
       <template #actions>
         <div style="display: flex">
           <el-button>导入</el-button>
@@ -8,7 +8,7 @@
           <div class="flex-grow"></div>
           <div>
             <el-button>重置</el-button>
-            <el-button type="primary">查询</el-button>
+            <el-button type="primary" @click="handelQuery">查询</el-button>
           </div>
         </div>
       </template>
@@ -17,7 +17,8 @@
 </template>
 
 <script>
-import { defineComponent, ref, unref } from 'vue'
+import { defineComponent } from 'vue'
+import { useForm } from '@/components/SchemaForm'
 
 const schemas = [
   {
@@ -26,8 +27,7 @@ const schemas = [
     label: '字段1',
     colProps: {
       span: 8
-    },
-    required: true
+    }
   },
   {
     field: 'field2',
@@ -53,16 +53,15 @@ const schemas = [
 
 export default defineComponent({
   setup() {
-    const formRef = ref(null)
+    const [register, { getFieldsValue }] = useForm({
+      schemas
+    })
 
     return {
-      formRef,
-      schemas,
-      setProps(props) {
-        unref(formRef).setProps(props)
-      },
-      setFieldsValue(values) {
-        unref(formRef).setFieldsValue(values)
+      register,
+      handelQuery() {
+        const data = getFieldsValue()
+        console.log(data)
       }
     }
   }

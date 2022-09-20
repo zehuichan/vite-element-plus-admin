@@ -243,11 +243,7 @@ export default defineComponent({
       formAction,
 
       handleEnterPress,
-      ...formAction,
-
-      log(e) {
-        console.log(e)
-      }
+      ...formAction
     }
   }
 })

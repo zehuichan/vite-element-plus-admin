@@ -127,8 +127,8 @@ export function useFormEvents({
     schemaRef.value = schemaList
   }
 
-  async function validate(callback) {
-    return await unref(formElRef).validate(callback)
+  async function validate() {
+    return await unref(formElRef).validate()
   }
 
   async function validateField(prop, callback) {
@@ -153,9 +153,8 @@ export function useFormEvents({
     const formEl = unref(formElRef)
     if (!formEl) return
     try {
-      const values = await validate()
-      const res = handleFormValues(values)
-      emit('enter', res)
+      await validate()
+      emit('enter')
     } catch (error) {
       console.log(error)
     }
