@@ -4,7 +4,6 @@
     v-model="state"
     :loading="loading"
     :options="getOptions"
-    @change="handleChange"
     @visible-change="handleFetch"
   >
     <template #[item]="data" v-for="item in Object.keys($slots)">
@@ -66,7 +65,19 @@ export default defineComponent({
     const isFirstLoad = ref(true)
 
     // Embedded in the form, just use the hook binding to perform form verification
+
+    // 方式一：
     const state = useVModel(props, 'modelValue', emit, { eventName: 'input' })
+
+    // 方式二：
+    // const state = computed({
+    //   get() {
+    //     return props.modelValue
+    //   },
+    //   set(val) {
+    //     emit('input', val)
+    //   }
+    // })
 
     const getOptions = computed(() => {
       const {
@@ -135,10 +146,6 @@ export default defineComponent({
       emit('options-change', unref(getOptions))
     }
 
-    function handleChange(val) {
-      state.value = val
-    }
-
     onMounted(() => {
       props.immediate && !props.alwaysLoad && fetch()
     })
@@ -147,8 +154,7 @@ export default defineComponent({
       state,
       getOptions,
       loading,
-      handleFetch,
-      handleChange
+      handleFetch
     }
   }
 })
