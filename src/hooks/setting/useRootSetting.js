@@ -11,6 +11,12 @@ export function useRootSetting() {
 
   const getShowLogo = computed(() => appStore.getProjectConfig.showLogo)
 
+  const getShowFooter = computed(() => appStore.getProjectConfig.showFooter)
+
+  const getUseOpenBackTop = computed(
+    () => appStore.getProjectConfig.useOpenBackTop
+  )
+
   const getShowBreadCrumb = computed(
     () => appStore.getProjectConfig.showBreadCrumb
   )
@@ -24,6 +30,8 @@ export function useRootSetting() {
 
     getOpenKeepAlive,
     getShowLogo,
+    getShowFooter,
+    getUseOpenBackTop,
     getShowBreadCrumb
   }
 }

@@ -4,16 +4,19 @@
   </div>
   <el-drawer size="260px" append-to-body :with-header="false" v-model="visible">
     <div class="drawer-container">
-      <h3 class="drawer-title">布局配置</h3>
+      <h3 class="drawer-title">界面显示</h3>
       <div class="drawer-item">
-        <span>开启 MultipleTab</span>
-        <el-switch v-model="tagsView" class="drawer-switch" />
+        <span>面包屑</span>
+        <el-switch v-model="breadCrumb" class="drawer-switch" />
       </div>
       <div class="drawer-item">
-        <span>固定 Header</span>
-        <el-switch v-model="fixedHeader" class="drawer-switch" />
+        <span>标签页</span>
+        <el-switch v-model="multipleTab" class="drawer-switch" />
       </div>
-      <h3 class="drawer-title">界面功能</h3>
+      <div class="drawer-item">
+        <span>页脚</span>
+        <el-switch v-model="footer" class="drawer-switch" />
+      </div>
       <div class="drawer-item">
         <span>搜索</span>
         <el-switch v-model="search" class="drawer-switch" />
@@ -30,6 +33,11 @@
         <span>设置</span>
         <el-switch v-model="setting" class="drawer-switch" />
       </div>
+      <h3 class="drawer-title">界面功能</h3>
+      <div class="drawer-item">
+        <span>固定Header</span>
+        <el-switch v-model="fixedHeader" class="drawer-switch" />
+      </div>
     </div>
   </el-drawer>
 </template>
@@ -38,10 +46,13 @@
 import { computed, defineComponent, ref } from 'vue'
 import { useHeaderSetting } from '@/hooks/setting/useHeaderSetting'
 import { useMultipleTabSetting } from '@/hooks/setting/useMultipleTabSetting'
+import { useRootSetting } from '@/hooks/setting/useRootSetting'
 
 export default defineComponent({
   name: 'Settings',
   setup() {
+    const { setRootSetting, getShowBreadCrumb, getShowFooter } =
+      useRootSetting()
     const {
       setHeaderSetting,
       getFixed,
@@ -55,24 +66,35 @@ export default defineComponent({
 
     const visible = ref(false)
 
-    const fixedHeader = computed({
+    const breadCrumb = computed({
       get() {
-        return getFixed.value
+        return getShowBreadCrumb.value
       },
       set(val) {
-        setHeaderSetting({
-          fixed: val
+        setRootSetting({
+          showBreadCrumb: val
         })
       }
     })
 
-    const tagsView = computed({
+    const multipleTab = computed({
       get() {
         return getShowMultipleTab.value
       },
       set(val) {
         setMultipleTabSetting({
           show: val
+        })
+      }
+    })
+
+    const footer = computed({
+      get() {
+        return getShowFooter.value
+      },
+      set(val) {
+        setRootSetting({
+          showFooter: val
         })
       }
     })
@@ -121,14 +143,29 @@ export default defineComponent({
       }
     })
 
+    const fixedHeader = computed({
+      get() {
+        return getFixed.value
+      },
+      set(val) {
+        setHeaderSetting({
+          fixed: val
+        })
+      }
+    })
+
     return {
       visible,
-      fixedHeader,
-      tagsView,
+
+      breadCrumb,
+      multipleTab,
+      footer,
       search,
       fullscreen,
       notice,
-      setting
+      setting,
+
+      fixedHeader
     }
   }
 })

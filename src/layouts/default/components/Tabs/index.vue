@@ -195,7 +195,7 @@ export default defineComponent({
 <style lang="scss">
 .tabs-view {
   width: 100%;
-  padding: 4px 6px 2px;
+  padding: 4px 6px 4px;
   display: flex;
   transition: all 0.2s ease-in-out;
   background-color: #fff;
