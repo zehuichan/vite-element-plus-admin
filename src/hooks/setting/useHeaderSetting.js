@@ -3,7 +3,6 @@ import { computed, unref } from 'vue'
 import { useAppStore } from '@/store'
 
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
-import { useRootSetting } from '@/hooks/setting/useRootSetting'
 
 export function useHeaderSetting() {
   const appStore = useAppStore()
@@ -30,31 +29,25 @@ export function useHeaderSetting() {
     )
   })
 
-  const {
-    getMenuMode,
-    getSplit,
-    getShowHeaderTrigger,
-    getIsSidebarType,
-    getIsMixSidebar,
-    getIsTopMenu
-  } = useMenuSetting()
-  const { getShowBreadCrumb, getShowLogo } = useRootSetting()
+  const { getIsSidebarType, getIsMixSidebar, getIsTopMenu } = useMenuSetting()
 
   const getShowMixHeaderRef = computed(
     () => !unref(getIsSidebarType) && unref(getShowHeader)
   )
 
-  const getHeaderTheme = computed(() => appStore.getHeaderSetting.theme)
+  const getFixed = computed(() => appStore.getHeaderSetting.fixed)
 
   const getShowHeader = computed(() => appStore.getHeaderSetting.show)
 
-  const getFixed = computed(() => appStore.getHeaderSetting.fixed)
+  const getShowSearch = computed(() => appStore.getHeaderSetting.showSearch)
 
   const getShowFullScreen = computed(
     () => appStore.getHeaderSetting.showFullScreen
   )
 
   const getShowNotice = computed(() => appStore.getHeaderSetting.showNotice)
+
+  const getShowSetting = computed(() => appStore.getHeaderSetting.showSetting)
 
   // Set header configuration
   function setHeaderSetting(headerSetting) {
@@ -64,11 +57,12 @@ export function useHeaderSetting() {
   return {
     setHeaderSetting,
 
-    getHeaderTheme,
-    getShowNotice,
-    getShowFullScreen,
-    getShowHeader,
     getFixed,
+    getShowHeader,
+    getShowSearch,
+    getShowFullScreen,
+    getShowNotice,
+    getShowSetting,
     getShowMixHeaderRef,
     getShowFullHeaderRef,
     getShowInsetHeaderRef,

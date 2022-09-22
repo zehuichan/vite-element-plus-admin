@@ -2,14 +2,14 @@
   <div class="basic-layout-navbar">
     <div class="basic-layout-navbar-left">
       <trigger :sider="false" />
-      <breadcrumb />
+      <breadcrumb v-if="getShowBreadCrumb" />
     </div>
     <div class="basic-layout-navbar-action">
-      <search />
-      <notification />
-      <screenfull />
+      <search v-if="getShowSearch" />
+      <screenfull v-if="getShowFullScreen" />
+      <notification v-if="getShowNotice" />
       <userinfo />
-      <settings />
+      <settings v-if="getShowSetting" />
     </div>
   </div>
 </template>
@@ -24,6 +24,9 @@ import Settings from './settings.vue'
 import Search from './search.vue'
 import Screenfull from './screenfull.vue'
 
+import { useRootSetting } from '@/hooks/setting/useRootSetting'
+import { useHeaderSetting } from '@/hooks/setting/useHeaderSetting'
+
 export default defineComponent({
   name: 'Navbar',
   components: {
@@ -34,6 +37,19 @@ export default defineComponent({
     Breadcrumb,
     Notification,
     Userinfo
+  },
+  setup() {
+    const { getShowBreadCrumb } = useRootSetting()
+    const { getShowSearch, getShowFullScreen, getShowNotice, getShowSetting } =
+      useHeaderSetting()
+
+    return {
+      getShowBreadCrumb,
+      getShowSearch,
+      getShowFullScreen,
+      getShowNotice,
+      getShowSetting
+    }
   }
 })
 </script>
@@ -55,7 +71,6 @@ export default defineComponent({
 
   &-action {
     display: flex;
-    min-width: 180px;
     align-items: center;
 
     &__item {
