@@ -1,35 +1,35 @@
 <template>
-  <el-select-v2
-    v-bind="$attrs"
-    v-model="state"
-    :loading="loading"
-    :options="getOptions"
-    @visible-change="handleFetch"
-  >
-    <template #[item]="data" v-for="item in Object.keys($slots)">
-      <slot :name="item" v-bind="data || {}" />
+  <el-radio-group v-bind="$attrs" v-model="state">
+    <template v-for="item in getOptions" :key="`${item.value}`">
+      <el-radio-button
+        v-if="button"
+        :value="item.value"
+        :disabled="item.disabled"
+      >
+        {{ item.label }}
+      </el-radio-button>
+      <el-radio v-else :value="item.value" :disabled="item.disabled">
+        {{ item.label }}
+      </el-radio>
     </template>
-  </el-select-v2>
+  </el-radio-group>
 </template>
+
 <script>
-import { defineComponent, ref, computed, unref, watch, onMounted } from 'vue'
+import { computed, defineComponent, onMounted, ref, unref, watch } from 'vue'
 
 import { useVModel } from '@vueuse/core'
-
 import { get, omit } from 'lodash-es'
-
 import { isFunction } from '@/utils/is'
 
 export default defineComponent({
-  name: 'ApiSelect',
+  name: 'ApiRadioGroup',
   inheritAttrs: false,
   props: {
+    modelValue: [Array, Object, String, Number],
     options: Array,
     numberToString: Boolean,
-    api: {
-      type: Function,
-      default: null
-    },
+    button: Boolean,
     // api params
     params: {
       type: Object,
@@ -57,7 +57,7 @@ export default defineComponent({
       default: false
     }
   },
-  emits: ['options-change', 'update:modelValue'],
+  emits: ['options-change', 'input'],
   setup(props, { emit }) {
     const options = ref([])
     const loading = ref(false)
@@ -66,7 +66,7 @@ export default defineComponent({
     // Embedded in the form, just use the hook binding to perform form verification
 
     // 方式一：
-    const state = useVModel(props, 'modelValue', emit)
+    const state = useVModel(props, 'modelValue', emit, { eventName: 'input' })
 
     // 方式二：
     // const state = computed({

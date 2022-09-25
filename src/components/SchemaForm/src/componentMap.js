@@ -8,6 +8,7 @@ import {
   ElSwitch,
   ElTimeSelect
 } from 'element-plus'
+import ApiRadioGroup from './components/ApiRadioGroup.vue'
 import ApiSelect from './components/ApiSelect.vue'
 
 const componentMap = new Map()
@@ -32,6 +33,7 @@ componentMap.set('ColorPicker', 'el-color-picker')
 
 componentMap.set('Divider', 'el-divider')
 
+componentMap.set('ApiRadioGroup', ApiRadioGroup)
 componentMap.set('ApiSelect', ApiSelect)
 
 export function add(compName, component) {

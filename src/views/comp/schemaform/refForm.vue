@@ -52,6 +52,8 @@ const schemas = [
 ]
 
 export default defineComponent({
+  components: {},
+
   setup() {
     const formRef = ref(null)
 
