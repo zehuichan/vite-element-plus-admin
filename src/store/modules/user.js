@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia'
-import { store } from '..'
+import { store, usePermissionStore } from '..'
 
+import { PAGE_NOT_FOUND_ROUTE, router } from '@/router'
 import { getInfo, login } from '@/api/user'
 import { Cache, ROLES_KEY, TOKEN_KEY, USER_INFO_KEY } from '@/utils/cache'
+import { isArray } from '@/utils/is'
 
 export const useUserStore = defineStore({
   id: 'user',
@@ -18,7 +20,7 @@ export const useUserStore = defineStore({
       return this.token || Cache.getItem(TOKEN_KEY)
     },
     getUserInfo() {
-      return this.userInfo || Cache.getItem(USER_INFO_KEY)
+      return this.userInfo || Cache.getItem(USER_INFO_KEY) || {}
     },
     getRoleList() {
       return this.roleList.length > 0 ? this.roleList : Cache.getItem(ROLES_KEY)
@@ -61,29 +63,49 @@ export const useUserStore = defineStore({
           data: { token }
         } = await login({ username: username.trim(), password: password })
         this.setToken(token)
-        return Promise.resolve()
-      } catch (e) {
-        return Promise.reject(e)
+        return this.afterLoginAction()
+      } catch (error) {
+        return Promise.reject(error)
+      }
+    },
+    async afterLoginAction() {
+      if (!this.getToken) return null
+      // get user info
+      await this.getUserInfoAction()
+
+      const { sessionTimeout } = this
+      if (sessionTimeout) {
+        this.setSessionTimeout(false)
+      } else {
+        const permissionStore = usePermissionStore()
+        if (!permissionStore.isDynamicAddedRoute) {
+          const routes = await permissionStore.buildRoutesAction()
+          routes.unshift({ path: '/', redirect: routes[0].children[0].path })
+          routes.forEach((route) => {
+            router.addRoute(route)
+          })
+          router.addRoute(PAGE_NOT_FOUND_ROUTE)
+          console.log(routes)
+          permissionStore.setDynamicAddedRoute(true)
+        }
       }
     },
     async getUserInfoAction() {
-      try {
-        const { data } = await getInfo()
-        const { roles = [] } = data
+      if (!this.getToken) return null
 
-        // roles must be a non-empty array
-        if (!roles || roles.length <= 0) {
-          data.roles = []
-          this.setRoleList([])
-        } else {
-          this.setRoleList(roles)
-        }
+      const { data } = await getInfo()
+      const { roles = [] } = data
 
-        this.setUserInfo(data)
-        return Promise.resolve(data)
-      } catch (e) {
-        return Promise.reject(e)
+      // roles must be a non-empty array
+      if (isArray(roles)) {
+        this.setRoleList(roles)
+      } else {
+        data.roles = []
+        this.setRoleList([])
       }
+
+      this.setUserInfo(data)
+      return Promise.resolve(data)
     },
     async logout() {
       this.setToken(undefined)

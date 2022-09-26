@@ -58,13 +58,13 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { validUsername } from '@/utils/validate'
 import { useUserStore } from '@/store/modules/user'
 
 const userStore = useUserStore()
-const router = useRouter()
+const { currentRoute, replace } = useRouter()
 
 const validateUsername = (rule, value, callback) => {
   if (!validUsername(value)) {
@@ -86,20 +86,22 @@ const loginForm = reactive({
   password: '111111'
 })
 const loginRules = reactive({
-  username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-  password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+  username: [{ required: true, validator: validateUsername }],
+  password: [{ required: true, validator: validatePassword }]
 })
 const loading = ref(false)
-const redirect = ref(undefined)
+const redirect = computed(() => {
+  return currentRoute.value.query.redirect
+})
 
-const login = async () => {
+async function login() {
   try {
     loading.value = true
     const valid = await loginFormRef.value.validate()
     if (valid) {
       console.log('submit!')
       await userStore.login(loginForm)
-      await router.push({ path: redirect.value || '/' })
+      await replace({ path: redirect.value || '/' })
       loading.value = false
     }
   } catch (error) {

@@ -44,10 +44,6 @@ export function createPermissionGuard(router) {
 
     // Whitelist can be directly entered
     if (whiteList.includes(to.path)) {
-      if (to.name === LOGIN_ROUTE.name && token) {
-        next(to.query?.redirect || '/')
-        return
-      }
       next()
       return
     }
@@ -61,7 +57,7 @@ export function createPermissionGuard(router) {
       }
       // redirect login page
       const redirectData = {
-        path: '/login',
+        path: LOGIN_ROUTE.path,
         replace: true
       }
       if (to.path) {
@@ -103,8 +99,8 @@ export function createPermissionGuard(router) {
     routes.unshift({ path: '/', redirect: routes[0].children[0].path })
 
     // 动态添加可访问路由表
-    routes.forEach((item) => {
-      router.addRoute(item)
+    routes.forEach((route) => {
+      router.addRoute(route)
     })
 
     router.addRoute(PAGE_NOT_FOUND_ROUTE)
