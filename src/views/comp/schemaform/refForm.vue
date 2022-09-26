@@ -20,6 +20,7 @@
 
 <script>
 import { defineComponent, ref, unref } from 'vue'
+import { optionsListApi } from '@/api'
 
 const schemas = [
   {
@@ -48,12 +49,29 @@ const schemas = [
     colProps: {
       span: 8
     }
+  },
+  {
+    field: 'field4',
+    component: 'ApiRadioGroup',
+    label: '字段4',
+    colProps: {
+      span: 8
+    },
+    componentProps: {
+      api: optionsListApi,
+      params: {
+        count: 2
+      },
+      resultField: 'data.list',
+      // use name as label
+      labelField: 'name',
+      // use id as value
+      valueField: 'id'
+    }
   }
 ]
 
 export default defineComponent({
-  components: {},
-
   setup() {
     const formRef = ref(null)
 

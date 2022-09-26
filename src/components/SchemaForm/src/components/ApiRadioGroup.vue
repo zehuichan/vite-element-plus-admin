@@ -3,12 +3,17 @@
     <template v-for="item in getOptions" :key="`${item.value}`">
       <el-radio-button
         v-if="button"
-        :value="item.value"
+        :label="item.value"
         :disabled="item.disabled"
       >
         {{ item.label }}
       </el-radio-button>
-      <el-radio v-else :value="item.value" :disabled="item.disabled">
+      <el-radio
+        v-else
+        :label="item.value"
+        :border="border"
+        :disabled="item.disabled"
+      >
         {{ item.label }}
       </el-radio>
     </template>
@@ -30,6 +35,11 @@ export default defineComponent({
     options: Array,
     numberToString: Boolean,
     button: Boolean,
+    border: Boolean,
+    api: {
+      type: Function,
+      default: null
+    },
     // api params
     params: {
       type: Object,
@@ -57,26 +67,14 @@ export default defineComponent({
       default: false
     }
   },
-  emits: ['options-change', 'input'],
+  emits: ['options-change', 'update:modelValue'],
   setup(props, { emit }) {
     const options = ref([])
     const loading = ref(false)
     const isFirstLoad = ref(true)
 
     // Embedded in the form, just use the hook binding to perform form verification
-
-    // 方式一：
-    const state = useVModel(props, 'modelValue', emit, { eventName: 'input' })
-
-    // 方式二：
-    // const state = computed({
-    //   get() {
-    //     return props.modelValue
-    //   },
-    //   set(val) {
-    //     emit('input', val)
-    //   }
-    // })
+    const state = useVModel(props, 'modelValue', emit)
 
     const getOptions = computed(() => {
       const {
@@ -130,17 +128,6 @@ export default defineComponent({
       }
     }
 
-    async function handleFetch(visible) {
-      if (visible) {
-        if (props.alwaysLoad) {
-          await fetch()
-        } else if (!props.immediate && unref(isFirstLoad)) {
-          await fetch()
-          isFirstLoad.value = false
-        }
-      }
-    }
-
     function emitChange() {
       emit('options-change', unref(getOptions))
     }
@@ -152,8 +139,7 @@ export default defineComponent({
     return {
       state,
       getOptions,
-      loading,
-      handleFetch
+      loading
     }
   }
 })

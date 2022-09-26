@@ -2,7 +2,7 @@
 import { computed, defineComponent, unref } from 'vue'
 import { useVModel } from '@vueuse/core'
 
-import { cloneDeep, upperFirst } from 'lodash-es'
+import { cloneDeep } from 'lodash-es'
 
 import { componentMap } from '../componentMap'
 import { createPlaceholderMessage } from '../helper'
@@ -198,13 +198,7 @@ export default defineComponent({
     }
 
     function renderComponent() {
-      const {
-        renderComponentContent,
-        field,
-        label,
-        changeEvent = 'input',
-        component
-      } = props.schema
+      const { renderComponentContent, field, label, component } = props.schema
 
       const tag = componentMap.get(component)
 
@@ -233,10 +227,8 @@ export default defineComponent({
         propsData.placeholder = unref(getComponentsProps)?.placeholder || label
       }
 
-      const eventKey = `on${upperFirst(changeEvent)}`
-
       const on = {
-        [eventKey]: (e) => {
+        ['onUpdate:modelValue']: (e) => {
           state.value = e
         }
       }

@@ -24,6 +24,7 @@ export default defineComponent({
   name: 'ApiSelect',
   inheritAttrs: false,
   props: {
+    modelValue: [String, Number],
     options: Array,
     numberToString: Boolean,
     api: {
@@ -64,6 +65,7 @@ export default defineComponent({
     const isFirstLoad = ref(true)
 
     // Embedded in the form, just use the hook binding to perform form verification
+    // https://vuejs.org/guide/extras/render-function.html#v-model
 
     // 方式一：
     const state = useVModel(props, 'modelValue', emit)
