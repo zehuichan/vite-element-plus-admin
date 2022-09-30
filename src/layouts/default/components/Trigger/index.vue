@@ -32,8 +32,8 @@ export default defineComponent({
     background-color: #f6f6f6;
   }
 
-  svg {
-    width: 16px;
+  .el-icon {
+    font-size: 16px;
   }
 }
 </style>

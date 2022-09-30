@@ -13,7 +13,7 @@ import { setupElementPlus } from './plugins/element-plus'
 import { setupStore } from './store'
 import { router, setupRouter } from './router'
 import { setupGuard } from './router/guard'
-import { setupErrorLog } from './plugins/error-log'
+import { setupErrorHandle } from './plugins/error-handle'
 import { registerComponents } from './components'
 
 async function bootstrap() {
@@ -24,7 +24,7 @@ async function bootstrap() {
   registerComponents(app)
   setupRouter(app)
   setupGuard(router)
-  setupErrorLog(app)
+  setupErrorHandle(app)
   app.mount('#app')
 }
 

@@ -5,6 +5,7 @@
       <breadcrumb v-if="getShowBreadCrumb" />
     </div>
     <div class="basic-layout-navbar-action">
+      <error-action v-if="getUseErrorHandle" />
       <search v-if="getShowSearch" />
       <screenfull v-if="getShowFullScreen" />
       <notification v-if="getShowNotice" />
@@ -23,6 +24,7 @@ import Userinfo from './userinfo.vue'
 import Settings from './settings.vue'
 import Search from './search.vue'
 import Screenfull from './screenfull.vue'
+import ErrorAction from './error-action.vue'
 
 import { useRootSetting } from '@/hooks/setting/useRootSetting'
 import { useHeaderSetting } from '@/hooks/setting/useHeaderSetting'
@@ -36,15 +38,17 @@ export default defineComponent({
     Trigger,
     Breadcrumb,
     Notification,
-    Userinfo
+    Userinfo,
+    ErrorAction
   },
   setup() {
-    const { getShowBreadCrumb } = useRootSetting()
+    const { getShowBreadCrumb, getUseErrorHandle } = useRootSetting()
     const { getShowSearch, getShowFullScreen, getShowNotice, getShowSetting } =
       useHeaderSetting()
 
     return {
       getShowBreadCrumb,
+      getUseErrorHandle,
       getShowSearch,
       getShowFullScreen,
       getShowNotice,
@@ -80,6 +84,10 @@ export default defineComponent({
       padding: 0 10px;
       cursor: pointer;
       align-items: center;
+
+      .el-icon {
+        font-size: 16px;
+      }
 
       &:hover {
         background-color: #f6f6f6;

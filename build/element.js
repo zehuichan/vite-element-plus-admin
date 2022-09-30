@@ -8,6 +8,10 @@ export function configElementPlusPlugin() {
       resolvers: [ElementPlusResolver()]
     }),
     Components({
+      // allow to autoload markdown components under `./src/components/`
+      extensions: ['vue', 'md'],
+      // allow auto import and register components used in markdown
+      include: [/\.vue$/, /\.vue\?vue/, /\.md$/],
       resolvers: [
         ElementPlusResolver({
           importStyle: 'sass'

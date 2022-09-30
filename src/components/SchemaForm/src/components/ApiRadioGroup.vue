@@ -1,5 +1,6 @@
 <template>
-  <el-radio-group v-bind="$attrs" v-model="state">
+  <icon class="is-loading" name="loading" v-if="loading" />
+  <el-radio-group v-else v-bind="$attrs" v-model="state">
     <template v-for="item in getOptions" :key="`${item.value}`">
       <el-radio-button
         v-if="button"
@@ -22,7 +23,6 @@
 
 <script>
 import { computed, defineComponent, onMounted, ref, unref, watch } from 'vue'
-
 import { useVModel } from '@vueuse/core'
 import { get, omit } from 'lodash-es'
 import { isFunction } from '@/utils/is'

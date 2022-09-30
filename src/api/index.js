@@ -48,3 +48,10 @@ export function optionsListApi(params) {
     params
   })
 }
+
+export function fireErrorApi() {
+  return request({
+    url: '/error',
+    method: 'get'
+  })
+}

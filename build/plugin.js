@@ -1,7 +1,6 @@
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
-import { configElementPlusPlugin } from './element'
 import { configHtmlPlugin } from './html'
 import { configSvgIconsPlugin } from './svgSprite'
 import { configMockPlugin } from './mock'
@@ -19,8 +18,6 @@ export function createVitePlugins(viteEnv, isBuild) {
     vue(),
     // have to
     vueJsx()
-    // todo element-plus
-    // configElementPlusPlugin()
   ]
 
   // vite-plugin-html
