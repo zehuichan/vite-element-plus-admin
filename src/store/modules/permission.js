@@ -56,8 +56,7 @@ export const usePermissionStore = defineStore({
       let routeList = []
 
       try {
-        const res = await menu()
-        routeList = res.data
+        routeList = await menu()
       } catch (error) {
         console.log(error)
       }

@@ -1,7 +1,7 @@
-import request from '@/api/request'
+import http from '@/utils/http'
 
 export function menu() {
-  return request({
+  return http.request({
     url: '/sys/menu',
     method: 'get'
   })

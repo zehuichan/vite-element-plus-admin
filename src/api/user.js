@@ -1,7 +1,7 @@
-import request from '@/api/request'
+import http from '@/utils/http'
 
 export function login(data) {
-  return request({
+  return http.request({
     url: '/user/login',
     method: 'post',
     data
@@ -9,8 +9,11 @@ export function login(data) {
 }
 
 export function getInfo() {
-  return request({
+  return http.request({
     url: '/user/info',
-    method: 'get'
+    method: 'get',
+    headers: {
+      ignoreCancelToken: true
+    }
   })
 }

@@ -1,20 +1,20 @@
-export function resultSuccess(data, { msg = 'ok' } = {}) {
+export function resultSuccess(result, { message = 'ok' } = {}) {
   return {
     code: 200,
-    data,
-    msg,
+    result,
+    message,
     type: 'success'
   }
 }
 
 export function resultError(
-  msg = 'Request failed',
-  { code = -1, data = null } = {}
+  message = 'Request failed',
+  { code = -1, result = null } = {}
 ) {
   return {
     code,
-    data,
-    msg,
+    result,
+    message,
     type: 'error'
   }
 }

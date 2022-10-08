@@ -101,7 +101,7 @@ export function scriptErrorHandler(event, source, lineno, colno, error) {
 function registerPromiseErrorHandler() {
   window.addEventListener(
     'unhandledrejection',
-    (event) => {
+    function (event) {
       const errorLogStore = useErrorLogStoreWithOut()
       errorLogStore.addErrorLogInfo({
         type: 'promise',

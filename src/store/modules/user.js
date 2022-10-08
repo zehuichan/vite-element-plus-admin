@@ -59,9 +59,11 @@ export const useUserStore = defineStore({
     async login(params) {
       try {
         const { username, password } = params
-        const {
-          data: { token }
-        } = await login({ username: username.trim(), password: password })
+        const data = await login({
+          username: username.trim(),
+          password: password
+        })
+        const { token } = data
         this.setToken(token)
         return this.afterLoginAction()
       } catch (error) {
@@ -93,7 +95,7 @@ export const useUserStore = defineStore({
     async getUserInfoAction() {
       if (!this.getToken) return null
 
-      const { data } = await getInfo()
+      const data = await getInfo()
       const { roles = [] } = data
 
       // roles must be a non-empty array
