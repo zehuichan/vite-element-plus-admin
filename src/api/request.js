@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { ElMessage } from 'element-plus'
 import { Cache, TOKEN_KEY } from '@/utils/cache'
+import { useErrorLogStoreWithOut } from '@/store/modules/errorLog'
 
 // create an axios instance
 const http = axios.create({
@@ -8,35 +8,28 @@ const http = axios.create({
   timeout: 50 * 1000 // request timeout
 })
 
-http.interceptors.request.use(
-  (config) => {
-    const token = Cache.getItem(TOKEN_KEY)
-    if (token) {
-      config.headers.Authorization = token
-    }
-    return config
-  },
-  (error) => {
-    console.log(`err,${error}`)
-    return Promise.reject(error)
+http.interceptors.request.use((config) => {
+  const token = Cache.getItem(TOKEN_KEY)
+  if (token) {
+    config.headers.Authorization = token
   }
-)
+  return config
+}, null)
 
-http.interceptors.response.use(
-  (response) => {
-    const res = response.data
-    if (res.code !== 200) {
-      ElMessage.error(`status:${res.code}, ${res.msg}`)
-      return Promise.reject(res.msg)
-    } else {
-      return response.data
-    }
-  },
-  (error) => {
-    console.log(`err,${error}`)
-    ElMessage.error(`err,${error}`)
-    return Promise.reject(error)
-  }
-)
+http.interceptors.response.use((response) => response.data, null)
 
-export default http
+export default (config) =>
+  new Promise((resolve, reject) => {
+    http
+      .request(config)
+      .then((res) => {
+        console.log(res)
+        resolve(resolve)
+      })
+      .catch((err) => {
+        const errorLogStore = useErrorLogStoreWithOut()
+        errorLogStore.addAjaxErrorInfo(err)
+        console.log(err)
+        reject(err)
+      })
+  })

@@ -1,5 +1,5 @@
 import Mock from 'mockjs'
-import { resultSuccess } from './_util'
+import { resultError, resultSuccess } from './_util'
 
 const { Random } = Mock
 
@@ -28,7 +28,10 @@ export default [
   {
     url: '/user/login',
     method: 'post',
-    response: () => {
+    response: ({ body }) => {
+      if (body.password !== '111111') {
+        return resultError('账户或密码错误')
+      }
       return resultSuccess(user)
     }
   },
