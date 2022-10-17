@@ -197,6 +197,14 @@ export default defineComponent({
       return rules
     }
 
+    function renderLabel() {
+      const { field, label } = props.schema
+      if (slots[`form-${field}-label`]) {
+        return slots[`form-${field}-label`]()
+      }
+      return label
+    }
+
     function renderComponent() {
       const { renderComponentContent, field, label, component } = props.schema
 
@@ -277,14 +285,13 @@ export default defineComponent({
             : renderComponent()
         }
 
+        // https://vuejs.org/guide/extras/render-function.html#passing-slots
         return (
-          <el-form-item
-            prop={field}
-            label={label}
-            rules={handleRules()}
-            {...itemProps}
-          >
-            {getContent()}
+          <el-form-item prop={field} rules={handleRules()} {...itemProps}>
+            {{
+              label: () => renderLabel(),
+              default: () => getContent()
+            }}
           </el-form-item>
         )
       }

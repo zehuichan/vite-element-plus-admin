@@ -66,7 +66,7 @@ const schemas = [
       params: {
         count: 2
       },
-      resultField: 'data.list',
+      resultField: 'list',
       // use name as label
       labelField: 'name',
       // use id as value

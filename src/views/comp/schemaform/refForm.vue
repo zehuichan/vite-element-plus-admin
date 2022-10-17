@@ -11,6 +11,7 @@
       </el-button>
     </el-form-item>
     <schema-form ref="formRef" :schemas="schemas">
+      <template #form-field1-label>custom label</template>
       <template #f3="{ model, field }">
         <el-input v-model="model[field]" placeholder="自定义slot" />
       </template>
@@ -62,7 +63,7 @@ const schemas = [
       params: {
         count: 2
       },
-      resultField: 'data.list',
+      resultField: 'list',
       // use name as label
       labelField: 'name',
       // use id as value
