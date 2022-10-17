@@ -14,7 +14,7 @@ export default defineComponent({
   name: 'SchemaFormItem',
   inheritAttrs: false,
   props: {
-    modelValue: [String, Number, Boolean],
+    modelValue: null,
     schema: {
       type: Object,
       default: () => ({})
