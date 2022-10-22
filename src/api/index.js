@@ -21,3 +21,10 @@ export function fireErrorApi() {
     method: 'get'
   })
 }
+
+export function getDict(groupCode) {
+  return http.request({
+    url: `/tmao-app-auth/common/data_dict/items/${groupCode}`,
+    method: 'get'
+  })
+}
