@@ -20,7 +20,7 @@
 
 <script>
 import { defineComponent } from 'vue'
-import { optionsListApi } from '@/api'
+import { dictApi } from '@/api'
 import { useForm } from '@/components/SchemaForm'
 
 const schemas = [
@@ -62,10 +62,8 @@ const schemas = [
     component: 'ApiSelect',
     label: 'ApiSelect',
     componentProps: {
-      api: optionsListApi,
-      params: {
-        count: 2
-      },
+      api: dictApi,
+      params: 'asd',
       resultField: 'list',
       // use name as label
       labelField: 'name',

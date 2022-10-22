@@ -15,13 +15,12 @@ const demoList = (keyword, count = 20) => {
 
 export default [
   {
-    url: '/select/getDemoOptions',
+    url: '/dict/:groupCode',
     timeout: 1000,
     method: 'get',
-    response: ({ query }) => {
-      const { keyword, count } = query
-      console.log(keyword)
-      return resultSuccess(demoList(keyword, count))
+    response: ({ url }) => {
+      const keyword = url.replace(/\/dict\//, '')
+      return resultSuccess(demoList(keyword))
     }
   }
 ]

@@ -21,7 +21,7 @@
 
 <script>
 import { defineComponent, ref, unref } from 'vue'
-import { optionsListApi } from '@/api'
+import { dictApi } from '@/api'
 
 const schemas = [
   {
@@ -53,16 +53,14 @@ const schemas = [
   },
   {
     field: 'field4',
-    component: 'ApiRadioGroup',
+    component: 'ApiSelect',
     label: '字段4',
     colProps: {
       span: 8
     },
     componentProps: {
-      api: optionsListApi,
-      params: {
-        count: 2
-      },
+      api: dictApi,
+      params: 123,
       resultField: 'list',
       // use name as label
       labelField: 'name',

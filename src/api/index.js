@@ -7,14 +7,6 @@ export function uploadApi(params, onUploadProgress) {
   })
 }
 
-export function optionsListApi(params) {
-  return http.request({
-    url: '/select/getDemoOptions',
-    method: 'get',
-    params
-  })
-}
-
 export function fireErrorApi() {
   return http.request({
     url: '/error',
@@ -22,9 +14,9 @@ export function fireErrorApi() {
   })
 }
 
-export function getDict(groupCode) {
+export function dictApi(groupCode) {
   return http.request({
-    url: `/tmao-app-auth/common/data_dict/items/${groupCode}`,
+    url: `/dict/${groupCode}`,
     method: 'get'
   })
 }
