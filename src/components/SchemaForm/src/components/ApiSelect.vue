@@ -24,7 +24,7 @@ export default defineComponent({
   name: 'ApiSelect',
   inheritAttrs: false,
   props: {
-    modelValue: [String, Number],
+    modelValue: null,
     options: Array,
     numberToString: Boolean,
     api: {
@@ -32,10 +32,7 @@ export default defineComponent({
       default: null
     },
     // api params
-    params: {
-      type: Object,
-      default: () => ({})
-    },
+    params: null,
     // support xxx.xxx.xx
     resultField: {
       type: String,

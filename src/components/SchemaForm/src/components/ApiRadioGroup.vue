@@ -31,7 +31,7 @@ export default defineComponent({
   name: 'ApiRadioGroup',
   inheritAttrs: false,
   props: {
-    modelValue: [Array, Object, String, Number],
+    modelValue: null,
     options: Array,
     numberToString: Boolean,
     button: Boolean,
@@ -41,10 +41,7 @@ export default defineComponent({
       default: null
     },
     // api params
-    params: {
-      type: Object,
-      default: () => ({})
-    },
+    params: null,
     // support xxx.xxx.xx
     resultField: {
       type: String,
