@@ -1,5 +1,5 @@
 import { useRouter } from 'vue-router'
-import { ref, toRaw, unref } from 'vue'
+import { unref } from 'vue'
 
 import { useAppStore, useMultipleTabStore } from '@/store'
 
@@ -10,7 +10,8 @@ export const TableActionEnum = {
   CLOSE_RIGHT: 3,
   CLOSE_OTHER: 4,
   CLOSE_CURRENT: 5,
-  CLOSE: 6
+  CLOSE: 6,
+  FULL_CONTENT: 7
 }
 
 export function useTabs(_router) {
@@ -85,6 +86,14 @@ export function useTabs(_router) {
       case TableActionEnum.CLOSE:
         await tabStore.closeTab(tab || currentTab, router)
         break
+
+      case TableActionEnum.FULL_CONTENT:
+        // eslint-disable-next-line no-case-declarations
+        const { fullContent } = appStore.getProjectConfig
+        appStore.setProjectConfig({
+          fullContent: !fullContent
+        })
+        break
     }
   }
 
@@ -96,6 +105,7 @@ export function useTabs(_router) {
     closeOther: () => handleTabAction(TableActionEnum.CLOSE_OTHER),
     closeCurrent: () => handleTabAction(TableActionEnum.CLOSE_CURRENT),
     close: (tab) => handleTabAction(TableActionEnum.CLOSE, tab),
+    fullContent: () => handleTabAction(TableActionEnum.FULL_CONTENT),
     setTitle: (title, tab) => updateTabTitle(title, tab),
     updatePath: (fullPath, tab) => updateTabPath(fullPath, tab)
   }

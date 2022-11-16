@@ -25,6 +25,8 @@ export function useRootSetting() {
     () => appStore.getProjectConfig.showBreadCrumb
   )
 
+  const getFullContent = computed(() => appStore.getProjectConfig.fullContent)
+
   function setRootSetting(setting) {
     appStore.setProjectConfig(setting)
   }
@@ -37,6 +39,7 @@ export function useRootSetting() {
     getUseErrorHandle,
     getShowFooter,
     getUseOpenBackTop,
-    getShowBreadCrumb
+    getShowBreadCrumb,
+    getFullContent
   }
 }

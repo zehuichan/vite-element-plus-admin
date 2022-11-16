@@ -36,8 +36,15 @@ export default defineComponent({
 
     const tabStore = useMultipleTabStore()
     const { currentRoute } = useRouter()
-    const { refreshPage, closeAll, close, closeLeft, closeOther, closeRight } =
-      useTabs()
+    const {
+      refreshPage,
+      closeAll,
+      close,
+      closeLeft,
+      closeOther,
+      closeRight,
+      fullContent
+    } = useTabs()
 
     const getTargetTab = computed(() => {
       return props.tabItem
@@ -74,6 +81,12 @@ export default defineComponent({
           event: TableActionEnum.REFRESH,
           text: '重新加载',
           disabled: refreshDisabled
+        },
+        {
+          icon: 'Crop',
+          event: TableActionEnum.FULL_CONTENT,
+          text: '专注模式',
+          disabled: !isCurItem
         },
         {
           icon: 'Close',
@@ -127,6 +140,9 @@ export default defineComponent({
       switch (event) {
         case TableActionEnum.REFRESH:
           refreshPage()
+          break
+        case TableActionEnum.FULL_CONTENT:
+          fullContent()
           break
         case TableActionEnum.CLOSE_CURRENT:
           close(props.tabItem)
