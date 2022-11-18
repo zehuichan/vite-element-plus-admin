@@ -2,6 +2,20 @@
 import { defineComponent, nextTick, ref, watch } from 'vue'
 import { onKeyStroke } from '@vueuse/core'
 
+function launchNormalFullscreen(targetElement, props) {
+  targetElement.classList.add('fullcontent')
+  document.getElementsByTagName('html')[0].classList.add('fullcontent__html')
+  if (props.zIndex) {
+    targetElement.setAttribute('style', `z-index: ${props.zIndex}`)
+  }
+}
+
+function exitNormalFullscreen(targetElement) {
+  targetElement.classList.remove('fullcontent')
+  targetElement.style.zIndex = ''
+  document.getElementsByTagName('html')[0].classList.remove('fullcontent__html')
+}
+
 export default defineComponent({
   name: 'FullContent',
   props: {
@@ -33,28 +47,36 @@ export default defineComponent({
     async function handleNormalFullscreen(isOpen) {
       await nextTick()
       if (isOpen) {
-        slotElement.value.classList.add('fullcontent')
-        document
-          .getElementsByTagName('html')[0]
-          .classList.add('fullcontent__html')
-        if (props.zIndex) {
-          slotElement.value.setAttribute('style', `z-index: ${props.zIndex}`)
-        }
+        launchNormalFullscreen(slotElement.value, props)
       } else {
-        slotElement.value.classList.remove('fullcontent')
-        slotElement.value.style.zIndex = ''
-        document
-          .getElementsByTagName('html')[0]
-          .classList.remove('fullcontent__html')
+        exitNormalFullscreen(slotElement.value)
       }
     }
 
-    onKeyStroke('Escape', () => {
+    function updateModelValue() {
       emit('update:modelValue', false)
-    })
+    }
+
+    onKeyStroke('Escape', updateModelValue)
+
+    function renderIcon() {
+      if (props.modelValue) {
+        return (
+          <div class="fullcontent__close" onClick={updateModelValue}>
+            <icon name="Close" />
+          </div>
+        )
+      }
+      return null
+    }
 
     return () => {
-      return <div ref={slotElement}>{slots.default()}</div>
+      return (
+        <div ref={slotElement}>
+          {renderIcon()}
+          {slots.default()}
+        </div>
+      )
     }
   }
 })
@@ -70,6 +92,26 @@ export default defineComponent({
   z-index: 3000;
   overflow: auto;
   background-color: #ffffff;
+}
+
+.fullcontent__close {
+  position: fixed;
+  top: 8px;
+  right: 8px;
+  z-index: 3000;
+  width: 30px;
+  height: 30px;
+  color: #00000073;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.12);
+  border-radius: 2px;
+  cursor: pointer;
+
+  &:hover {
+    color: #333;
+  }
 }
 
 .fullcontent__html {

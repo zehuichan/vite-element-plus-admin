@@ -24,13 +24,9 @@
 
 <script>
 import { computed, defineComponent } from 'vue'
-import Icon from '@/components/Icon'
 
 export default defineComponent({
   name: 'MenuItem',
-  components: {
-    Icon
-  },
   props: {
     item: Object
   },
