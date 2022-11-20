@@ -24,7 +24,7 @@ export default {
     // Turn on accordion mode, only show a menu
     accordion: true,
 
-    animation: false,
+    animation: true,
     backgroundColor: '#001529',
     textColor: '#ffffffb3',
     activeTextColor: '#1890ff',

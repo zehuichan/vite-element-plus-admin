@@ -1,14 +1,10 @@
 <template>
   <el-overlay v-if="getIsMobile && !getCollapsed" @click="handleClose(true)" />
-  <!--todo 待优化-->
   <div
     :class="{
       'basic-layout-aside': true,
-      'basic-layout-aside__collapsed': !getIsMobile && getCollapsed,
-      'basic-layout-aside__fixed': getIsMobile,
       'basic-layout-aside__open': getIsMobile && !getCollapsed,
-      'basic-layout-aside__hide': getIsMobile && getCollapsed,
-      'with-transition': getAnimation
+      'basic-layout-aside__hide': getIsMobile && getCollapsed
     }"
   >
     <div class="basic-layout-aside-content">
@@ -43,19 +39,13 @@ export default defineComponent({
 
     const { getIsMobile } = useAppInjectStore()
 
-    const {
-      setMenuSetting,
-      getCollapsed,
-      getAnimation,
-      getMenuBackgroundColor,
-      getMenuWidth,
-      getCollapsedWidth
-    } = useMenuSetting()
+    const { setMenuSetting, getCollapsed } = useMenuSetting()
 
     function handleClose(flag) {
       if (flag) {
         setMenuSetting({
-          collapsed: true
+          collapsed: true,
+          animation: false
         })
       }
     }
@@ -65,73 +55,9 @@ export default defineComponent({
 
       getIsMobile,
       getCollapsed,
-      getAnimation,
-      getMenuBackgroundColor,
-      getMenuWidth,
-      getCollapsedWidth,
 
       handleClose
     }
   }
 })
 </script>
-
-<style lang="scss">
-.basic-layout-aside {
-  position: sticky;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  z-index: 2001;
-  width: v-bind(getMenuWidth);
-  height: 100vh;
-
-  &.with-transition {
-    transition: all 0.28s;
-  }
-
-  // reset element-ui css
-  .horizontal-collapse-transition {
-    transition: 0s width ease-in-out, 0s padding-left ease-in-out,
-      0s padding-right ease-in-out;
-  }
-
-  &-content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    background-color: v-bind(getMenuBackgroundColor);
-
-    .el-menu {
-      border-right: 0;
-
-      &:not(.el-menu--collapse) {
-        width: v-bind(getMenuWidth);
-      }
-    }
-  }
-
-  &__collapsed {
-    width: v-bind(getCollapsedWidth);
-  }
-
-  &__fixed {
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 0;
-    z-index: 2001;
-  }
-
-  &__open {
-    width: v-bind(getMenuWidth);
-    transform: translateX(0);
-  }
-
-  &__hide {
-    width: v-bind(getMenuWidth);
-    transform: translateX(-100%);
-  }
-}
-</style>

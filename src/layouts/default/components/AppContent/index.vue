@@ -64,7 +64,7 @@ export default defineComponent({
 <style lang="scss">
 .basic-layout-content {
   position: relative;
-  flex: 1 1 auto;
+  width: 100%;
   min-height: 0;
 }
 </style>

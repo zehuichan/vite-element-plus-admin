@@ -7,6 +7,7 @@
     :background-color="getMenuBackgroundColor"
     :text-color="getMenuTextColor"
     :active-text-color="getMenuActiveTextColor"
+    :collapse-transition="false"
     @select="onSelect"
   >
     <template v-for="route in routes" :key="route.path">
@@ -22,8 +23,8 @@ import { useRouter } from 'vue-router'
 import MenuItem from './item.vue'
 
 import { isUrl } from '@/utils/is'
-import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 import { useAppInjectStore } from '@/hooks/web/useAppProvideStore'
+import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 
 export default defineComponent({
   name: 'AppMenu',

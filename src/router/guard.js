@@ -102,7 +102,6 @@ export function createPermissionGuard(router) {
     })
 
     router.addRoute(PAGE_NOT_FOUND_ROUTE)
-    console.log(routes)
 
     permissionStore.setDynamicAddedRoute(true)
 

@@ -49,9 +49,3 @@ export default defineComponent({
   }
 })
 </script>
-
-<style>
-.el-sub-menu .horizontal-collapse-transition {
-  transition: none !important;
-}
-</style>
