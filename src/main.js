@@ -29,3 +29,6 @@ async function bootstrap() {
 }
 
 void bootstrap()
+
+// eslint-disable-next-line no-undef
+console.table(__APP_INFO__)
