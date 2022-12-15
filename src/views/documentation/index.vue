@@ -63,7 +63,7 @@ export default defineComponent({
     function filterColor(val) {
       return {
         vue: 'success',
-        script: 'default',
+        script: '',
         resource: 'info',
         ajax: 'danger',
         promise: 'warning'
