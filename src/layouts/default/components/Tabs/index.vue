@@ -13,7 +13,7 @@
         :class="{ 'tabs-card-scrollable': scrollable }"
       >
         <div ref="navScroll" class="tabs-card-scroll">
-          <Draggable
+          <draggable
             :list="getTabsState"
             animation="300"
             item-key="fullPath"
@@ -38,7 +38,7 @@
                 </div>
               </div>
             </template>
-          </Draggable>
+          </draggable>
         </div>
       </div>
     </div>
@@ -127,6 +127,7 @@ export default defineComponent({
     )
 
     function handleClick(e) {
+      currentTab.value = e
       state.showDropdown = false
       const { path, fullPath } = e
       if (fullPath === route.fullPath) return
