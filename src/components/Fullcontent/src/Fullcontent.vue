@@ -17,7 +17,7 @@ function exitNormalFullscreen(targetElement) {
 }
 
 export default defineComponent({
-  name: 'FullContent',
+  name: 'Fullcontent',
   props: {
     modelValue: {
       type: Boolean,

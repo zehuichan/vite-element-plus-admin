@@ -1,20 +1,18 @@
 <template>
   <div class="basic-layout-content">
-    <full-content v-model="fullContent">
+    <fullcontent v-model="fullContent">
       <router-view v-slot="{ Component, route }">
         <keep-alive v-if="openCache" :include="getCaches">
           <component :is="Component" :key="route.fullPath" />
         </keep-alive>
         <component v-else :is="Component" :key="route.fullPath" />
       </router-view>
-    </full-content>
+    </fullcontent>
   </div>
 </template>
 
 <script>
 import { computed, defineComponent, unref } from 'vue'
-
-import FullContent from './fullcontent.vue'
 
 import { useMultipleTabStore } from '@/store'
 import { useRootSetting } from '@/hooks/setting/useRootSetting'
@@ -22,9 +20,6 @@ import { useMultipleTabSetting } from '@/hooks/setting/useMultipleTabSetting'
 
 export default defineComponent({
   name: 'AppContent',
-  components: {
-    FullContent
-  },
   setup() {
     const tabStore = useMultipleTabStore()
 
