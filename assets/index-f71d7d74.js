@@ -1,0 +1,1 @@
+import{_ as n}from"./_plugin-vue_export-helper-c27b6911.js";import{j as o}from"./runtime-core.esm-bundler-b39fbec2.js";const t=o({name:"Account"});function e(c,r,s,a,p,_){return"Account"}const m=n(t,[["render",e]]);export{m as default};

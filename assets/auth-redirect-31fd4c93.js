@@ -1,0 +1,1 @@
+const o={name:"AuthRedirect",created(){const e=window.location.search.slice(1);window.localStorage&&(window.localStorage.setItem("x-admin-oauth-code",e),window.close())},render(e){return e()}};export{o as default};
