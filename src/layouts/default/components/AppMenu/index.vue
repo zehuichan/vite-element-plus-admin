@@ -37,7 +37,7 @@ export default defineComponent({
   },
   emits: ['click'],
   setup(props, { emit }) {
-    const { getIsMobile } = useAppInjectStore()
+    const { getIsMobile, getIsLaptop } = useAppInjectStore()
 
     const {
       getCollapsed,
@@ -60,6 +60,9 @@ export default defineComponent({
     })
 
     const collapse = computed(() => {
+      if (unref(getIsLaptop)) {
+        return true
+      }
       if (unref(getIsMobile)) {
         return false
       }

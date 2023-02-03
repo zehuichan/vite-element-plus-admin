@@ -8,7 +8,7 @@
     }"
   >
     <div class="basic-layout-aside-content">
-      <app-logo :collapsed="!getIsMobile && getCollapsed" />
+      <app-logo :collapsed="collapse" />
       <el-scrollbar wrap-class="scrollbar-wrapper">
         <app-menu
           :routes="permissionStore?.menus"
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { computed, defineComponent, unref } from 'vue'
 
 import { usePermissionStore } from '@/store'
 
@@ -37,9 +37,19 @@ export default defineComponent({
   setup() {
     const permissionStore = usePermissionStore()
 
-    const { getIsMobile } = useAppInjectStore()
+    const { getIsMobile, getIsLaptop } = useAppInjectStore()
 
     const { setMenuSetting, getCollapsed } = useMenuSetting()
+
+    const collapse = computed(() => {
+      if (unref(getIsLaptop)) {
+        return true
+      }
+      if (unref(getIsMobile)) {
+        return false
+      }
+      return unref(getCollapsed)
+    })
 
     function handleClose(flag) {
       if (flag) {
@@ -52,8 +62,9 @@ export default defineComponent({
 
     return {
       permissionStore,
-
+      collapse,
       getIsMobile,
+      getIsLaptop,
       getCollapsed,
 
       handleClose
