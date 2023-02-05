@@ -1,1 +1,0 @@
-import{ci as a}from"./index-2fbc70ff.js";import{Q as r,k as t,u as o}from"./runtime-core.esm-bundler-b39fbec2.js";const[c,n]=a(s=>{const e=r(s);return{getIsMobile:t(()=>o(e.isMobile)),getIsLaptop:t(()=>o(e.isLaptop))}});export{n as a,c as u};

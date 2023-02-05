@@ -1,1 +1,0 @@
-import{_ as e}from"./_plugin-vue_export-helper-c27b6911.js";import{j as o,o as s,l as t,m as n}from"./runtime-core.esm-bundler-b39fbec2.js";const a=o({}),c={class:"app-container"},r=n("code",null,"Dashboard",-1),_=[r];function d(i,p,f,l,m,h){return s(),t("div",c,_)}const $=e(a,[["render",d]]);export{$ as default};
