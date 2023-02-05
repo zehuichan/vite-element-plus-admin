@@ -23,7 +23,6 @@ import { useRouter } from 'vue-router'
 import MenuItem from './item.vue'
 
 import { isUrl } from '@/utils/is'
-import { useAppInjectStore } from '@/hooks/web/useAppProvideStore'
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 
 export default defineComponent({
@@ -32,15 +31,12 @@ export default defineComponent({
     MenuItem
   },
   props: {
-    routes: Array,
-    uniqueOpened: Boolean
+    collapse: Boolean,
+    routes: Array
   },
   emits: ['click'],
   setup(props, { emit }) {
-    const { getIsMobile, getIsLaptop } = useAppInjectStore()
-
     const {
-      getCollapsed,
       getAccordion,
       getMenuBackgroundColor,
       getMenuTextColor,
@@ -59,16 +55,6 @@ export default defineComponent({
       return path
     })
 
-    const collapse = computed(() => {
-      if (unref(getIsLaptop)) {
-        return true
-      }
-      if (unref(getIsMobile)) {
-        return false
-      }
-      return unref(getCollapsed)
-    })
-
     const onSelect = (index) => {
       if (isUrl(index)) {
         window.open(index)
@@ -79,7 +65,6 @@ export default defineComponent({
     }
 
     return {
-      getCollapsed,
       getAccordion,
       getMenuBackgroundColor,
       getMenuTextColor,
@@ -87,7 +72,6 @@ export default defineComponent({
       getMenuWidth,
 
       defaultActive,
-      collapse,
       onSelect
     }
   }

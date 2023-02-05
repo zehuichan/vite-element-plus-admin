@@ -1,7 +1,7 @@
 <template>
   <div class="logo" @click="goHome">
-    <img src="/element-plus-logo.svg" alt="" :class="{ 'mr-2': !collapsed }" />
-    <div v-show="!collapsed" class="title">PlusAdmin</div>
+    <img src="/element-plus-logo.svg" alt="" :class="{ 'mr-2': !collapse }" />
+    <div v-show="!collapse" class="title">PlusAdmin</div>
   </div>
 </template>
 
@@ -12,9 +12,7 @@ import { useGo } from '@/hooks/web/usePage'
 export default defineComponent({
   name: 'AppLogo',
   props: {
-    collapsed: {
-      type: Boolean
-    }
+    collapse: Boolean
   },
   setup() {
     const go = useGo()

@@ -8,9 +8,10 @@
     }"
   >
     <div class="basic-layout-aside-content">
-      <app-logo :collapsed="collapse" />
+      <app-logo :collapse="collapse" />
       <el-scrollbar wrap-class="scrollbar-wrapper">
         <app-menu
+          :collapse="collapse"
           :routes="permissionStore?.menus"
           @click="handleClose(false)"
         />

@@ -4,6 +4,10 @@
     <section class="basic-layout-main">
       <app-header />
       <app-content />
+      <div>layoutClass {{ layoutClass }}</div>
+      <div>getIsMobile {{ getIsMobile }}</div>
+      <div>getIsLaptop {{ getIsLaptop }}</div>
+      <div>getCollapsed {{ getCollapsed }}</div>
       <app-footer v-if="getShowFooter" />
     </section>
   </section>
@@ -11,7 +15,7 @@
 </template>
 
 <script>
-import { computed, defineComponent, onMounted, unref, watch } from 'vue'
+import { computed, defineComponent, onMounted, unref } from 'vue'
 import AppHeader from './components/AppHeader/index.vue'
 import AppContent from './components/AppContent/index.vue'
 import AppSider from './components/AppSider/index.vue'
@@ -43,7 +47,17 @@ export default defineComponent({
     } = useMenuSetting()
 
     const layoutClass = computed(() => {
-      const opened = unref(getCollapsed) || unref(getIsLaptop)
+      let opened = unref(getCollapsed)
+
+      if (unref(getIsMobile)) {
+        setMenuSetting({
+          animation: unref(getCollapsed) && true
+        })
+      }
+
+      if (unref(getIsLaptop)) {
+        opened = true
+      }
 
       return {
         hideSider: opened,
@@ -52,15 +66,6 @@ export default defineComponent({
         mobile: unref(getIsMobile)
       }
     })
-
-    watch(
-      () => getIsMobile.value,
-      () => {
-        setMenuSetting({
-          animation: unref(getCollapsed) && true
-        })
-      }
-    )
 
     onMounted(() => {
       if (unref(getIsMobile)) {
@@ -72,6 +77,10 @@ export default defineComponent({
     })
 
     return {
+      getIsMobile,
+      getIsLaptop,
+      getCollapsed,
+
       getShowFooter,
       getUseOpenBackTop,
       getMenuBackgroundColor,
