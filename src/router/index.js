@@ -47,7 +47,6 @@ export const PAGE_NOT_FOUND_ROUTE = {
   name: PAGE_NOT_FOUND_NAME,
   component: LAYOUT,
   meta: {
-    title: 'ErrorPage',
     hideBreadcrumb: true,
     hideMenu: false
   },
@@ -57,7 +56,6 @@ export const PAGE_NOT_FOUND_ROUTE = {
       name: PAGE_NOT_FOUND_NAME,
       component: ERROR_PAGE,
       meta: {
-        title: 'ErrorPage',
         hideBreadcrumb: true,
         hideMenu: false
       }

@@ -4,10 +4,6 @@
     <section class="basic-layout-main">
       <app-header />
       <app-content />
-      <div>layoutClass {{ layoutClass }}</div>
-      <div>getIsMobile {{ getIsMobile }}</div>
-      <div>getIsLaptop {{ getIsLaptop }}</div>
-      <div>getCollapsed {{ getCollapsed }}</div>
       <app-footer v-if="getShowFooter" />
     </section>
   </section>
@@ -77,10 +73,6 @@ export default defineComponent({
     })
 
     return {
-      getIsMobile,
-      getIsLaptop,
-      getCollapsed,
-
       getShowFooter,
       getUseOpenBackTop,
       getMenuBackgroundColor,
