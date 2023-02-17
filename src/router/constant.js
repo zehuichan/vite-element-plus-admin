@@ -12,11 +12,13 @@ export const LAYOUT = () => import('@/layouts/default/index.vue')
 
 export const ERROR_PAGE = () => import('@/views/error-page/index.vue')
 
+export const REDIRECT_PAGE = () => import('@/views/redirect/index.vue')
+
 export const getParentLayout = (_name) => {
   return () =>
     new Promise((resolve) => {
       resolve({
-        name: PARENT_LAYOUT_NAME
+        name: _name || PARENT_LAYOUT_NAME
       })
     })
 }

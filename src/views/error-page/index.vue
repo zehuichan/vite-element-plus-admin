@@ -1,4 +1,4 @@
-<template> ErrorPage </template>
+<template> ErrorPage</template>
 
 <script>
 export default {
