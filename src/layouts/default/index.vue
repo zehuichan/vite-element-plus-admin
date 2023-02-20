@@ -43,17 +43,7 @@ export default defineComponent({
     } = useMenuSetting()
 
     const layoutClass = computed(() => {
-      let opened = unref(getCollapsed)
-
-      if (unref(getIsMobile)) {
-        setMenuSetting({
-          animation: unref(getCollapsed) && true
-        })
-      }
-
-      if (unref(getIsLaptop)) {
-        opened = true
-      }
+      const opened = unref(getIsLaptop) ? true : unref(getCollapsed)
 
       return {
         hideSider: opened,
