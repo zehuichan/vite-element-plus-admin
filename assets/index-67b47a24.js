@@ -1,0 +1,1 @@
+import{_ as e,o as s,b as t,h as c}from"./index-4b6b2b03.js";const o={},n={class:"app-container"},a=c("div",{class:"w-100px h-100px p-10px text-white bg-amber"},"unocss",-1),_=[a];function r(i,d){return s(),t("div",n,_)}const x=e(o,[["render",r]]);export{x as default};

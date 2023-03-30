@@ -1,1 +1,0 @@
-import{_ as e}from"./_plugin-vue_export-helper-c27b6911.js";import{j as o,l as n,o as t}from"./runtime-core.esm-bundler-c02bc754.js";const r=o({name:"Blank"});function a(s,c,p,_,f,i){return t(),n("div")}const l=e(r,[["render",a]]);export{l as default};
