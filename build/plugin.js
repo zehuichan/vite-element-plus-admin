@@ -1,6 +1,8 @@
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
+import uno from 'unocss/vite'
+
 import { configHtmlPlugin } from './html'
 import { configSvgIconsPlugin } from './svgSprite'
 import { configMockPlugin } from './mock'
@@ -17,7 +19,9 @@ export function createVitePlugins(viteEnv, isBuild) {
     // have to
     vue(),
     // have to
-    vueJsx()
+    vueJsx(),
+    // have to
+    uno()
   ]
 
   // vite-plugin-html
