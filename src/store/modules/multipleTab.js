@@ -100,7 +100,7 @@ export const useMultipleTabStore = defineStore({
     async refreshPage(router) {
       const { currentRoute } = router
       const route = unref(currentRoute)
-      const { name } = route
+      const { name, fullPath } = route
 
       const findTab = this.getCachedTabList.find((item) => item === name)
       if (findTab) {
