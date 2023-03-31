@@ -1,4 +1,4 @@
-# 项目
+# vite-element-plus-admin
 
 ## 技术栈
 
@@ -6,8 +6,9 @@
 2. axios
 3. vueuse@latest
 4. element-plus@latest
+5. unocss@latest
 
-目前 element-plus 使用完整导入
+目前 `element-plus` 使用完整导入
 
 ## 准备
 
@@ -34,67 +35,6 @@ npm install
 npm run dev
 ```
 
-## 一些代码规范
-
-1. 所有新页面、组件必须使用 setup 语法，避免 vue2.7、vue3 切换带来的心智压力
-2. 遵从自上而下规则，即：引入在前 -> Store 相关 -> Router 相关 -> 变量定义 -> hooks -> computed -> watch -> function -> 生命周期
-3. 接口调用必须在 onMounted 生命周期执行
-4. 使用 let、const 定义变量
-5. 使用 function name()定义函数
-
-一些例子
-
-```js
-export default {
-  name: 'name',
-  props: {},
-  emits: [],
-  setup(props, { attrs, emit, expose, slots }) {
-    // Store相关
-    const xxxStore = useXxxStore()
-
-    // Router相关
-    const router = useRouter()
-    const route = useRoute()
-
-    // 变量定义
-    const string = ref('')
-    const boolean = ref(false)
-    const dataForm = ref({})
-
-    // computed
-    const userInfo = computed(() => userStore.getUserInfo)
-    // or
-    const datetime = computed({
-      get() {
-        return xxx
-      },
-      set(val) {
-        // do something
-      }
-    })
-
-    // watch
-    watch(
-      () => boolean.value,
-      (val) => {
-        // do something
-      }
-    )
-
-    // function
-    function xxx() {
-      // do something
-    }
-
-    // 生命周期
-    onMounted(() => {
-      // do something
-    })
-  }
-}
-```
-
 ## 提测流程
 
 1. 各自开发分支合并代码到 dev
@@ -111,9 +51,7 @@ export default {
 
 ```
 ├─build # 编译相关
-│
 ├─mock # 数据模拟
-│
 ├─public
 │
 └─src
@@ -160,3 +98,11 @@ export default {
 
 - [Google 点我](https://www.google.com/)
 - [百度点我](https://www.baidu.com/)
+
+## 致谢
+
+- [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin)
+- [vue-vben-admin](https://github.com/vbenjs/vue-vben-admin)
+- [ant-design-vue-pro](https://github.com/vueComponent/ant-design-vue-pro)
+- [naive-ui-admin](https://github.com/jekip/naive-ui-admin)
+- [element-pro-components](https://github.com/tolking/element-pro-components) 
