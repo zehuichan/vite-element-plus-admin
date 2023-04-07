@@ -10,6 +10,8 @@ export const BLANK = () => import('@/layouts/blank/index.vue')
 
 export const LAYOUT = () => import('@/layouts/default/index.vue')
 
+export const PAGE = () => import('@/layouts/page/index.vue')
+
 export const ERROR_PAGE = () => import('@/views/error-page/index.vue')
 
 export const REDIRECT_PAGE = () => import('@/views/redirect/index.vue')
