@@ -1,19 +1,16 @@
 // Register icon sprite
 import 'virtual:svg-icons-register'
-
 // unocss
-import 'uno.css'
-import 'virtual:unocss-devtools'
+import 'virtual:uno.css'
+import '@unocss/reset/normalize.css'
 
 import { createApp } from 'vue'
 import App from './App.vue'
 
-// A modern alternative to CSS resets
-import 'normalize.css/normalize.css'
 // global css
 import './assets/styles/index.scss'
 
-import { setupElementPlus } from './install/plugins/element-plus'
+import { setupElementPlus } from './install/framework/element-plus'
 import { setupStore } from './store'
 import { router, setupRouter } from './router'
 import { setupGuard } from './router/guard'
@@ -32,7 +29,7 @@ async function bootstrap() {
   app.mount('#app')
 }
 
-void bootstrap()
+bootstrap()
 
 // eslint-disable-next-line no-undef
 console.table(__APP_INFO__)

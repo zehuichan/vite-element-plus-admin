@@ -1,7 +1,6 @@
-@import 'variables';
-@import 'tap';
-@import 'element-ui';
-@import 'transition';
+@use 'variables';
+@use 'tap';
+@use 'transition';
 
 body {
   height: 100%;
@@ -14,6 +13,7 @@ body {
   font-size: 14px;
   line-height: 1.5715;
   background: #fff;
+  margin: 0;
 }
 
 label {
@@ -52,14 +52,6 @@ div:focus {
   outline: none;
 }
 
-.fl {
-  float: left;
-}
-
-.fr {
-  float: right;
-}
-
 .clearfix {
   &::after {
     visibility: hidden;
@@ -69,18 +61,6 @@ div:focus {
     clear: both;
     height: 0;
   }
-}
-
-.text-center {
-  text-align: center;
-}
-
-.text-left {
-  text-align: left;
-}
-
-.text-right {
-  text-align: right;
 }
 
 .iconfont {
