@@ -1,0 +1,1 @@
+import{_ as e,k as o,o as s,b as t,h as n}from"./index-b0aea254.js";const a=o({}),c={class:"app-container"},r=n("code",null,"Dashboard",-1),_=[r];function d(i,p,f,l,h,m){return s(),t("div",c,_)}const x=e(a,[["render",d]]);export{x as default};
