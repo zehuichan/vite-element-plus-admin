@@ -18,7 +18,7 @@ import { computed, defineComponent, unref } from 'vue'
 import { useRouter } from 'vue-router'
 import { compile } from 'path-to-regexp'
 
-import { usePermissionStore } from '@/store'
+import { usePermissionStore } from '@/store/modules/permission'
 
 import { filter } from '@/utils/treeHelper'
 

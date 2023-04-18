@@ -17,7 +17,7 @@
 import { computed, defineComponent, reactive, unref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
-import { useMultipleTabStore } from '@/store'
+import { useMultipleTabStore } from '@/store/modules/multipleTab'
 import { TableActionEnum, useTabs } from '@/hooks/web/useTabs'
 
 export default defineComponent({

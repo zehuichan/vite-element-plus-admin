@@ -49,7 +49,7 @@
 
 <script>
 import { computed, defineComponent, ref } from 'vue'
-import { useErrorLogStore } from '@/store'
+import { useErrorLogStore } from '@/store/modules/errorLog'
 import { fireErrorApi } from '@/api'
 
 export default defineComponent({

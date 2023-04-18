@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import { store, usePermissionStore } from '..'
+import { store } from '..'
+import { usePermissionStore } from './permission'
 
 import { PAGE_NOT_FOUND_ROUTE, router } from '@/router'
 import { getInfo, login } from '@/api/user'

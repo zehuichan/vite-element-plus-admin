@@ -23,7 +23,7 @@
 <script>
 import { computed, defineComponent, unref } from 'vue'
 
-import { usePermissionStore } from '@/store'
+import { usePermissionStore } from '@/store/modules/permission.js'
 
 import { ElOverlay } from 'element-plus'
 import AppLogo from '../AppLogo/index.vue'

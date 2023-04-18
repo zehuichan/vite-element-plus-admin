@@ -21,7 +21,7 @@
 import { computed, defineComponent } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-import { useUserStore } from '@/store'
+import { useUserStore } from '@/store/modules/user'
 
 export default defineComponent({
   name: 'Userinfo',

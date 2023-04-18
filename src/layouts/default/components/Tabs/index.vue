@@ -71,7 +71,7 @@ import { useRoute, useRouter } from 'vue-router'
 import Draggable from 'vuedraggable'
 import Contextmenu from './contextmenu.vue'
 
-import { useMultipleTabStore } from '@/store'
+import { useMultipleTabStore } from '@/store/modules/multipleTab'
 
 import { useGo } from '@/hooks/web/usePage'
 import { useTabs } from '@/hooks/web/useTabs'

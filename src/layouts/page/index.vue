@@ -10,7 +10,7 @@
 <script>
 import { computed, defineComponent, unref } from 'vue'
 
-import { useMultipleTabStore } from '@/store'
+import { useMultipleTabStore } from '@/store/modules/multipleTab'
 import { useMultipleTabSetting } from '@/hooks/setting/useMultipleTabSetting'
 import { useRootSetting } from '@/hooks/setting/useRootSetting'
 

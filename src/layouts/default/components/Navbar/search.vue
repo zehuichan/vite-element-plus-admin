@@ -67,7 +67,7 @@ import { useRouter } from 'vue-router'
 import { onKeyStroke, useDebounceFn } from '@vueuse/core'
 
 import { filter } from '@/utils/treeHelper'
-import { usePermissionStore } from '@/store'
+import { usePermissionStore } from '@/store/modules/permission'
 
 // Translate special characters
 function transform(c) {

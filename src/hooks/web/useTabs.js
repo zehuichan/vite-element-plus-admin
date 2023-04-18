@@ -1,7 +1,8 @@
 import { useRouter } from 'vue-router'
 import { unref } from 'vue'
 
-import { useAppStore, useMultipleTabStore } from '@/store'
+import { useAppStore } from '@/store/modules/app'
+import { useMultipleTabStore } from '@/store/modules/multipleTab'
 
 export const TableActionEnum = {
   REFRESH: 0,

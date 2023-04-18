@@ -1,6 +1,6 @@
 import { computed, unref } from 'vue'
 
-import { useAppStore } from '@/store'
+import { useAppStore } from '@/store/modules/app'
 
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 
