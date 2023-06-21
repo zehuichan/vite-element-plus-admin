@@ -10,6 +10,7 @@
       <slot name="formHeader"></slot>
       <template v-for="schema in getSchema" :key="schema.field">
         <schema-form-item
+          :isAdvanced="fieldsIsAdvancedMap[schema.field]"
           :schema="schema"
           :form-props="getProps"
           :all-default-values="defaultValueRef"
@@ -40,6 +41,7 @@ import { cloneDeep, pick } from 'lodash-es'
 
 import { formProps } from 'element-plus'
 
+import { useAdvanced } from './hooks/useAdvanced'
 import { useFormValues } from './hooks/useFormValues'
 import { useFormEvents } from './hooks/useFormEvents'
 import { useAutoFocus } from './hooks/useAutoFocus'
@@ -72,8 +74,21 @@ export default defineComponent({
       type: [Array],
       default: () => []
     },
+    baseColProps: {
+      type: Object,
+      default: () => ({ span: 6 })
+    },
     size: String,
     disabled: Boolean,
+    autoAdvancedLine: {
+      type: Number,
+      default: 3
+    },
+    alwaysShowLines: {
+      type: Number,
+      default: 1
+    },
+    showAdvancedButton: Boolean,
     rulesMessageJoinLabel: {
       type: Boolean,
       default: true
@@ -85,9 +100,14 @@ export default defineComponent({
     },
     autoFocusFirstItem: Boolean
   },
-  emits: ['register', 'field-value-change', 'enter'],
+  emits: ['register', 'field-value-change', 'enter', 'advanced-change'],
   setup(props, { attrs, emit }) {
     const formModel = reactive({})
+    const advanceState = reactive({
+      isAdvanced: true,
+      hideAdvanceBtn: false,
+      isLoad: false,
+    })
 
     const defaultValueRef = ref({})
     const isInitedDefaultRef = ref(false)
@@ -125,6 +145,16 @@ export default defineComponent({
       return cloneDeep(schemas)
     })
 
+
+    const { handleToggleAdvanced, fieldsIsAdvancedMap } = useAdvanced({
+      advanceState,
+      emit,
+      getProps,
+      getSchema,
+      formModel,
+      defaultValueRef
+    })
+
     const { handleFormValues, initDefault } = useFormValues({
       defaultValueRef,
       getSchema,
@@ -144,7 +174,7 @@ export default defineComponent({
       updateSchema,
       resetSchema,
       appendSchemaByField,
-      removeSchemaByFiled,
+      removeSchemaByField,
       resetFields,
       clearValidate,
       validate,
@@ -196,19 +226,21 @@ export default defineComponent({
     }
 
     const formAction = {
+      advanceState,
       setProps,
       setFieldsValue,
       getFieldsValue,
       updateSchema,
       resetSchema,
       appendSchemaByField,
-      removeSchemaByFiled,
+      removeSchemaByField,
       resetFields,
       clearValidate,
       validate,
       validateField,
       scrollToField,
-      handleEnter
+      handleEnterPress,
+      handleToggleAdvanced
     }
 
     function handleEnterPress(e) {
@@ -235,15 +267,13 @@ export default defineComponent({
       getBindValue,
       formModel,
       defaultValueRef,
-      propsRef,
-      getSchema,
       getRow,
       getProps,
       formElRef,
+      getSchema,
       formAction,
-
-      handleEnterPress,
-      ...formAction
+      fieldsIsAdvancedMap,
+      ...formAction,
     }
   }
 })

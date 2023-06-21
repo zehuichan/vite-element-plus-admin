@@ -53,7 +53,7 @@ const schemas = [
 
 export default defineComponent({
   setup() {
-    const [register, { getFieldsValue }] = useForm({
+    const [, register, { getFieldsValue }] = useForm({
       schemas
     })
 

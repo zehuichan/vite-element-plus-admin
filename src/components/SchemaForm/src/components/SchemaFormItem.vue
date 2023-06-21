@@ -30,7 +30,10 @@ export default defineComponent({
     formModel: {
       type: Object,
       default: () => ({})
-    }
+    },
+    isAdvanced: {
+      type: Boolean,
+    },
   },
   setup(props, { emit, slots }) {
     const state = useVModel(props, 'modelValue', emit)
@@ -81,6 +84,7 @@ export default defineComponent({
 
     function getShow() {
       const { show, ifShow } = props.schema
+      const itemIsAdvanced = isBoolean(props.isAdvanced) ? props.isAdvanced : true
 
       let isShow = true
       let isIfShow = true
@@ -98,6 +102,7 @@ export default defineComponent({
         isIfShow = ifShow(unref(getValues))
       }
 
+      isShow = isShow && itemIsAdvanced
       return { isShow, isIfShow }
     }
 
@@ -281,8 +286,8 @@ export default defineComponent({
           return slot
             ? getSlot(slots, slot, unref(getValues))
             : render
-            ? render(unref(getValues))
-            : renderComponent()
+              ? render(unref(getValues))
+              : renderComponent()
         }
 
         // todo https://vuejs.org/guide/extras/render-function.html#passing-slots
@@ -301,7 +306,6 @@ export default defineComponent({
       const { colProps = {}, colSlot, renderColContent } = props.schema
 
       // todo
-
       const { baseColProps = {} } = props.formProps
       const realColProps = { ...baseColProps, ...colProps }
       const { isIfShow, isShow } = getShow()
@@ -311,8 +315,8 @@ export default defineComponent({
         return colSlot
           ? getSlot(slots, colSlot, values)
           : renderColContent
-          ? renderColContent(values)
-          : renderItem()
+            ? renderColContent(values)
+            : renderItem()
       }
 
       return (

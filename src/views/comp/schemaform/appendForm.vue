@@ -44,36 +44,46 @@ const schemas = [
 
 export default defineComponent({
   setup() {
-    const [register, { appendSchemaByField, removeSchemaByFiled }] = useForm({
+    const [, register, { appendSchemaByField, removeSchemaByField }] = useForm({
       schemas
     })
     const n = ref(1)
 
     function add() {
-      appendSchemaByField({
-        field: `field${n.value}a`,
-        component: 'Input',
-        label: '字段' + n.value,
-        colProps: {
-          span: 16
+      appendSchemaByField(
+        {
+          field: `field${n.value}a`,
+          component: 'Input',
+          label: '字段' + n.value,
+          required: true,
         },
-        defaultValue: 123,
-        required: true
-      })
-      appendSchemaByField({
-        field: `${n.value}`,
-        component: 'Input',
-        label: ' ',
-        colProps: {
-          span: 8
+        '',
+      )
+      appendSchemaByField(
+        {
+          field: `field${n.value}b`,
+          component: 'Input',
+          label: '字段' + n.value,
+          required: true,
         },
-        slot: 'add'
-      })
+        '',
+      )
+
+      appendSchemaByField(
+        {
+          field: `${n.value}`,
+          component: 'Input',
+          label: ' ',
+          slot: 'add',
+        },
+        '',
+      )
       n.value++
     }
 
     function del(field) {
-      removeSchemaByFiled([`field${field}a`, `field${field}b`, `${field}`])
+      console.log(field)
+      removeSchemaByField([`field${field}a`, `field${field}b`, `${field}`])
       n.value--
     }
 

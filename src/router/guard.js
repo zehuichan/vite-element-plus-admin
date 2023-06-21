@@ -42,6 +42,11 @@ export function createPermissionGuard(router) {
 
     // Whitelist can be directly entered
     if (whiteList.includes(to.path)) {
+      if (to.path === LOGIN_ROUTE.path && token) {
+        next((to.query?.redirect) || '/')
+        return
+      }
+
       next()
       return
     }
@@ -69,7 +74,7 @@ export function createPermissionGuard(router) {
     }
 
     if (
-      from.name === LOGIN_ROUTE.name &&
+      from.path === LOGIN_ROUTE.path &&
       to.name === PAGE_NOT_FOUND_ROUTE.name
     ) {
       next('/')

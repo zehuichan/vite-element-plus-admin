@@ -12,7 +12,7 @@
   </el-select-v2>
 </template>
 <script>
-import { defineComponent, ref, computed, unref, watch, onMounted } from 'vue'
+import { defineComponent, ref, computed, unref, watch, onMounted, watchEffect } from 'vue'
 
 import { useVModel } from '@vueuse/core'
 
@@ -96,6 +96,10 @@ export default defineComponent({
         }
         return prev
       }, [])
+    })
+
+    watchEffect(() => {
+      props.immediate && !props.alwaysLoad && fetch()
     })
 
     watch(

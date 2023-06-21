@@ -23,10 +23,10 @@ export function useForm(props) {
   function register(instance) {
     // 开发环境下，组件卸载后释放内存
     isProdMode() &&
-      onUnmounted(() => {
-        formRef.value = null
-        loadedRef.value = null
-      })
+    onUnmounted(() => {
+      formRef.value = null
+      loadedRef.value = null
+    })
 
     // form 组件实例 instance 已存在
     // 实际上 register 拿到的并不是 组件实例， 只是挂载了一些组件内部方法的 对象 formAction
@@ -74,8 +74,8 @@ export function useForm(props) {
       const form = await getForm()
       form.appendSchemaByField(schema, prefixField, first)
     },
-    removeSchemaByFiled: async (field) => {
-      unref(formRef)?.removeSchemaByFiled(field)
+    removeSchemaByField: async (field) => {
+      unref(formRef)?.removeSchemaByField(field)
     },
     validate: async (callback) => {
       const form = await getForm()
@@ -92,8 +92,12 @@ export function useForm(props) {
     clearValidate: async (name) => {
       const form = await getForm()
       form.clearValidate(name)
+    },
+    handleToggleAdvanced: async () => {
+      const form = await getForm()
+      form.handleToggleAdvanced()
     }
   }
 
-  return [register, methods]
+  return [formRef, register, methods]
 }

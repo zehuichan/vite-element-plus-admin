@@ -4,13 +4,13 @@ import { cloneDeep, uniqBy } from 'lodash-es'
 import { deepMerge } from '@/utils'
 
 export function useFormEvents({
-  emit,
-  formModel,
-  getSchema,
-  formElRef,
-  schemaRef,
-  handleFormValues
-}) {
+                                emit,
+                                formModel,
+                                getSchema,
+                                formElRef,
+                                schemaRef,
+                                handleFormValues
+                              }) {
   //设置表单值
   async function setFieldsValue(values) {
     const schemas = unref(getSchema)
@@ -93,25 +93,26 @@ export function useFormEvents({
   }
 
   async function appendSchemaByField(schema, prefixField, first = false) {
+    console.log(2)
     const schemaList = cloneDeep(unref(getSchema))
 
     const index = schemaList.findIndex((schema) => schema.field === prefixField)
-
+    const _schemaList = isObject(schema) ? [schema] : schema
     if (!prefixField || index === -1 || first) {
-      first ? schemaList.unshift(schema) : schemaList.push(schema)
+      first ? schemaList.unshift(schema) : schemaList.push(..._schemaList)
       schemaRef.value = schemaList
       _setDefaultValue(schema)
       return
     }
     if (index !== -1) {
-      schemaList.splice(index + 1, 0, schema)
+      schemaList.splice(index + 1, 0, ..._schemaList)
     }
     _setDefaultValue(schema)
 
     schemaRef.value = schemaList
   }
 
-  async function removeSchemaByFiled(fields) {
+  async function removeSchemaByField(fields) {
     const schemaList = cloneDeep(unref(getSchema))
     if (!fields) {
       return
@@ -122,7 +123,7 @@ export function useFormEvents({
       fieldList = [fields]
     }
     for (const field of fieldList) {
-      _removeSchemaByFiled(field, schemaList)
+      _removeSchemaByFeild(field, schemaList)
     }
     schemaRef.value = schemaList
   }
@@ -160,7 +161,7 @@ export function useFormEvents({
     }
   }
 
-  function _removeSchemaByFiled(field, schemaList) {
+  function _removeSchemaByFeild(field, schemaList) {
     if (isString(field)) {
       const index = schemaList.findIndex((schema) => schema.field === field)
       if (index !== -1) {
@@ -201,7 +202,7 @@ export function useFormEvents({
     updateSchema,
     resetSchema,
     appendSchemaByField,
-    removeSchemaByFiled,
+    removeSchemaByField,
     validate,
     validateField,
     resetFields,

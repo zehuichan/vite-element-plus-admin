@@ -95,7 +95,7 @@ export default defineComponent({
   setup() {
     const modelRef = ref({})
 
-    const [register, { setProps, setFieldsValue, getFieldsValue }] = useForm({
+    const [, register, { setProps, setFieldsValue, getFieldsValue }] = useForm({
       schemas
     })
 

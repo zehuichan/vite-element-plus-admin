@@ -91,7 +91,7 @@ const schemas = [
 
 export default defineComponent({
   setup() {
-    const [register, { setProps, setFieldsValue }] = useForm({
+    const [, register, { setProps, setFieldsValue }] = useForm({
       schemas
     })
 
