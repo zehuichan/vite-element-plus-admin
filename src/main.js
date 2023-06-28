@@ -11,6 +11,7 @@ import App from './App.vue'
 import './assets/styles/index.scss'
 
 import { setupElementPlus } from './install/framework/element-plus'
+import { setupIconPark } from './install/icons/icon-park'
 import { setupStore } from './store'
 import { router, setupRouter } from './router'
 import { setupGuard } from './router/guard'
@@ -22,6 +23,7 @@ async function bootstrap() {
 
   setupStore(app)
   setupElementPlus(app)
+  setupIconPark(app)
   registerComponents(app)
   setupRouter(app)
   setupGuard(router)

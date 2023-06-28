@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
+    "@icon-park/vue-next": "^1.4.2",
     "@vueuse/core": "^10.2.0",
     "axios": "^1.4.0",
     "cleave.js": "^1.6.0",

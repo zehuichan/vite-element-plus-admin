@@ -52,10 +52,10 @@ import SchemaFormItem from './components/SchemaFormItem.vue'
 
 export default defineComponent({
   name: 'SchemaForm',
+  inheritAttrs: false,
   components: {
     SchemaFormItem
   },
-  inheritAttrs: false,
   props: {
     model: {
       type: Object,

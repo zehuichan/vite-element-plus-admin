@@ -3,6 +3,10 @@ import Fullcontent from './Fullcontent'
 import Icon from './Icon'
 import SchemaForm, { ApiSelect } from './SchemaForm'
 import SvgIcon from './SvgIcon'
+import IconPark from './IconPark'
+import BasicTable from './BasicTable'
+import Segmented from './Segmented'
+import ToolBar from './ToolBar'
 
 const components = [
   AppProvider,
@@ -10,7 +14,11 @@ const components = [
   Icon,
   SchemaForm,
   ApiSelect,
-  SvgIcon
+  SvgIcon,
+  IconPark,
+  BasicTable,
+  Segmented,
+  ToolBar,
 ]
 
 export function registerComponents(app) {

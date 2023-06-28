@@ -1,3 +1,4 @@
+import './theme.scss'
 import './element-plus.scss'
 import ElementPlus from 'element-plus'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'

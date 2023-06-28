@@ -1,5 +1,5 @@
 <script lang="jsx">
-import { computed, defineComponent, unref } from 'vue'
+import { computed, defineComponent, h, unref } from 'vue'
 import { useVModel } from '@vueuse/core'
 
 import { cloneDeep } from 'lodash-es'
@@ -257,14 +257,14 @@ export default defineComponent({
       }
 
       if (!renderComponentContent) {
-        return <tag {...compAttr} />
+        return h(tag, compAttr)
       }
 
       const compSlot = isFunction(renderComponentContent)
         ? { ...renderComponentContent(unref(getValues)) }
         : { default: () => renderComponentContent }
 
-      return <tag {...compAttr}>{compSlot}</tag>
+      return h(tag, compAttr, compSlot)
     }
 
     function renderItem() {

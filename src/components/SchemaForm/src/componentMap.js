@@ -10,6 +10,7 @@ import {
 } from 'element-plus'
 import ApiRadioGroup from './components/ApiRadioGroup.vue'
 import ApiSelect from './components/ApiSelect.vue'
+import { Segmented } from '@/components/Segmented'
 
 const componentMap = new Map()
 
@@ -35,6 +36,8 @@ componentMap.set('Divider', 'el-divider')
 
 componentMap.set('ApiRadioGroup', ApiRadioGroup)
 componentMap.set('ApiSelect', ApiSelect)
+
+componentMap.set('Segmented', Segmented)
 
 export function add(compName, component) {
   componentMap.set(compName, component)

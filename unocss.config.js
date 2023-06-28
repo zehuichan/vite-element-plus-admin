@@ -3,15 +3,18 @@ import { defineConfig, transformerDirectives } from 'unocss'
 export default defineConfig({
   rules: [],
   shortcuts: {
-    'flex-center': 'flex items-center justify-center'
+    'flex-center': 'flex items-center',
+    'flex-between': 'flex items-center justify-between',
+    'flex-end': 'flex items-center justify-end',
+    'page-wrapper': 'min-h-full p-12px bg-#fff',
   },
   theme: {
     colors: {
-      primary: '#409eff',
-      success: '#67c23a',
+      primary: '#0052d9',
+      success: '#2ba471',
       info: '#909399',
-      warning: '#e6a23c',
-      danger: '#f56c6c'
+      warning: '#e37318',
+      danger: '#d54941'
     }
   },
   transformers: [
