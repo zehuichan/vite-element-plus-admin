@@ -7,6 +7,8 @@ import IconPark from './IconPark'
 import BasicTable from './BasicTable'
 import Segmented from './Segmented'
 import ToolBar from './ToolBar'
+import BasicForm from './BasicForm'
+import Field from './Field'
 
 const components = [
   AppProvider,
@@ -19,6 +21,8 @@ const components = [
   BasicTable,
   Segmented,
   ToolBar,
+  BasicForm,
+  Field,
 ]
 
 export function registerComponents(app) {

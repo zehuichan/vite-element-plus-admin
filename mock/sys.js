@@ -21,6 +21,15 @@ const menu = [
     }
   },
   {
+    path: '/demo',
+    name: 'Demo',
+    component: '/demo/index',
+    meta: {
+      title: 'Demo',
+      icon: 'document'
+    }
+  },
+  {
     path: '/feature',
     name: 'feature',
     component: 'LAYOUT',

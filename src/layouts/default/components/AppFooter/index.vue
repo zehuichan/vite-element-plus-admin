@@ -19,7 +19,10 @@ export default defineComponent({
 
 <style lang="scss">
 .basic-layout-footer {
-  color: #d9d9d9;
   text-align: center;
+  padding: 24px 50px 80px;
+  color: #000000d9;
+  font-size: 14px;
+  height: auto;
 }
 </style>
