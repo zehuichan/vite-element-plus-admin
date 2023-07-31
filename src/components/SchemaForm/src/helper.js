@@ -10,9 +10,19 @@ export function createPlaceholderMessage(component) {
     component.includes('Cascader') ||
     component.includes('Checkbox') ||
     component.includes('Radio') ||
-    component.includes('Switch')
+    component.includes('Switch') ||
+    component.includes('Segmented')
   ) {
     return '请选择'
   }
   return ''
 }
+
+const DATE_TYPE = ['DatePicker', 'TimePicker', 'TimeSelect']
+
+function genType() {
+  return [...DATE_TYPE, 'RangePicker']
+}
+
+export const dateItemType = genType()
+

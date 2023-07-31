@@ -17,11 +17,13 @@
         <el-input v-model="model[field]" placeholder="自定义slot" />
       </template>
     </schema-form>
+    <el-button text bg @click="handelReset">重置</el-button>
+    <el-button text bg @click="handelQuery">查询</el-button>
   </div>
 </template>
 
-<script>
-import { defineComponent, ref } from 'vue'
+<script setup>
+import { ref } from 'vue'
 import { dictApi } from '@/api'
 import { useForm } from '@/components/SchemaForm'
 
@@ -91,28 +93,24 @@ const schemas = [
   }
 ]
 
-export default defineComponent({
-  setup() {
-    const modelRef = ref({})
+const modelRef = ref({})
 
-    const [, register, { setProps, setFieldsValue, getFieldsValue }] = useForm({
-      schemas
-    })
-
-    function handleChange() {
-      modelRef.value = { field2: 123123 }
-    }
-
-    return {
-      modelRef,
-      register,
-      setProps,
-      setFieldsValue,
-      getFieldsValue() {
-        console.log(getFieldsValue())
-      },
-      handleChange
-    }
-  }
+const [register, { setProps, setFieldsValue, getFieldsValue, resetFields }] = useForm({
+  schemas
 })
+
+function handleChange() {
+  modelRef.value = { field2: 123123 }
+}
+
+const handelReset = () => {
+  const data = getFieldsValue()
+  resetFields()
+  console.log(data)
+}
+const handelQuery = () => {
+  const data = getFieldsValue()
+  console.log(data)
+}
+
 </script>

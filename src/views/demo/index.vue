@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <basic-form ref="formRef" :model="dataForm" :rules="rules">
-      <field label="aaa" prop="a" :span="12">
+      <field label="aaa" prop="a">
         <el-input v-model="dataForm.a" />
       </field>
       <field label="bbb" prop="b">
@@ -12,14 +12,14 @@
       </field>
     </basic-form>
     <tool-bar justify="end">
-      <el-button @click="submit">submit</el-button>
-      <el-button @click="reset">reset</el-button>
+      <el-button text bg @click="reset">reset</el-button>
+      <el-button type="primary" text bg @click="submit">submit</el-button>
     </tool-bar>
   </div>
 </template>
 
 <script setup>
-import { computed, defineComponent, reactive, ref } from 'vue'
+import { reactive, ref } from 'vue'
 
 const formRef = ref(null)
 const dataForm = reactive({

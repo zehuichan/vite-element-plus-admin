@@ -11,7 +11,7 @@ import { isBoolean, isFunction, isNull } from '@/utils/is'
 import { getSlot } from '@/utils/jsxHelper'
 
 export default defineComponent({
-  name: 'SchemaFormItem',
+  name: 'FormItem',
   inheritAttrs: false,
   props: {
     schema: {
@@ -248,7 +248,7 @@ export default defineComponent({
       const on = {
         ['onUpdate:modelValue']: (value) => {
           props.setFormModel(field, value, props.schema);
-        }
+        },
       }
 
       const bindValue = {

@@ -2,9 +2,10 @@
   <el-form
     v-bind="getBindValue"
     ref="formElRef"
+    require-asterisk-position="right"
     :model="formModel"
     :validate-on-rule-change="false"
-    @keyup.enter.stop="handleEnterPress"
+    @keypress.enter="handleEnterPress"
   >
     <el-row v-bind="getRow">
       <slot name="formHeader"></slot>
@@ -15,7 +16,7 @@
           :form-props="getProps"
           :all-default-values="defaultValueRef"
           :form-model="formModel"
-          v-model="formModel[schema.field]"
+          :set-form-model="setFormModel"
         >
           <template #[item]="data" v-for="item in Object.keys($slots)">
             <slot :name="item" v-bind="data || {}" />
@@ -49,6 +50,8 @@ import { useAutoFocus } from './hooks/useAutoFocus'
 import { deepMerge } from '@/utils'
 
 import SchemaFormItem from './components/SchemaFormItem.vue'
+import { dateUtil } from '@/utils/dateUtil'
+import { dateItemType } from './helper'
 
 export default defineComponent({
   name: 'SchemaForm',
@@ -137,11 +140,24 @@ export default defineComponent({
     const getSchema = computed(() => {
       const schemas = unref(schemaRef) || unref(getProps).schemas
       for (const schema of schemas) {
-        const { defaultValue } = schema
-        if (defaultValue) {
-          schema.defaultValue = defaultValue
+        const { defaultValue, component, componentProps, isHandleDateDefaultValue = true } = schema
+        // handle date type
+        if (isHandleDateDefaultValue && defaultValue && dateItemType.includes(component)) {
+          const valueFormat = componentProps ? componentProps['valueFormat'] : null
+          if (!Array.isArray(defaultValue)) {
+            schema.defaultValue = valueFormat
+              ? dateUtil(defaultValue).format(valueFormat)
+              : dateUtil(defaultValue)
+          } else {
+            const def = []
+            defaultValue.forEach((item) => {
+              def.push(valueFormat ? dateUtil(item).format(valueFormat) : dateUtil(item))
+            })
+            schema.defaultValue = def
+          }
         }
       }
+
       return cloneDeep(schemas)
     })
 
@@ -156,6 +172,7 @@ export default defineComponent({
     })
 
     const { handleFormValues, initDefault } = useFormValues({
+      getProps,
       defaultValueRef,
       getSchema,
       formModel
@@ -194,7 +211,8 @@ export default defineComponent({
 
     watch(
       () => unref(getProps).model,
-      (model) => {
+      () => {
+        const { model } = unref(getProps)
         if (!model) return
         setFieldsValue(model)
       },
@@ -225,6 +243,26 @@ export default defineComponent({
       propsRef.value = deepMerge(unref(propsRef) || {}, formProps)
     }
 
+    function setFormModel(key, value, schema) {
+      formModel[key] = value
+      emit('field-value-change', key, value)
+    }
+
+    function handleEnterPress(e) {
+      const { autoSubmitOnEnter } = unref(getProps)
+      if (!autoSubmitOnEnter) return
+      if (e.key === 'Enter' && e.target && e.target instanceof HTMLElement) {
+        const { target } = e
+        if (
+          target &&
+          target.tagName &&
+          target.tagName.toUpperCase() == 'INPUT'
+        ) {
+          handleEnter()
+        }
+      }
+    }
+
     const formAction = {
       advanceState,
       setProps,
@@ -243,21 +281,6 @@ export default defineComponent({
       handleToggleAdvanced
     }
 
-    function handleEnterPress(e) {
-      const { autoSubmitOnEnter } = unref(getProps)
-      if (!autoSubmitOnEnter) return
-      if (e.key === 'Enter' && e.target && e.target instanceof HTMLElement) {
-        const { target } = e
-        if (
-          target &&
-          target.tagName &&
-          target.tagName.toUpperCase() == 'INPUT'
-        ) {
-          handleEnter()
-        }
-      }
-    }
-
     onMounted(() => {
       initDefault()
       emit('register', formAction)
@@ -274,6 +297,7 @@ export default defineComponent({
       formAction,
       fieldsIsAdvancedMap,
       ...formAction,
+      setFormModel,
     }
   }
 })

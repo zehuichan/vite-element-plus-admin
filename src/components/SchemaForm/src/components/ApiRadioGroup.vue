@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { computed, defineComponent, onMounted, ref, unref, watch } from 'vue'
+import { computed, defineComponent, onMounted, ref, unref, watch, watchEffect } from 'vue'
 import { useVModel } from '@vueuse/core'
 import { get, omit } from 'lodash-es'
 import { isFunction } from '@/utils/is'
@@ -92,6 +92,10 @@ export default defineComponent({
         }
         return prev
       }, [])
+    })
+
+    watchEffect(() => {
+      props.immediate && !props.alwaysLoad && fetch()
     })
 
     watch(

@@ -1,12 +1,54 @@
 import { nextTick, toRaw, unref } from 'vue'
-import { isArray, isNullOrUnDef, isObject, isString } from '@/utils/is'
-import { cloneDeep, uniqBy } from 'lodash-es'
+import { isArray, isEmpty, isNullOrUnDef, isObject, isString } from '@/utils/is'
+import { cloneDeep, set, uniqBy } from 'lodash-es'
 import { deepMerge } from '@/utils'
+
+function tryConstructArray(field, values = {}) {
+  const pattern = /^\[(.+)\]$/
+  if (pattern.test(field)) {
+    const match = field.match(pattern)
+    if (match && match[1]) {
+      const keys = match[1].split(',')
+      if (!keys.length) {
+        return undefined
+      }
+
+      const result = []
+      keys.forEach((k, index) => {
+        set(result, index, values[k.trim()])
+      })
+
+      return result.filter(Boolean).length ? result : undefined
+    }
+  }
+}
+
+function tryConstructObject(field, values = {}) {
+  const pattern = /^\{(.+)\}$/
+  if (pattern.test(field)) {
+    const match = field.match(pattern)
+    if (match && match[1]) {
+      const keys = match[1].split(',')
+      if (!keys.length) {
+        return
+      }
+
+      const result = {}
+      keys.forEach((k) => {
+        set(result, k.trim(), values[k.trim()])
+      })
+
+      return Object.values(result).filter(Boolean).length ? result : undefined
+    }
+  }
+}
 
 export function useFormEvents({
                                 emit,
+                                getProps,
                                 formModel,
                                 getSchema,
+                                defaultValueRef,
                                 formElRef,
                                 schemaRef,
                                 handleFormValues
@@ -53,15 +95,19 @@ export function useFormEvents({
       return
     }
     const schema = []
-    updateData.forEach((item) => {
-      unref(getSchema).forEach((val) => {
+    unref(getSchema).forEach((val) => {
+      let _val
+      updateData.forEach((item) => {
         if (val.field === item.field) {
-          const newSchema = deepMerge(val, item)
-          schema.push(newSchema)
-        } else {
-          schema.push(val)
+          _val = item
         }
       })
+      if (_val !== undefined && val.field === _val.field) {
+        const newSchema = deepMerge(val, _val)
+        schema.push(newSchema)
+      } else {
+        schema.push(val)
+      }
     })
     _setDefaultValue(schema)
 
@@ -78,9 +124,7 @@ export function useFormEvents({
     }
 
     const hasField = updateData.every(
-      (item) =>
-        item.component === 'Divider' ||
-        (Reflect.has(item, 'field') && item.field)
+      (item) => item.component === 'Divider' || (Reflect.has(item, 'field') && item.field)
     )
 
     if (!hasField) {
@@ -93,8 +137,10 @@ export function useFormEvents({
   }
 
   async function appendSchemaByField(schema, prefixField, first = false) {
-    console.log(2)
     const schemaList = cloneDeep(unref(getSchema))
+    const addSchemaIds = Array.isArray(schema)
+      ? schema.map((item) => item.field)
+      : [schema.field]
 
     const index = schemaList.findIndex((schema) => schema.field === prefixField)
     const _schemaList = isObject(schema) ? [schema] : schema
@@ -128,18 +174,23 @@ export function useFormEvents({
     schemaRef.value = schemaList
   }
 
-  async function validate() {
-    return await unref(formElRef).validate()
+  function validate(cb) {
+    return unref(formElRef).validate(cb)
   }
 
   async function validateField(prop, callback) {
     return await unref(formElRef).validateField(prop, callback)
   }
 
-  async function resetFields() {
-    await unref(formElRef).resetFields()
-    await nextTick()
-    await clearValidate()
+  function resetFields() {
+    Object.keys(formModel).forEach((key) => {
+      const defaultValue = cloneDeep(defaultValueRef.value[key])
+      formModel[key] = defaultValue ?? ''
+    })
+
+    unref(formElRef).resetFields()
+
+    return handleFormValues(toRaw(unref(formModel)))
   }
 
   async function scrollToField(prop) {
@@ -188,7 +239,9 @@ export function useFormEvents({
         Reflect.has(item, 'field') &&
         item.field &&
         !isNullOrUnDef(item.defaultValue) &&
-        !(item.field in currentFieldsValue)
+        (!(item.field in currentFieldsValue) ||
+          isNullOrUnDef(currentFieldsValue[item.field]) ||
+          isEmpty(currentFieldsValue[item.field]))
       ) {
         obj[item.field] = item.defaultValue
       }

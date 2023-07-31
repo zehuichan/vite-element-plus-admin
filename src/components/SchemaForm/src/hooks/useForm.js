@@ -58,9 +58,8 @@ export function useForm(props) {
     getFieldsValue: () => {
       return unref(formRef)?.getFieldsValue()
     },
-    resetFields: async () => {
-      const form = await getForm()
-      form.resetFields()
+    resetFields: () => {
+      return unref(formRef)?.resetFields()
     },
     updateSchema: async (data) => {
       const form = await getForm()
@@ -99,5 +98,5 @@ export function useForm(props) {
     }
   }
 
-  return [formRef, register, methods]
+  return [register, methods]
 }

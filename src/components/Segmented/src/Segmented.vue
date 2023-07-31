@@ -20,16 +20,20 @@
 </template>
 
 <script>
-import { computed, defineComponent, inject } from 'vue'
+import { computed, defineComponent } from 'vue'
+
 import { useVModel } from '@vueuse/core'
+
 import { omit } from 'lodash-es'
-import { formContextKey } from 'element-plus'
+
+import { useFormItem } from 'element-plus'
 
 export default defineComponent({
   name: 'Segmented',
+  inheritAttrs: false,
   props: {
     modelValue: [String, Number],
-    columns: Array,
+    options: Array,
     numberToString: Boolean,
     labelField: {
       type: String,
@@ -42,10 +46,14 @@ export default defineComponent({
     block: Boolean,
     disabled: Boolean,
     readonly: Boolean,
+    validateEvent: {
+      type: Boolean,
+      default: true,
+    },
   },
   emits: ['update:modelValue', 'change'],
   setup(props, { emit }) {
-    const elForm = inject(formContextKey, {})
+    const { form, formItem } = useFormItem()
 
     const state = useVModel(props, 'modelValue', emit)
 
@@ -54,10 +62,10 @@ export default defineComponent({
         labelField,
         valueField,
         numberToString,
-        columns: defaultColumns
+        options: defaultOptions
       } = props
 
-      return defaultColumns.reduce((prev, next) => {
+      return defaultOptions.reduce((prev, next) => {
         if (next) {
           const value = next[valueField]
           prev.push({
@@ -71,21 +79,20 @@ export default defineComponent({
     })
 
     const inputDisabled = computed(() => {
-      return getProp('disabled')
+      return props.disabled || form?.disabled
     })
 
     const inputReadonly = computed(() => {
-      return getProp('readonly')
+      return props.readonly || form?.readonly
     })
 
-    function getProp(key) {
-      return props[key] || (elForm?.props || {})[key]
-    }
-
     function handleClick(item, index) {
-      if (getProp('disabled') || getProp('readonly') || item.disabled) return
+      if (inputDisabled.value || inputReadonly.value || item.disabled) return
       state.value = item.value
       emit('change', item.value, index)
+      if (props.validateEvent) {
+        formItem?.validate('change').catch((err) => console.warn(err))
+      }
     }
 
     return {
@@ -103,7 +110,8 @@ export default defineComponent({
 :root {
   --segmented-bg: rgba(0, 0, 0, 0.04);
   --segmented-hover-bg: rgba(0, 0, 0, 0.06);
-  --segmented-selected-bg: #fff;
+  --segmented-selected-bg: #2F88FF;
+  --segmented-selected-label-color: #fff;
   --segmented-label-color: rgba(0, 0, 0, 0.65);
   --segmented-label-hover-color: #262626;
   --segmented-disabled-color: rgba(0, 0, 0, 0.25);
@@ -113,7 +121,7 @@ export default defineComponent({
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-size: 14px;
+  font-size: 12px;
   font-variant: tabular-nums;
   line-height: 1.5714285714285714;
   list-style: none;
@@ -147,13 +155,13 @@ export default defineComponent({
     position: relative;
     text-align: center;
     cursor: pointer;
-    transition: color .2s cubic-bezier(.645, .045, .355, 1);
+    transition: background-color .2s cubic-bezier(.645, .045, .355, 1);
     border-radius: var(--el-border-radius-base);
 
     &-selected {
       background-color: var(--segmented-selected-bg);
       box-shadow: 0 2px 8px -2px fade(#000, 5%), 0 1px 4px -1px fade(#000, 7%), 0 0 1px fade(#000, 8%);
-      color: var(--segmented-label-hover-color);
+      color: var(--segmented-selected-label-color);
     }
 
     &::after {
@@ -187,8 +195,8 @@ export default defineComponent({
     }
 
     &-label {
-      min-height: 32px;
-      line-height: 32px;
+      min-height: 28px;
+      line-height: 28px;
       padding: 0 11px;
       overflow: hidden;
       white-space: nowrap;
@@ -207,3 +215,4 @@ export default defineComponent({
   }
 }
 </style>
+

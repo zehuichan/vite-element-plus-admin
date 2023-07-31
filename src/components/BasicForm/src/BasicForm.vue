@@ -12,8 +12,8 @@ import { formProps, rowProps } from 'element-plus'
 import { pick } from 'lodash-es'
 
 export default defineComponent({
-  inheritAttrs: false,
   name: 'BasicForm',
+  inheritAttrs: false,
   props: {
     ...formProps,
     ...rowProps,
@@ -23,7 +23,6 @@ export default defineComponent({
     }
   },
   setup(props) {
-
     const { proxy } = getCurrentInstance()
 
     const formElRef = ref()
@@ -46,7 +45,7 @@ export default defineComponent({
     return {
       formElRef,
       getRow,
-      getBindValue
+      getBindValue,
     }
   }
 })
