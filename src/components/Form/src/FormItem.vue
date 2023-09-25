@@ -1,54 +1,41 @@
 <script lang="jsx">
-import { computed, defineComponent, unref } from 'vue'
-
+import { computed, defineComponent, inject, unref } from 'vue'
 import { cloneDeep } from 'lodash-es'
 
-import { componentMap } from '../componentMap'
-import { createPlaceholderMessage } from '../helper'
+import { componentMap } from '@/components/SchemaForm/src/componentMap'
 
 import { isBoolean, isFunction, isNull } from '@/utils/is'
 import { getSlot } from '@/utils/jsxHelper'
 
+import { formCtxKey } from './constants'
+
+import { createNamespace } from '@/components/utils'
+import { createPlaceholderMessage } from '@/components/SchemaForm/src/helper'
+
+const [name] = createNamespace('form-item')
+
 export default defineComponent({
-  name: 'SchemaFormItem',
+  name: name,
   inheritAttrs: false,
   props: {
     schema: {
       type: Object,
       default: () => ({})
     },
-    formProps: {
-      type: Object,
-      default: () => ({})
-    },
-    allDefaultValues: {
-      type: Object,
-      default: () => ({})
-    },
-    formModel: {
-      type: Object,
-      default: () => ({})
-    },
-    setFormModel: {
-      type: Function,
-      default: null,
-    },
     isAdvanced: {
       type: Boolean,
     },
   },
   setup(props, { slots }) {
+    const formCtx = inject(formCtxKey, undefined)
 
     const getValues = computed(() => {
-      const { allDefaultValues, formModel, schema } = props
-      const { mergeDynamicData } = props.formProps
+      const { schema } = props
       return {
         field: schema.field,
-        model: formModel,
+        model: formCtx.formModel,
         values: {
-          ...mergeDynamicData,
-          ...allDefaultValues,
-          ...formModel
+          ...formCtx.formModel
         },
         schema: schema
       }
@@ -70,7 +57,7 @@ export default defineComponent({
     })
 
     const getDisable = computed(() => {
-      const { disabled: globDisabled } = props.formProps
+      const { disabled: globDisabled } = formCtx
       const { dynamicDisabled } = props.schema
       const { disabled: itemDisabled = false } = unref(getComponentsProps)
       let disabled = !!globDisabled || itemDisabled
@@ -122,14 +109,12 @@ export default defineComponent({
       }
 
       let rules = cloneDeep(defRules)
-      const { rulesMessageJoinLabel: globalRulesMessageJoinLabel } =
-        props.formProps
+      const { rulesMessageJoinLabel: globalRulesMessageJoinLabel } = formCtx
 
       const joinLabel = Reflect.has(props.schema, 'rulesMessageJoinLabel')
         ? rulesMessageJoinLabel
         : globalRulesMessageJoinLabel
-      const defaultMsg =
-        createPlaceholderMessage(component) + `${joinLabel ? label : ''}`
+      const defaultMsg = createPlaceholderMessage(component) + `${joinLabel ? label : ''}`
 
       function validator(rule, value, callback) {
         const msg = rule.message || defaultMsg
@@ -157,9 +142,7 @@ export default defineComponent({
         callback()
       }
 
-      const getRequired = isFunction(required)
-        ? required(unref(getValues))
-        : required
+      const getRequired = isFunction(required) ? required(unref(getValues)) : required
 
       /*
        * 1、若设置了required属性，又没有其他的rules，就创建一个验证规则；
@@ -170,9 +153,7 @@ export default defineComponent({
         if (!rules || rules.length === 0) {
           rules = [{ required: getRequired, validator }]
         } else {
-          const requiredIndex = rules.findIndex((rule) =>
-            Reflect.has(rule, 'required')
-          )
+          const requiredIndex = rules.findIndex((rule) => Reflect.has(rule, 'required'))
 
           if (requiredIndex === -1) {
             rules.push({ required: getRequired, validator })
@@ -181,8 +162,7 @@ export default defineComponent({
       }
 
       const requiredRuleIndex = rules.findIndex(
-        (rule) =>
-          Reflect.has(rule, 'required') && !Reflect.has(rule, 'validator')
+        (rule) => Reflect.has(rule, 'required') && !Reflect.has(rule, 'validator')
       )
 
       if (requiredRuleIndex !== -1) {
@@ -211,7 +191,7 @@ export default defineComponent({
       return label
     }
 
-    function renderComponent() {
+    const renderComponent = () => {
       const { renderComponentContent, component, field, label } = props.schema
 
       if (!componentMap.has(component)) {
@@ -220,8 +200,13 @@ export default defineComponent({
 
       const Comp = componentMap.get(component)
 
-      const { size } = props.formProps
+      const on = {
+        ['onUpdate:modelValue']: (value) => {
+          formCtx.formModel[field] = value
+        }
+      }
 
+      const { autoSetPlaceHolder, size } = formCtx || {}
       const propsData = {
         prop: field,
         clearable: true,
@@ -243,15 +228,11 @@ export default defineComponent({
       } else {
         propsData.placeholder = unref(getComponentsProps)?.placeholder || label
       }
-
-      const on = {
-        ['onUpdate:modelValue']: (value) => {
-          props.setFormModel(field, value, props.schema);
-        }
-      }
+      propsData.codeField = field
+      propsData.formValues = unref(getValues)
 
       const bindValue = {
-        modelValue: props.formModel[field]
+        modelValue: formCtx.formModel[field]
       }
 
       const compAttr = {
@@ -265,14 +246,15 @@ export default defineComponent({
       }
 
       const compSlot = isFunction(renderComponentContent)
-        ? { ...renderComponentContent(unref(getValues)) }
+        ? { ...renderComponentContent(unref(getValues), { disabled: unref(getDisable) }) }
         : { default: () => renderComponentContent }
 
       return <Comp {...compAttr}>{compSlot}</Comp>
     }
 
-    function renderItem() {
+    const renderItem = (schema) => {
       const { itemProps, slot, render, field, label, component } = props.schema
+      const opts = { disabled: unref(getDisable) }
 
       if (component === 'Divider') {
         return (
@@ -283,15 +265,10 @@ export default defineComponent({
       } else {
         const getContent = () => {
           return slot
-            ? getSlot(slots, slot, unref(getValues))
+            ? getSlot(slots, slot, unref(getValues), opts)
             : render
-              ? render(unref(getValues))
-              : renderComponent()
-        }
-
-        // todo
-        if (!componentMap.has(component)) {
-          return getContent()
+              ? render(unref(getValues), opts)
+              : renderComponent(schema)
         }
 
         // todo https://vuejs.org/guide/extras/render-function.html#passing-slots
@@ -307,30 +284,35 @@ export default defineComponent({
     }
 
     return () => {
-      const { colProps = {}, colSlot, renderColContent } = props.schema
+      const { colProps = {}, colSlot, renderColContent, component } = props.schema
+      if (!componentMap.has(component)) {
+        return null
+      }
 
-      // todo
-      const { baseColProps = {} } = props.formProps
+      const { baseColProps = {} } = formCtx || {}
       const realColProps = { ...baseColProps, ...colProps }
       const { isIfShow, isShow } = getShow()
       const values = unref(getValues)
+      const opts = { disabled: unref(getDisable) }
 
       const getContent = () => {
         return colSlot
-          ? getSlot(slots, colSlot, values)
+          ? getSlot(slots, colSlot, values, opts)
           : renderColContent
-            ? renderColContent(values)
+            ? renderColContent(values, opts)
             : renderItem()
       }
 
-      return (
-        isIfShow && (
-          <el-col {...realColProps} v-show={isShow}>
-            {getContent()}
-          </el-col>
-        )
+      return isIfShow && (
+        <el-col {...realColProps} v-show={isShow}>
+          {getContent()}
+        </el-col>
       )
     }
   }
 })
 </script>
+
+<style lang="scss">
+
+</style>

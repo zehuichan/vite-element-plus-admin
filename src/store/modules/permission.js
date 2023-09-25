@@ -1,21 +1,17 @@
 import { defineStore } from 'pinia'
 import { store } from '..'
 
-import { constantRoutes } from '@/router'
 import { menu } from '@/api/sys'
+import { constantRoutes } from '@/router'
 
-import {
-  flatMultiLevelRoutes,
-  routerGenerator,
-  transformObjToRoute
-} from '@/router/routeHelper'
+import { flatMultiLevelRoutes, routerGenerator, transformObjToRoute } from '@/router/routeHelper'
 import { transformRouteToMenu } from '@/router/menuHelper'
 
 export const usePermissionStore = defineStore({
   id: 'permission',
   state: () => ({
     menus: [],
-    routers: constantRoutes,
+    routers: [],
     // Whether the route has been dynamically added
     // 路由是否动态添加
     isDynamicAddedRoute: false,
@@ -48,15 +44,17 @@ export const usePermissionStore = defineStore({
       this.isDynamicAddedRoute = added
     },
     resetState() {
-      this.isDynamicAddedRoute = false
       this.menus = []
+      this.routers = []
+      this.isDynamicAddedRoute = false
       this.lastBuildMenuTime = 0
     },
     async buildRoutesAction() {
       let routeList = []
 
       try {
-        routeList = await menu()
+        const res  = await menu()
+        routeList = res.data
       } catch (error) {
         console.log(error)
       }

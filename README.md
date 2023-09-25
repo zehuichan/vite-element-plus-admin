@@ -1,9 +1,11 @@
 # vite-element-plus-admin
 
+实验性用管理后台模板
+
 ## 技术栈
 
 1. vue@3.x + pinia + vue-router@4.x
-2. axios
+2. axios@latest
 3. vueuse@latest
 4. element-plus@latest
 5. unocss@latest

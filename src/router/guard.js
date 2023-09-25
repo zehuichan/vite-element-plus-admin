@@ -9,16 +9,36 @@ import { useUserStoreWithOut } from '@/store/modules/user'
 import { usePermissionStoreWithOut } from '@/store/modules/permission'
 import { useMultipleTabStoreWithOut } from '@/store/modules/multipleTab'
 
+import { setRouteChange } from '@/install/plugins/router-change'
+
 // no redirect whitelist
 const whiteList = ['/login', '/auth-redirect']
 
 export function setupGuard(router) {
+  createPageGuard(router)
   createProgressGuard(router)
   createPermissionGuard(router)
   createStateGuard(router)
 }
 
-export function createProgressGuard(router) {
+function createPageGuard(router) {
+  const loadedPageMap = new Map()
+
+  router.beforeEach(async (to) => {
+    // The page has already been loaded, it will be faster to open it again, you don’t need to do loading and other processing
+    to.meta.loaded = !!loadedPageMap.get(to.path)
+    // Notify routing changes
+    setRouteChange(to)
+
+    return true
+  })
+
+  router.afterEach((to) => {
+    loadedPageMap.set(to.path, true)
+  })
+}
+
+function createProgressGuard(router) {
   router.beforeEach((to, from, next) => {
     nprogress.start()
     next()
@@ -29,7 +49,7 @@ export function createProgressGuard(router) {
   })
 }
 
-export function createPermissionGuard(router) {
+function createPermissionGuard(router) {
   const userStore = useUserStoreWithOut()
   const permissionStore = usePermissionStoreWithOut()
 
@@ -116,20 +136,18 @@ export function createPermissionGuard(router) {
     } else {
       const redirectPath = from.query.redirect || to.path
       const redirect = decodeURIComponent(redirectPath)
-      const nextData =
-        to.path === redirect ? { ...to, replace: true } : { path: redirect }
+      const nextData = to.path === redirect ? { ...to, replace: true } : { path: redirect }
       next(nextData)
     }
   })
 }
 
-export function createStateGuard(router) {
-  const tabStore = useMultipleTabStoreWithOut()
-  const userStore = useUserStoreWithOut()
-  const permissionStore = usePermissionStoreWithOut()
-
+function createStateGuard(router) {
   router.afterEach((to) => {
     if (to.name === LOGIN_NAME) {
+      const tabStore = useMultipleTabStoreWithOut()
+      const userStore = useUserStoreWithOut()
+      const permissionStore = usePermissionStoreWithOut()
       permissionStore.resetState()
       tabStore.resetState()
       userStore.resetState()

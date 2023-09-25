@@ -12,6 +12,20 @@
         class="tabs-card"
         :class="{ 'tabs-card-scrollable': scrollable }"
       >
+        <div
+          class="tabs-card-prev"
+          :class="{ 'tabs-card-prev-hide': !scrollable }"
+          @click="scrollPrev"
+        >
+          <icon-park class="text-16px" name="left" />
+        </div>
+        <div
+          class="tabs-card-next"
+          :class="{ 'tabs-card-next-hide': !scrollable }"
+          @click="scrollNext"
+        >
+          <icon-park class="text-16px" name="right" />
+        </div>
         <div ref="navScroll" class="tabs-card-scroll">
           <draggable
             :list="getTabsState"
@@ -21,22 +35,21 @@
             @end="handleSortTabs"
           >
             <template #item="{ element }">
-              <div
+              <router-link
                 :id="`tag${element?.fullPath?.split('/').join('\/')}`"
-                class="tabs-card-scroll-item"
-                :class="{ 'active-item': activeKey === element.path }"
-                @click.stop="handleClick(element)"
+                :class="{'tabs-card-scroll-item': true, 'active-item': activeKey === element.fullPath }"
+                :to="{ path: element.path, query: element.query }"
                 @contextmenu.prevent="handleContextMenu($event, element)"
               >
                 <div class="tabs-card-scroll-item__inner">
                   <span>{{ element.meta.title }}</span>
                   <icon
-                    v-show="!element.meta.affix && activeKey === element.path"
+                    v-show="!element.meta.affix && activeKey === element.fullPath"
                     name="CloseBold"
-                    @click.stop="handleClose(element)"
+                    @click.prevent.stop="handleClose(element)"
                   />
                 </div>
-              </div>
+              </router-link>
             </template>
           </draggable>
         </div>
@@ -61,10 +74,12 @@ import {
   onMounted,
   reactive,
   ref,
+  toRaw,
   toRefs,
+  unref,
   watch
 } from 'vue'
-import { onClickOutside } from '@vueuse/core'
+import { onClickOutside, useElementSize } from '@vueuse/core'
 
 import { useRoute, useRouter } from 'vue-router'
 
@@ -72,11 +87,14 @@ import Draggable from 'vuedraggable'
 import Contextmenu from './contextmenu.vue'
 
 import { useMultipleTabStore } from '@/store/modules/multipleTab'
+import { useUserStore } from '@/store/modules/user'
 
 import { useGo } from '@/hooks/web/usePage'
 import { useTabs } from '@/hooks/web/useTabs'
 
 import { PAGE_NOT_FOUND_NAME, REDIRECT_NAME } from '@/router/constant'
+
+import { listenerRouteChange } from '@/install/plugins/router-change'
 
 export default defineComponent({
   name: 'AppTabs',
@@ -89,7 +107,9 @@ export default defineComponent({
     const navScroll = ref(null)
     const contextmenu = ref(null)
     const currentTab = ref(null)
+    const affixList = ref([])
 
+    const userStore = useUserStore()
     const tabStore = useMultipleTabStore()
 
     const router = useRouter()
@@ -97,6 +117,8 @@ export default defineComponent({
     const go = useGo()
 
     const { close } = useTabs()
+
+    const { width, height } = useElementSize(navWrap)
 
     const state = reactive({
       activeKey: route.fullPath,
@@ -111,20 +133,115 @@ export default defineComponent({
     // 标签页列表
     const getTabsState = computed(() => tabStore.getTabList)
 
-    watch(
-      () => route.fullPath,
-      (to) => {
-        if (
-          route.name === REDIRECT_NAME ||
-          route.name === PAGE_NOT_FOUND_NAME
-        ) {
-          return
-        }
+    watch([width, height], updateNavScroll)
 
-        state.activeKey = to
-        tabStore.addTab(route)
+    listenerRouteChange((route) => {
+      const { name } = route
+      if (
+        name === REDIRECT_NAME ||
+        route.name === PAGE_NOT_FOUND_NAME ||
+        !route ||
+        !userStore.getToken
+      ) {
+        return
       }
-    )
+
+      const { path, fullPath, meta = {} } = route
+      const { currentActiveMenu, hideTab } = meta
+      const isHide = !hideTab ? null : currentActiveMenu
+      const p = isHide || fullPath || path
+      if (state.activeKey !== p) {
+        state.activeKey = p
+      }
+
+      if (isHide) {
+        const findParentRoute = router
+          .getRoutes()
+          .find((item) => item.path === currentActiveMenu)
+
+        findParentRoute && tabStore.addTab(findParentRoute)
+      } else {
+        tabStore.addTab(unref(route))
+      }
+    })
+
+    function filterAffixTabs(routes) {
+      const tabs = []
+      routes &&
+      routes.forEach((route) => {
+        if (route.meta && route.meta.affix) {
+          tabs.push(toRaw(route))
+        }
+      })
+      return tabs
+    }
+
+    function initAffixTabs() {
+      affixList.value = filterAffixTabs(router.getRoutes())
+      for (const tab of affixList.value) {
+        tab.name && tabStore.addTab({
+          meta: tab.meta,
+          name: tab.name,
+          path: tab.path,
+        })
+      }
+    }
+
+    function scrollTo(value, amplitude) {
+      const currentScroll = navScroll.value.scrollLeft
+      const scrollWidth =
+        (amplitude > 0 && currentScroll + amplitude >= value) ||
+        (amplitude < 0 && currentScroll + amplitude <= value)
+          ? value
+          : currentScroll + amplitude
+      navScroll.value && navScroll.value.scrollTo(scrollWidth, 0)
+      if (scrollWidth === value) return
+      return window.requestAnimationFrame(() => scrollTo(value, amplitude))
+    }
+
+    function scrollPrev() {
+      const containerWidth = navScroll.value.offsetWidth
+      const currentScroll = navScroll.value.scrollLeft
+
+      if (!currentScroll) return
+      const scrollLeft = currentScroll > containerWidth ? currentScroll - containerWidth : 0
+      scrollTo(scrollLeft, (scrollLeft - currentScroll) / 20)
+    }
+
+    function scrollNext() {
+      const containerWidth = navScroll.value.offsetWidth
+      const navWidth = navScroll.value.scrollWidth
+      const currentScroll = navScroll.value.scrollLeft
+
+      if (navWidth - currentScroll <= containerWidth) return
+      const scrollLeft =
+        navWidth - currentScroll > containerWidth * 2
+          ? currentScroll + containerWidth
+          : navWidth - containerWidth
+      scrollTo(scrollLeft, (scrollLeft - currentScroll) / 20)
+    }
+
+    async function updateNavScroll(autoScroll) {
+      await nextTick()
+      if (!navScroll.value) return
+      const containerWidth = navScroll.value.offsetWidth
+      const navWidth = navScroll.value.scrollWidth
+
+      if (containerWidth < navWidth) {
+        state.scrollable = true
+        if (autoScroll) {
+          let tagList = navScroll.value.querySelectorAll('.tabs-card-scroll-item') || [];
+          [...tagList].forEach((tag) => {
+            // fix SyntaxError
+            if (tag.id === `tag${state.activeKey.split('/').join('\/')}`) {
+              tag.scrollIntoView && tag.scrollIntoView()
+            }
+          })
+        }
+      } else {
+        state.scrollable = false
+      }
+    }
 
     function handleClick(e) {
       currentTab.value = e
@@ -140,12 +257,13 @@ export default defineComponent({
     }
 
     async function handleContextMenu(e, item) {
+      await updateNavScroll()
       state.showDropdown = false
       currentTab.value = null
       await nextTick()
       const menuMinWidth = 105
       const offsetLeft = navWrap.value.getBoundingClientRect().left // container margin left
-      const { offsetWidth } = navWrap.value // container width
+      const offsetWidth = navWrap.value.offsetWidth // container width
       const maxLeft = offsetWidth - menuMinWidth // left boundary
       const left = e.clientX - offsetLeft + 15 // 15: margin right
 
@@ -170,10 +288,9 @@ export default defineComponent({
 
     onClickOutside(contextmenu, () => (state.showDropdown = false))
 
-    onMounted(async () => {
-      await nextTick()
-      await tabStore.initTabs(router.getRoutes())
-      await tabStore.addTab(route)
+    onMounted(() => {
+      initAffixTabs()
+      updateNavScroll(true)
     })
 
     return {
@@ -184,6 +301,8 @@ export default defineComponent({
       currentTab,
       getTabsState,
 
+      scrollPrev,
+      scrollNext,
       handleClick,
       handleClose,
       handleContextMenu,
@@ -196,7 +315,7 @@ export default defineComponent({
 <style lang="scss">
 .tabs-view {
   width: 100%;
-  padding: 4px 6px 4px;
+  padding: 6px 10px;
   display: flex;
   transition: all 0.2s ease-in-out;
   background-color: #fff;
@@ -215,10 +334,13 @@ export default defineComponent({
 
       .tabs-card-prev,
       .tabs-card-next {
-        width: 32px;
-        text-align: center;
         position: absolute;
-        line-height: 32px;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
         cursor: pointer;
       }
 
@@ -240,7 +362,7 @@ export default defineComponent({
         overflow: hidden;
 
         &-item {
-          display: inline-block;
+          flex-shrink: 0;
           position: relative;
           cursor: pointer;
           height: 32px;
@@ -252,7 +374,6 @@ export default defineComponent({
           font-size: 12px;
           border-radius: 2px;
           margin-right: 6px;
-          flex: 0 0 auto;
 
           &:hover {
             color: #515a6e;

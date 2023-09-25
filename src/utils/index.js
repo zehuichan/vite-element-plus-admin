@@ -1,7 +1,8 @@
 import { unref } from 'vue'
 import { isObject } from '@/utils/is'
 
-export const noop = () => {}
+export const noop = () => {
+}
 
 export function setObjToUrlParams(baseUrl, obj) {
   let parameters = ''
@@ -51,13 +52,13 @@ export function getRawRoute(route) {
   const { matched, ...opt } = route
   return {
     ...opt,
-    matched: matched
+    matched: (matched
       ? matched.map((item) => ({
-          meta: item.meta,
-          name: item.name,
-          path: item.path
-        }))
-      : undefined
+        meta: item.meta,
+        name: item.name,
+        path: item.path
+      }))
+      : undefined)
   }
 }
 
@@ -67,4 +68,8 @@ export function withInstall(options) {
     app.component(name, options)
   }
   return options
+}
+
+export function sleep(timeout = 1 * 1000) {
+  return new Promise((resolve) => setTimeout(resolve, timeout))
 }

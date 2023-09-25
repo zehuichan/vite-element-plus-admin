@@ -64,6 +64,7 @@ export function transformRouteToMenu(routeModList, routerMapping = false) {
       routeList.push(item)
     }
   })
+
   // 提取树指定结构
   const list = treeMap(routeList, {
     conversion: (node) => {

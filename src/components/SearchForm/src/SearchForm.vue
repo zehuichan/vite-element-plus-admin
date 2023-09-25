@@ -1,11 +1,18 @@
 <template>
   <div class="search-form">
     <div class="search-form__content">
-      <schema-form ref="formRef" auto-submit-on-enter show-advanced-button @register="register" @enter="handelQuery">
+      <vc-form
+        ref="formRef"
+        v-bind="$attrs"
+        :model="$attrs.modelValue"
+        auto-submit-on-enter
+        show-advanced-button
+        @enter="handelQuery"
+      >
         <template #[item]="data" v-for="item in Object.keys($slots)" :key="item">
           <slot :name="item" v-bind="data || {}"></slot>
         </template>
-      </schema-form>
+      </vc-form>
     </div>
     <div class="search-form__tools flex-center">
       <slot name="tools" />
@@ -35,41 +42,32 @@
 
 <script>
 import { computed, defineComponent, ref, unref } from 'vue'
-import { useForm } from '@/components/SchemaForm'
 
 export default defineComponent({
   name: 'SearchForm',
-  props: {
-    schemas: {
-      type: Array,
-      default: () => []
-    },
-  },
+  inheritAttrs: false,
   emits: ['search', 'reset'],
   setup(props, { emit }) {
     const formRef = ref(null)
 
-    const [register, { getFieldsValue, resetFields, handleToggleAdvanced }] = useForm({
-      schemas: props.schemas,
-    })
-
     const advanceState = computed(() => unref(formRef)?.advanceState || {})
 
     const handelReset = () => {
-      resetFields()
-      const data = getFieldsValue()
-      emit('reset', data)
+      unref(formRef).resetFields()
+      emit('reset')
     }
 
     const handelQuery = () => {
-      const data = getFieldsValue()
-      emit('search', data)
+      emit('search')
+    }
+
+    const handleToggleAdvanced = () => {
+      unref(formRef).handleToggleAdvanced()
     }
 
     return {
       formRef,
       advanceState,
-      register,
       handelReset,
       handelQuery,
       handleToggleAdvanced,

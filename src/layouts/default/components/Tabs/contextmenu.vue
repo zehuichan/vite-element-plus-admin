@@ -7,7 +7,7 @@
       :class="{ 'tabs-view-contextmenu-item__disabled': item.disabled }"
       @click="handleMenuEvent(item)"
     >
-      <icon :name="item.icon" />
+      <icon-park :name="item.icon" />
       <span>{{ item.text }}</span>
     </li>
   </ul>
@@ -77,43 +77,43 @@ export default defineComponent({
 
       return [
         {
-          icon: 'Refresh',
+          icon: 'refresh',
           event: TableActionEnum.REFRESH,
           text: '重新加载',
           disabled: refreshDisabled
         },
         {
-          icon: 'Crop',
+          icon: 'full-screen',
           event: TableActionEnum.FULL_CONTENT,
           text: '专注模式',
           disabled: !isCurItem
         },
         {
-          icon: 'Close',
+          icon: 'close',
           event: TableActionEnum.CLOSE_CURRENT,
           text: '关闭标签页',
           disabled: !!meta?.affix || disabled
         },
         {
-          icon: 'DArrowLeft',
+          icon: 'to-left',
           event: TableActionEnum.CLOSE_LEFT,
           text: '关闭左侧标签页',
           disabled: closeLeftDisabled
         },
         {
-          icon: 'DArrowRight',
+          icon: 'to-right',
           event: TableActionEnum.CLOSE_RIGHT,
           text: '关闭右侧标签页',
           disabled: closeRightDisabled
         },
         {
-          icon: 'Switch',
+          icon: 'transfer-data',
           event: TableActionEnum.CLOSE_OTHER,
           text: '关闭其他标签页',
           disabled: disabled || !isCurItem
         },
         {
-          icon: 'SemiSelect',
+          icon: 'close-one',
           event: TableActionEnum.CLOSE_ALL,
           text: '关闭全部标签页',
           disabled: disabled
@@ -182,25 +182,26 @@ export default defineComponent({
   padding: 5px 0;
   border-radius: 4px;
   font-size: 12px;
+  line-height: 20px;
   font-weight: 400;
   color: #333;
   box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.3);
 
   &-item {
     margin: 0;
-    padding: 7px 16px;
+    padding: 8px 16px;
     cursor: pointer;
     display: flex;
     align-items: center;
+    white-space: nowrap;
 
     &:hover {
       background: #eee;
     }
 
-    .el-icon {
-      width: 16px;
-      height: 16px;
-      margin-right: 2px;
+    .i-icon {
+      margin-right: 8px;
+      font-size: 14px;
     }
 
     &__disabled {

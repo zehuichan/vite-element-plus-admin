@@ -9,21 +9,17 @@ import { useGo, useRedo } from '@/hooks/web/usePage'
 
 import projectSetting from '@/settings/projectSetting'
 
-import {
-  LOGIN_NAME,
-  PAGE_NOT_FOUND_NAME,
-  REDIRECT_NAME
-} from '@/router/constant'
+import { LOGIN_NAME, PAGE_NOT_FOUND_NAME, REDIRECT_NAME } from '@/router/constant'
 
 //保留固定路由
 function filterAffixTabs(routes) {
   const tabs = []
   routes &&
-    routes.forEach((route) => {
-      if (route.meta && route.meta.affix) {
-        tabs.push(toRaw(route))
-      }
-    })
+  routes.forEach((route) => {
+    if (route.meta && route.meta.affix) {
+      tabs.push(toRaw(route))
+    }
+  })
   return tabs
 }
 
@@ -99,8 +95,7 @@ export const useMultipleTabStore = defineStore({
     },
     async refreshPage(router) {
       const { currentRoute } = router
-      const route = unref(currentRoute)
-      const { name, fullPath } = route
+      const { name } = unref(currentRoute)
 
       const findTab = this.getCachedTabList.find((item) => item === name)
       if (findTab) {
@@ -141,7 +136,7 @@ export const useMultipleTabStore = defineStore({
         this.tabList.push(getRawRoute(route))
       }
 
-      this.updateCacheTab()
+      await this.updateCacheTab()
       cacheTab && Cache.setItem(MULTIPLE_TABS_KEY, this.tabList)
     },
     async closeTab(tab, router) {

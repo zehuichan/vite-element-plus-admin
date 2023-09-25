@@ -51,23 +51,14 @@ export default defineConfig(({ command, mode }) => {
     build: {
       target: 'es2015',
       cssTarget: 'chrome80',
-      // minify: 'terser',
-      /**
-       * 当 minify=“minify:'terser'” 解开注释
-       * Uncomment when minify="minify:'terser'"
-       */
-      // terserOptions: {
-      //   compress: {
-      //     keep_infinity: true,
-      //     drop_console: VITE_DROP_CONSOLE,
-      //   },
-      // },
-      // Turning off brotliSize display can slightly reduce packaging time
       brotliSize: false,
       chunkSizeWarningLimit: 2000
     },
     optimizeDeps: {
-      include: ['@vue/runtime-core', '@vue/shared']
+      include: [
+        '@vue/runtime-core',
+        '@vue/shared'
+      ]
     }
   }
 })

@@ -47,49 +47,35 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { computed, defineComponent, ref } from 'vue'
 import { useErrorLogStore } from '@/store/modules/errorLog'
 import { fireErrorApi } from '@/api'
 
-export default defineComponent({
-  name: 'Documentation',
-  setup() {
-    const errorLogStore = useErrorLogStore()
+const errorLogStore = useErrorLogStore()
 
-    const imgList = ref([])
-    const data = computed(() => errorLogStore.getErrorLogInfoList)
+const imgList = ref([])
+const data = computed(() => errorLogStore.getErrorLogInfoList)
 
-    function filterColor(val) {
-      return {
-        vue: 'success',
-        script: '',
-        resource: 'info',
-        ajax: 'danger',
-        promise: 'warning'
-      }[val]
-    }
+function filterColor(val) {
+  return {
+    vue: 'success',
+    script: '',
+    resource: 'info',
+    ajax: 'danger',
+    promise: 'warning'
+  }[val]
+}
 
-    function fireVueError() {
-      throw new Error('fire vue error!')
-    }
+function fireVueError() {
+  throw new Error('fire vue error!')
+}
 
-    function fireResourceError() {
-      imgList.value.push(`${new Date().getTime()}.png`)
-    }
+function fireResourceError() {
+  imgList.value.push(`${new Date().getTime()}.png`)
+}
 
-    async function fireAjaxError() {
-      await fireErrorApi()
-    }
-
-    return {
-      imgList,
-      data,
-      filterColor,
-      fireVueError,
-      fireResourceError,
-      fireAjaxError
-    }
-  }
-})
+async function fireAjaxError() {
+  await fireErrorApi()
+}
 </script>

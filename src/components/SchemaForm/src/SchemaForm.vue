@@ -3,7 +3,6 @@
     v-bind="getBindValue"
     ref="formElRef"
     require-asterisk-position="right"
-    :model="formModel"
     :validate-on-rule-change="false"
     @keypress.enter="handleEnterPress"
   >
@@ -60,7 +59,7 @@ export default defineComponent({
     SchemaFormItem
   },
   props: {
-    model: {
+    modelValue: {
       type: Object,
       default: () => ({})
     },
@@ -103,7 +102,7 @@ export default defineComponent({
     },
     autoFocusFirstItem: Boolean
   },
-  emits: ['register', 'field-value-change', 'enter', 'advanced-change'],
+  emits: ['register', 'update:modelValue', 'field-value-change', 'enter', 'advanced-change'],
   setup(props, { attrs, emit }) {
     const formModel = reactive({})
     const advanceState = reactive({
@@ -210,11 +209,11 @@ export default defineComponent({
     })
 
     watch(
-      () => unref(getProps).model,
+      () => unref(getProps).modelValue,
       () => {
-        const { model } = unref(getProps)
-        if (!model) return
-        setFieldsValue(model)
+        const { modelValue } = unref(getProps)
+        if (!modelValue) return
+        setFieldsValue(modelValue)
       },
       { immediate: true }
     )
@@ -245,6 +244,7 @@ export default defineComponent({
 
     function setFormModel(key, value, schema) {
       formModel[key] = value
+      emit('update:modelValue', formModel)
       emit('field-value-change', key, value)
     }
 

@@ -1,0 +1,8 @@
+export const TOKEN_KEY = 'TOKEN__'
+export const LOCALE_KEY = 'LOCALE__'
+export const USER_INFO_KEY = 'USER__INFO__'
+export const ROLES_KEY = 'ROLES__KEY__'
+export const PERMISSIONS_KEY = 'PERMISSIONS__KEY__'
+export const PROJ_CFG_KEY = 'PROJ__CFG__KEY__'
+export const MULTIPLE_TABS_KEY = 'MULTIPLE_TABS__KEY__'
+export const DICT_DATA_KEY = 'DICT__DATA__'
