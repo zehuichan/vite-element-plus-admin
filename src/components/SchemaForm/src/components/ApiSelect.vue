@@ -21,7 +21,7 @@ import { defineComponent, ref, computed, unref, watch, watchEffect } from 'vue'
 
 import { useVModel } from '@vueuse/core'
 
-import { get, omit } from 'lodash-es'
+import { get } from 'lodash-es'
 
 import { isFunction } from '@/utils/is'
 
@@ -82,7 +82,7 @@ export default defineComponent({
         if (next) {
           const value = next[valueField]
           prev.push({
-            ...omit(next, [labelField, valueField]),
+            ...next,
             label: next[labelField],
             value: numberToString ? `${value}` : value
           })

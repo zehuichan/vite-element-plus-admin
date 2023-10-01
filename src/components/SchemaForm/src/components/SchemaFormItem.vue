@@ -122,14 +122,15 @@ export default defineComponent({
       }
 
       let rules = cloneDeep(defRules)
-      const { rulesMessageJoinLabel: globalRulesMessageJoinLabel } =
-        props.formProps
+      const { rulesMessageJoinLabel: globalRulesMessageJoinLabel } = props.formProps
 
       const joinLabel = Reflect.has(props.schema, 'rulesMessageJoinLabel')
         ? rulesMessageJoinLabel
         : globalRulesMessageJoinLabel
-      const defaultMsg =
-        createPlaceholderMessage(component) + `${joinLabel ? label : ''}`
+      const assertLabel = joinLabel ? label : ''
+      const defaultMsg = component
+        ? createPlaceholderMessage(component) + assertLabel
+        : assertLabel
 
       function validator(rule, value, callback) {
         const msg = rule.message || defaultMsg
@@ -246,7 +247,7 @@ export default defineComponent({
 
       const on = {
         ['onUpdate:modelValue']: (value) => {
-          props.setFormModel(field, value, props.schema);
+          props.setFormModel(field, value, props.schema)
         }
       }
 

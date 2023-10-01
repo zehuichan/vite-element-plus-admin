@@ -1,6 +1,5 @@
 <template>
-  <icon class="is-loading" name="loading" v-if="loading" />
-  <el-radio-group v-else v-bind="$attrs" v-model="state">
+  <el-radio-group v-bind="$attrs" v-model="state">
     <template v-for="item in getOptions" :key="`${item.value}`">
       <el-radio-button
         v-if="button"
@@ -22,9 +21,9 @@
 </template>
 
 <script>
-import { computed, defineComponent, onMounted, ref, unref, watch, watchEffect } from 'vue'
+import { computed, defineComponent, ref, unref, watch, watchEffect } from 'vue'
 import { useVModel } from '@vueuse/core'
-import { get, omit } from 'lodash-es'
+import { get } from 'lodash-es'
 import { isFunction } from '@/utils/is'
 
 export default defineComponent({
@@ -59,10 +58,6 @@ export default defineComponent({
       type: Boolean,
       default: true
     },
-    alwaysLoad: {
-      type: Boolean,
-      default: false
-    }
   },
   emits: ['options-change', 'update:modelValue'],
   setup(props, { emit }) {
@@ -74,28 +69,25 @@ export default defineComponent({
     const state = useVModel(props, 'modelValue', emit)
 
     const getOptions = computed(() => {
-      const {
-        labelField,
-        valueField,
-        numberToString,
-        options: defaultOptions
-      } = props
+      const { labelField, valueField, numberToString } = props
 
-      return (defaultOptions ?? unref(options)).reduce((prev, next) => {
+      const data = unref(options).reduce((prev, next) => {
         if (next) {
           const value = next[valueField]
           prev.push({
-            ...omit(next, [labelField, valueField]),
+            ...next,
             label: next[labelField],
             value: numberToString ? `${value}` : value
           })
         }
         return prev
       }, [])
+
+      return data.length > 0 ? data : props.options
     })
 
     watchEffect(() => {
-      props.immediate && !props.alwaysLoad && fetch()
+      props.immediate && fetch()
     })
 
     watch(
@@ -107,8 +99,8 @@ export default defineComponent({
     )
 
     async function fetch() {
-      const { api, options: defaultOptions = [] } = props
-      if (defaultOptions.length || !api || !isFunction(api)) return
+      const api = props.api
+      if (!api || !isFunction(api)) return
       options.value = []
       try {
         loading.value = true
@@ -132,10 +124,6 @@ export default defineComponent({
     function emitChange() {
       emit('options-change', unref(getOptions))
     }
-
-    onMounted(() => {
-      props.immediate && !props.alwaysLoad && fetch()
-    })
 
     return {
       state,

@@ -1,14 +1,20 @@
 export default {
-  modelValue: {},
+  modelValue: {
+    type: Object,
+    default: () => ({})
+  },
   labelPosition: {
     type: String,
-    default: 'right'
+    default: 'left'
   },
   labelWidth: {
     type: [Number, String],
     default: 'auto'
   },
-  schemas: [],
+  schemas: {
+    type: [Array],
+    default: () => []
+  },
   baseColProps: {
     type: Object,
     default: () => ({ span: 6 })
@@ -17,7 +23,7 @@ export default {
   disabled: Boolean,
   autoAdvancedLine: {
     type: Number,
-    default: 1
+    default: 3
   },
   alwaysShowLines: {
     type: Number,
