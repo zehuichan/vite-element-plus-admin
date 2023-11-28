@@ -1,4 +1,4 @@
-export default {
+export const formProps = {
   modelValue: {
     type: Object,
     default: () => ({})
@@ -41,3 +41,5 @@ export default {
   },
   autoFocusFirstItem: Boolean
 }
+
+export const formEmits = ['update:modelValue', 'advanced-change']

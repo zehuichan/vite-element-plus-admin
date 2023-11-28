@@ -15,10 +15,7 @@
         <slot
           v-if="schema.colSlot"
           :name="schema.colSlot"
-          :field="schema.field"
-          :model="state"
-          :values="state"
-          :schema="schema"
+          v-bind="getValues(schema)"
         />
         <el-col v-else v-show="handleShow(schema)" v-bind="getColProps(schema)">
           <el-form-item :label="schema.label" :prop="schema.field">
@@ -26,10 +23,7 @@
             <slot
               v-if="schema.slot"
               :name="schema.slot"
-              :field="schema.field"
-              :model="state"
-              :values="state"
-              :schema="schema"
+              v-bind="getValues(schema)"
             />
             <!--动态渲染表单组件-->
             <component
@@ -37,6 +31,7 @@
               v-bind="getComponentProps(schema)"
               :is="componentMap.get(schema.component)"
               v-model="state[schema.field]"
+              class="!w-full"
             />
           </el-form-item>
         </el-col>
@@ -46,36 +41,48 @@
 </template>
 
 <script setup>
-import { computed, getCurrentInstance, onMounted, ref, unref, watch } from 'vue'
+import { computed, getCurrentInstance, onMounted, reactive, ref, unref, watch } from 'vue'
 import { cloneDeep } from 'lodash-es'
 
 import { useVModel } from '@vueuse/core'
 
 import { dateUtil } from '@/utils/dateUtil'
+import { isBoolean, isFunction, isNull, isNullOrUnDef } from '@/utils/is'
 
 import { componentMap } from './componentMap'
 import { createPlaceholderMessage, dateItemType } from './helper'
 
-import defaultProps from './props'
+import { useAdvanced } from './hooks/useAdvanced'
+import { useFormEvents } from './hooks/useFormEvents'
+import { useAutoFocus } from './hooks/useAutoFocus'
 
-import { isBoolean, isFunction, isNull, isNullOrUnDef } from '@/utils/is'
+import { formProps, formEmits } from './Form'
+import { deepMerge } from '@/utils'
+import { useComputed } from '@/hooks/web/useComputed'
 
+const COMPONENT_NAME = 'VcForm'
 defineOptions({
-  name: 'VcForm',
+  name: COMPONENT_NAME,
   inheritAttrs: false,
 })
 
-const { proxy } = getCurrentInstance()
+const props = defineProps(formProps)
+const emit = defineEmits(formEmits)
 
-const props = defineProps(defaultProps)
-const emit = defineEmits(['update:modelValue'])
+const { proxy } = getCurrentInstance()
 
 const formElRef = ref(null)
 const schemaRef = ref(null)
 const propsRef = ref({})
 const isUpdateDefaultRef = ref(false)
 
-const state = useVModel(props, 'modelValue', emit)
+const advanceState = reactive({
+  isAdvanced: true,
+  hideAdvanceBtn: false,
+  isLoad: false,
+})
+
+const state = useVModel(props, 'modelValue', emit, { defaultValue: {} })
 
 const getProps = computed(() => {
   return { ...props, ...unref(propsRef) }
@@ -121,6 +128,59 @@ const getRules = computed(() => {
   return rules
 })
 
+const getValues = useComputed((schema) => {
+  return {
+    field: schema.field,
+    model: unref(state),
+    schema: schema
+  }
+})
+
+const getComponentProps = useComputed((schema) => {
+  let { componentProps = {} } = schema
+  const component = schema.component
+  if (isFunction(componentProps)) {
+    componentProps = componentProps({ schema, formModel: unref(state) }) ?? {}
+  }
+  return {
+    clearable: true,
+    placeholder: createPlaceholderMessage(unref(component)),
+    ...componentProps
+  }
+})
+
+const getDisable = useComputed((schema) => {
+  const { disabled: globDisabled } = props
+  const { dynamicDisabled } = schema
+  const { disabled: itemDisabled = false } = getComponentProps(schema)
+  let disabled = !!globDisabled || itemDisabled
+  if (isBoolean(dynamicDisabled)) {
+    disabled = dynamicDisabled
+  }
+  if (isFunction(dynamicDisabled)) {
+    disabled = dynamicDisabled(unref(getValues))
+  }
+  return disabled
+})
+
+
+const { handleToggleAdvanced, fieldsIsAdvancedMap } = useAdvanced({
+  advanceState,
+  emit,
+  getProps,
+  getSchema,
+  formModel: unref(state),
+})
+
+const { setSchema, addSchema, delSchema } = useFormEvents({ getProps, getSchema })
+
+useAutoFocus({
+  getSchema,
+  getProps,
+  isInitedDefault: isUpdateDefaultRef,
+  formElRef
+})
+
 watch(
   () => getSchema.value,
   (schema) => {
@@ -134,35 +194,20 @@ watch(
   }
 )
 
+function setProps(formProps) {
+  propsRef.value = deepMerge(unref(propsRef) || {}, formProps)
+}
+
 function getColProps(schema) {
   const { colProps = {} } = schema
   const { baseColProps = {} } = props
   return { ...baseColProps, ...colProps }
 }
 
-function getComponentProps(schema) {
-  let { componentProps = {} } = schema
-  const component = schema.component
-  if (isFunction(componentProps)) {
-    componentProps = componentProps({ schema, formModel: unref(state) }) ?? {}
-  }
-  return {
-    clearable: true,
-    placeholder: createPlaceholderMessage(unref(component)),
-    ...componentProps
-  }
-}
-
 function handleShow(schema) {
   const { show, ifShow } = schema
-  const itemIsAdvanced = isBoolean(props.isAdvanced) ? props.isAdvanced : true
-
-  const values = {
-    field: schema.field,
-    model: unref(state),
-    values: unref(state),
-    schema: schema
-  }
+  schema.isAdvanced = fieldsIsAdvancedMap[schema.field]
+  const itemIsAdvanced = isBoolean(schema.isAdvanced) ? schema.isAdvanced : true
 
   let flag = true
 
@@ -173,10 +218,10 @@ function handleShow(schema) {
     flag = ifShow
   }
   if (isFunction(show)) {
-    flag = show(values)
+    flag = show(getValues(schema))
   }
   if (isFunction(ifShow)) {
-    flag = ifShow(values)
+    flag = ifShow(getValues(schema))
   }
 
   flag = flag && itemIsAdvanced
@@ -194,15 +239,8 @@ function handleRules(schema) {
     required
   } = schema
 
-  const values = {
-    field: schema.field,
-    model: unref(state),
-    values: unref(state),
-    schema: schema
-  }
-
   if (isFunction(dynamicRules)) {
-    return dynamicRules(values)
+    return dynamicRules(getValues(schema))
   }
 
   let rules = cloneDeep(defRules)
@@ -243,7 +281,7 @@ function handleRules(schema) {
   }
 
   const getRequired = isFunction(required)
-    ? required(values)
+    ? required(getValues(schema))
     : required
 
   if (getRequired) {
@@ -274,7 +312,14 @@ function initDefault() {
   })
 }
 
-const formActions = {}
+const formActions = {
+  advanceState,
+  setProps,
+  setSchema,
+  addSchema,
+  delSchema,
+  handleToggleAdvanced
+}
 
 onMounted(() => {
   initDefault()

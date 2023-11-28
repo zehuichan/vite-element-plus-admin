@@ -1,5 +1,9 @@
-import { computed, ref, toRaw, unref, watch } from 'vue'
+import { computed, ref, unref, watch } from 'vue'
+
 import { cloneDeep } from 'lodash-es'
+
+import { usePermission } from '@/hooks/web/usePermission'
+
 import { isArray, isBoolean, isFunction } from '@/utils/is'
 
 function handleItem(item, ellipsis) {
@@ -33,6 +37,14 @@ export function useColumns(propsRef, getPaginationRef) {
   const columnsRef = ref(unref(propsRef).columns)
   let cacheColumns = unref(propsRef).columns
 
+  watch(
+    () => unref(propsRef).columns,
+    (columns) => {
+      columnsRef.value = columns
+      cacheColumns = columns?.filter((item) => !item.flag) ?? []
+    },
+  )
+
   function isIfShow(column) {
     const ifShow = column.ifShow
 
@@ -45,35 +57,16 @@ export function useColumns(propsRef, getPaginationRef) {
       isIfShow = ifShow(column)
     }
     return isIfShow
-
   }
+
+  const { hasPermission } = usePermission()
 
   const getViewColumns = computed(() => {
     const viewColumns = sortFixedColumn(unref(columnsRef))
     const columns = cloneDeep(viewColumns)
     return columns
-      .filter((column) => isIfShow(column))
+      .filter((column) => hasPermission(column.auth) && isIfShow(column))
   })
-
-  watch(
-    () => unref(propsRef).columns,
-    (columns) => {
-      columnsRef.value = columns
-      cacheColumns = columns?.filter((item) => !item.flag) ?? []
-    },
-  )
-
-  function setCacheColumnsByField(dataIndex, value) {
-    if (!dataIndex || !value) {
-      return
-    }
-    cacheColumns.forEach((item) => {
-      if (item.dataIndex === dataIndex) {
-        Object.assign(item, value)
-        return
-      }
-    })
-  }
 
   function getCacheColumns() {
     return cacheColumns

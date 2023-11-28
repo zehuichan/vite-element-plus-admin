@@ -57,37 +57,37 @@ const menu = [
     },
     children: [
       {
-        path: '/comp/schemaform',
-        name: 'schemaform',
-        meta: { title: 'schemaform' },
+        path: '/comp/form',
+        name: 'form',
+        meta: { title: 'form' },
         children: [
           {
-            path: '/comp/schemaform/refForm',
-            component: '/comp/schemaform/refForm',
+            path: '/comp/form/refForm',
+            component: '/comp/form/refForm',
             name: 'refForm',
             meta: { title: 'refForm' }
           },
           {
-            path: '/comp/schemaform/useForm',
-            component: '/comp/schemaform/useForm',
+            path: '/comp/form/useForm',
+            component: '/comp/form/useForm',
             name: 'useForm',
             meta: { title: 'useForm' }
           },
           {
-            path: '/comp/schemaform/dynamicForm',
-            component: '/comp/schemaform/dynamicForm',
+            path: '/comp/form/dynamicForm',
+            component: '/comp/form/dynamicForm',
             name: 'dynamicForm',
             meta: { title: 'dynamicForm' }
           },
           {
-            path: '/comp/schemaform/appendForm',
-            component: '/comp/schemaform/appendForm',
+            path: '/comp/form/appendForm',
+            component: '/comp/form/appendForm',
             name: 'appendForm',
             meta: { title: 'appendForm' }
           },
           {
-            path: '/comp/schemaform/searchForm',
-            component: '/comp/schemaform/searchForm',
+            path: '/comp/form/searchForm',
+            component: '/comp/form/searchForm',
             name: 'searchForm',
             meta: { title: 'searchForm' }
           }

@@ -6,13 +6,15 @@ import { PAGE_NOT_FOUND_ROUTE, router } from '@/router'
 import { getInfo, login } from '@/api/user'
 import { Cache, ROLES_KEY, TOKEN_KEY, USER_INFO_KEY } from '@/utils/cache'
 import { isArray } from '@/utils/is'
+import { PERMISSIONS_KEY } from '@/enums/cacheEnum'
 
 export const useUserStore = defineStore({
   id: 'user',
   state: () => ({
     token: undefined,
     userInfo: null,
-    roleList: [],
+    roles: [],
+    permissions: [],
     sessionTimeout: false,
     lastUpdateTime: 0
   }),
@@ -23,8 +25,11 @@ export const useUserStore = defineStore({
     getUserInfo() {
       return this.userInfo || Cache.getItem(USER_INFO_KEY) || {}
     },
-    getRoleList() {
-      return this.roleList.length > 0 ? this.roleList : Cache.getItem(ROLES_KEY)
+    getRoles() {
+      return this.roles.length > 0 ? this.roles : Cache.getItem(ROLES_KEY)
+    },
+    getPermissions() {
+      return this.permissions.length > 0 ? this.permissions : Cache.getItem(PERMISSIONS_KEY)
     },
     getSessionTimeout() {
       return !!this.sessionTimeout
@@ -38,9 +43,13 @@ export const useUserStore = defineStore({
       this.token = token ? token : ''
       Cache.setItem(TOKEN_KEY, token)
     },
-    setRoleList(roleList) {
-      this.roleList = roleList
-      Cache.setItem(ROLES_KEY, roleList)
+    setRoles(roles) {
+      this.roles = roles
+      Cache.setItem(ROLES_KEY, roles)
+    },
+    setPermissions(permissions) {
+      this.permissions = permissions
+      Cache.setItem(PERMISSIONS_KEY, permissions)
     },
     setUserInfo(info) {
       this.userInfo = info
@@ -53,7 +62,8 @@ export const useUserStore = defineStore({
     resetState() {
       this.token = ''
       this.userInfo = null
-      this.roleList = []
+      this.roles = []
+      this.permissions = []
       this.sessionTimeout = false
       this.lastUpdateTime = 0
     },
@@ -101,10 +111,10 @@ export const useUserStore = defineStore({
 
       // roles must be a non-empty array
       if (isArray(roles)) {
-        this.setRoleList(roles)
+        this.setRoles(roles)
       } else {
         data.roles = []
-        this.setRoleList([])
+        this.setRoles([])
       }
 
       this.setUserInfo(data)

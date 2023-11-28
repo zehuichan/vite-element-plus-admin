@@ -1,7 +1,7 @@
-import { withInstall } from '@/utils'
+import Form from './src/Form.vue'
 
-import _Form from './src/Form.vue'
+// components
+export { default as ApiRadioGroup } from './src/components/ApiRadioGroup.vue'
+export { default as ApiSelect } from './src/components/ApiSelect.vue'
 
-export const Form = withInstall(_Form)
-
-export default Form
+export { Form }

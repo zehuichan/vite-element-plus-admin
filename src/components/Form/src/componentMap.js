@@ -12,6 +12,9 @@ import {
   ElDivider
 } from 'element-plus'
 
+import ApiSelect from './components/ApiSelect.vue'
+import ApiRadioGroup from './components/ApiRadioGroup.vue'
+
 // todo 自定义表单组件在这里也要新增配置
 import { Segmented } from '@/components/Segmented'
 import { Desc } from '@/components/Desc'
@@ -37,6 +40,9 @@ componentMap.set('Rate', 'el-rate')
 componentMap.set('ColorPicker', 'el-color-picker')
 
 componentMap.set('Divider', ElDivider)
+
+componentMap.set('ApiSelect', ApiSelect)
+componentMap.set('ApiRadioGroup', ApiRadioGroup)
 
 componentMap.set('Segmented', Segmented)
 componentMap.set('Desc', Desc)

@@ -1,10 +1,9 @@
 <template>
-  <div class="search-form">
-    <div class="search-form__content">
+  <div class="vc-search">
+    <div class="vc-search__content">
       <vc-form
         ref="formRef"
         v-bind="$attrs"
-        :model="$attrs.modelValue"
         auto-submit-on-enter
         show-advanced-button
         @enter="handelQuery"
@@ -14,21 +13,15 @@
         </template>
       </vc-form>
     </div>
-    <div class="search-form__tools flex-center">
+    <div class="vc-search__tools flex-center">
       <slot name="tools" />
       <div class="flex-grow"></div>
       <div>
         <slot name="extra" />
         <el-button @click="handelReset">
-          <template #icon>
-            <icon-park name="refresh" />
-          </template>
           重置
         </el-button>
         <el-button type="primary" @click="handelQuery">
-          <template #icon>
-            <icon-park name="search" />
-          </template>
           查询
         </el-button>
         <el-button v-if="!advanceState.hideAdvanceBtn" text bg @click="handleToggleAdvanced">
@@ -40,53 +33,49 @@
   </div>
 </template>
 
-<script>
-import { computed, defineComponent, ref, unref } from 'vue'
+<script setup>
+import { computed,  ref, unref } from 'vue'
 
-export default defineComponent({
-  name: 'SearchForm',
+import { searchEmits, searchProps } from './Search'
+
+const COMPONENT_NAME = 'VcSearch'
+defineOptions({
+  name: COMPONENT_NAME,
   inheritAttrs: false,
-  emits: ['search', 'reset'],
-  setup(props, { emit }) {
-    const formRef = ref(null)
-
-    const advanceState = computed(() => unref(formRef)?.advanceState || {})
-
-    const handelReset = () => {
-      unref(formRef).resetFields()
-      emit('reset')
-    }
-
-    const handelQuery = () => {
-      emit('search')
-    }
-
-    const handleToggleAdvanced = () => {
-      unref(formRef).handleToggleAdvanced()
-    }
-
-    return {
-      formRef,
-      advanceState,
-      handelReset,
-      handelQuery,
-      handleToggleAdvanced,
-    }
-  }
 })
+
+const props = defineProps(searchProps)
+const emit = defineEmits(searchEmits)
+
+const formRef = ref(null)
+
+const advanceState = computed(() => unref(formRef)?.advanceState || {})
+
+const handelReset = () => {
+  unref(formRef).resetFields()
+  emit('reset')
+}
+
+const handelQuery = () => {
+  emit('search')
+}
+
+const handleToggleAdvanced = () => {
+  unref(formRef).handleToggleAdvanced()
+}
 </script>
 
 <style lang="scss">
-.search-form {
+.vc-search {
   padding: 16px;
   background-color: #fff;
   margin-bottom: 12px;
   border-radius: 2px;
 
-  .search-form__content {
+  .vc-search__content {
   }
 
-  .search-form__tools {
+  .vc-search__tools {
   }
 }
 </style>

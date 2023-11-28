@@ -52,11 +52,11 @@ function dynamicImport(dynamicViewsModules, component) {
     return dynamicViewsModules[matchKey]
   } else if (matchKeys?.length > 1) {
     console.warn(
-      'Please do not create `.{vue,jsx,tsx}` files with the same file name in the same hierarchical directory under the views folder. This will cause dynamic introduction failure'
+      'Please do not create `.vue` and `.jsx` files with the same file name in the same hierarchical directory under the views folder. This will cause dynamic introduction failure'
     )
     return false
   } else {
-    console.warn(`${component} is not found`)
+    console.warn(`在src/views/下找不到${component}.vue, 或${component}.jsx, 请自行创建!`)
     return false
   }
 }
@@ -169,6 +169,11 @@ export function transformObjToRoute(routeList) {
       } else {
         route.children = [cloneDeep(route)]
         route.component = LAYOUT
+
+        //某些情况下如果name如果没有值， 多个一级路由菜单会导致页面404
+        if (!route.name) {
+          console.warn('找不到菜单对应的name, 请检查数据!' + JSON.stringify(route))
+        }
         route.name = `${route.name}Parent`
         route.path = ''
         const meta = route.meta || {}

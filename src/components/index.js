@@ -1,25 +1,25 @@
-import AppProvider from './AppProvider'
 import Renderer from './Renderer'
+import AppProvider from './AppProvider'
+import Search from './Search'
 import Fullcontent from './Fullcontent'
 import Icon from './Icon'
-import { SchemaForm, ApiSelect } from './SchemaForm'
+import { Form, ApiSelect } from './Form'
 import SvgIcon from './SvgIcon'
 import IconPark from './IconPark'
 import Segmented from './Segmented'
 import ToolBar from './ToolBar'
 import BasicForm from './BasicForm'
 import Field from './Field'
-import SearchForm from './SearchForm'
-import Form from './Form'
 import Table from './Table'
 import Pagination from './Pagination'
 
 const components = [
-  AppProvider,
   Renderer,
+  AppProvider,
+  Search,
+  Form,
   Fullcontent,
   Icon,
-  SchemaForm,
   ApiSelect,
   SvgIcon,
   IconPark,
@@ -27,8 +27,6 @@ const components = [
   ToolBar,
   BasicForm,
   Field,
-  SearchForm,
-  Form,
   Table,
   Pagination,
 ]

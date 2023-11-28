@@ -1,6 +1,6 @@
 <template>
   <div ref="wrapRef" class="vc-table" v-loading="loading">
-    <el-table ref="tableRef" v-bind="$attrs">
+    <el-table ref="tableRef" v-bind="$attrs" border stripe>
       <slot />
       <el-table-column v-for="column in getViewColumns" v-bind="column">
         <template #default="scope">
@@ -18,51 +18,40 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, toRefs, ref, getCurrentInstance, onMounted, computed } from 'vue'
+<script setup>
+import { computed, ref, onMounted, useAttrs, } from 'vue'
 
-import props from './props'
+import { tableProps } from './Table'
 
 import { usePagination } from './hooks/usePagination'
 import { useColumns } from './hooks/useColumns'
 
-import { createNamespace } from '@/components/utils'
-
-const [name] = createNamespace('table')
-
-export default defineComponent({
-  name: name,
+const COMPONENT_NAME = 'VcTable'
+defineOptions({
+  name: COMPONENT_NAME,
   inheritAttrs: false,
-  props: props,
-  setup(props, { slots, attrs, emit, expose }) {
-
-    const { proxy } = getCurrentInstance()
-
-    const wrapRef = ref(null)
-    const tableRef = ref(null)
-
-    const getProps = computed(() => {
-      return { ...props, ...attrs }
-    })
-
-    const { getPaginationProps } = usePagination(getProps)
-    const { getViewColumns } = useColumns(getProps)
-
-    onMounted(() => {
-      const CACHE = tableRef.value ?? {}
-      for (const [key, value] of Object.entries(CACHE)) {
-        proxy[key] = value
-      }
-    })
-
-    return {
-      wrapRef,
-      tableRef,
-      getPaginationProps,
-      getViewColumns,
-    }
-  }
 })
+
+const props = defineProps(tableProps)
+const attrs = useAttrs()
+
+const wrapRef = ref(null)
+const tableRef = ref(null)
+
+const getProps = computed(() => {
+  return { ...props, ...attrs }
+})
+
+const { getPaginationProps } = usePagination(getProps)
+const { getViewColumns } = useColumns(getProps)
+
+const tableActions = {}
+
+onMounted(() => {
+  
+})
+
+defineExpose(tableActions)
 </script>
 
 <style scoped lang="scss">

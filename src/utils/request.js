@@ -51,19 +51,19 @@ export default (config) =>
           return reject('无效的会话，或者会话已过期，请重新登录。')
         } else if (code === 500) {
           ElMessage({ message: msg, type: 'error' })
-          reject(new Error(msg))
+          return reject(new Error(msg))
         } else if (code === 601) {
           ElMessage({ message: msg, type: 'warning' })
-          reject(new Error(msg))
+          return reject(new Error(msg))
         } else if (code !== 200) {
           ElNotification.error({ title: msg })
-          reject('error')
+          return reject('error')
         } else {
-          resolve(res)
+          return resolve(res)
         }
       })
       .catch((err) => {
         console.log(err)
-        reject(err)
+        return reject(err)
       })
   })

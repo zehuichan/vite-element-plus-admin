@@ -4,20 +4,19 @@
     v-bind="$attrs"
     v-model="state"
     clearable
-    :placeholder="$attrs.placeholder ?? '请选择'"
+    :placeholder="$attrs?.placeholder ?? '请选择'"
     :loading="loading"
     :options="getOptions"
-    @change="handleChange"
     @visible-change="handleFetch"
   >
-    <template #[item]="data" v-for="item in Object.keys($slots)">
-      <slot :name="item" v-bind="data || {}" />
+    <template #default="{item}">
+      <div @click="handleSelect(item)">{{ item.label }}</div>
     </template>
   </el-select-v2>
 </template>
 
 <script>
-import { defineComponent, ref, computed, unref, watch, watchEffect } from 'vue'
+import { defineComponent, ref, computed, unref, watch } from 'vue'
 
 import { useVModel } from '@vueuse/core'
 
@@ -62,16 +61,13 @@ export default defineComponent({
       type: Array,
       default: () => []
     },
-    toRaw: {
-      type: Boolean,
-      default: false
-    },
+    readonly: Boolean,
   },
-  emits: ['change', 'options-change', 'update:modelValue'],
+  emits: ['select', 'options-change', 'update:modelValue'],
   setup(props, { emit }) {
     const options = ref([])
     const loading = ref(false)
-    const isFirstLoad = ref(true)
+    const isFirstLoaded = ref(false)
 
     const state = useVModel(props, 'modelValue', emit)
 
@@ -93,25 +89,26 @@ export default defineComponent({
       return data.length > 0 ? data : props.options
     })
 
-    watchEffect(() => {
-      props.immediate && !props.alwaysLoad && fetch()
-    })
-
     watch(
       () => props.params,
       () => {
-        !unref(isFirstLoad) && fetch()
+        !unref(isFirstLoaded) && handleFetch()
       },
-      { deep: true }
+      { deep: true, immediate: props.immediate }
     )
 
-    async function fetch() {
-      const api = props.api
+    async function handleFetch(query) {
+      const { api, params } = props
       if (!api || !isFunction(api)) return
       options.value = []
       try {
         loading.value = true
-        const res = await api(props.params)
+        const data = {
+          ...params,
+          ...(params?.key ? { [params?.key]: query } : null)
+        }
+        const res = await api(data)
+        isFirstLoaded.value = true
         if (Array.isArray(res)) {
           options.value = res
           emitChange()
@@ -128,21 +125,13 @@ export default defineComponent({
       }
     }
 
-    async function handleFetch(visible) {
-      if (visible) {
-        if (props.alwaysLoad) {
-          await fetch()
-        } else if (!props.immediate && unref(isFirstLoad)) {
-          await fetch()
-          isFirstLoad.value = false
-        }
-      }
+    function handleSelect(val) {
+      emit('select', val)
     }
 
-    function handleChange(val) {
-      const { valueField, toRaw } = props
-      const data = unref(options).find((item) => item[valueField] === val)
-      emit('change', toRaw ? data : val)
+    function handleClear() {
+      state.value = null
+      emit('select')
     }
 
     function emitChange() {
@@ -151,10 +140,10 @@ export default defineComponent({
 
     return {
       state,
-      getOptions,
       loading,
+      getOptions,
       handleFetch,
-      handleChange
+      handleSelect,
     }
   }
 })

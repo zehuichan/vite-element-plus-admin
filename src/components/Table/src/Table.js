@@ -1,4 +1,4 @@
-export default {
+export const tableProps = {
   key: {
     type: String || Number,
     default: '0'
