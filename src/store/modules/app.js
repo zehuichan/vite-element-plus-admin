@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { store } from '..'
 
-import { Cache, PROJ_CFG_KEY } from '@/utils/cache'
+import { Cache } from '@/utils/cache'
+import { PROJ_CFG_KEY } from '@/enums/cacheEnum'
 import { deepMerge } from '@/utils'
 
 import projectConfig from '@/settings/projectSetting'
@@ -9,6 +10,8 @@ import projectConfig from '@/settings/projectSetting'
 export const useAppStore = defineStore({
   id: 'app',
   state: () => ({
+    darkMode: undefined,
+    pageLoading: false,
     projectConfig: Cache.getItem(PROJ_CFG_KEY, projectConfig)
   }),
   getters: {
@@ -29,7 +32,14 @@ export const useAppStore = defineStore({
     setProjectConfig(config) {
       this.projectConfig = deepMerge(this.projectConfig || {}, config)
       Cache.setItem(PROJ_CFG_KEY, this.projectConfig)
-    }
+    },
+    setMenuSetting(setting) {
+      this.projectConfig.menuSetting = deepMerge(this.projectConfig.menuSetting || {}, setting)
+      Cache.setItem(PROJ_CFG_KEY, this.projectConfig)
+    },
+    resetAllState() {
+      Cache.clear()
+    },
   }
 })
 

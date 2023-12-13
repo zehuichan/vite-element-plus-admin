@@ -1,6 +1,6 @@
 <template>
   <el-form
-    v-bind="$attrs"
+    v-bind="getBindValue"
     ref="formElRef"
     :model="state"
     :rules="getRules"
@@ -41,8 +41,11 @@
 </template>
 
 <script setup>
-import { computed, getCurrentInstance, onMounted, reactive, ref, unref, watch } from 'vue'
-import { cloneDeep } from 'lodash-es'
+import { computed, getCurrentInstance, onMounted, reactive, ref, unref, useAttrs, watch } from 'vue'
+
+import { formProps as elFormProps } from 'element-plus'
+
+import { cloneDeep, pick } from 'lodash-es'
 
 import { useVModel } from '@vueuse/core'
 
@@ -68,6 +71,7 @@ defineOptions({
 
 const props = defineProps(formProps)
 const emit = defineEmits(formEmits)
+const attrs = useAttrs()
 
 const { proxy } = getCurrentInstance()
 
@@ -86,6 +90,13 @@ const state = useVModel(props, 'modelValue', emit, { defaultValue: {} })
 
 const getProps = computed(() => {
   return { ...props, ...unref(propsRef) }
+})
+
+const getBindValue = computed(() => {
+  return pick(
+    { ...attrs, ...props, ...unref(getProps) },
+    Object.keys(elFormProps)
+  )
 })
 
 const getRow = computed(() => {
@@ -199,9 +210,10 @@ function setProps(formProps) {
 }
 
 function getColProps(schema) {
-  const { colProps = {} } = schema
   const { baseColProps = {} } = props
-  return { ...baseColProps, ...colProps }
+  const { colProps = {} } = schema
+  const realColProps = { ...baseColProps, ...colProps }
+  return realColProps
 }
 
 function handleShow(schema) {
@@ -228,6 +240,7 @@ function handleShow(schema) {
 
   return flag
 }
+
 
 function handleRules(schema) {
   const {
@@ -323,10 +336,7 @@ const formActions = {
 
 onMounted(() => {
   initDefault()
-  const entries = Object.entries(formElRef.value)
-  for (const [key, value] of entries) {
-    formActions[key] = value
-  }
+  emit('register', formActions)
 })
 
 defineExpose(formActions)

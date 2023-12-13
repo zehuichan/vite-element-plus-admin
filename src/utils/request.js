@@ -47,7 +47,7 @@ export default (config) =>
             type: 'warning'
           })
           const userStore = useUserStoreWithOut()
-          userStore.logout(true)
+          await userStore.logout(true)
           return reject('无效的会话，或者会话已过期，请重新登录。')
         } else if (code === 500) {
           ElMessage({ message: msg, type: 'error' })

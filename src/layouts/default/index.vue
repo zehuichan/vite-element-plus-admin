@@ -20,6 +20,7 @@ import AppFooter from './components/AppFooter/index.vue'
 import { useRootSetting } from '@/hooks/setting/useRootSetting'
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 import { useAppInjectStore } from '@/hooks/web/useAppProvideStore'
+import { useEventListener } from '@vueuse/core'
 
 export default defineComponent({
   name: 'BasicLayout',
@@ -30,7 +31,7 @@ export default defineComponent({
     AppSider
   },
   setup() {
-    const { getIsMobile, getIsLaptop } = useAppInjectStore()
+    const { getIsMobile } = useAppInjectStore()
 
     const { getShowFooter, getUseOpenBackTop } = useRootSetting()
     const {
@@ -43,7 +44,7 @@ export default defineComponent({
     } = useMenuSetting()
 
     const layoutClass = computed(() => {
-      const opened = unref(getIsLaptop) ? true : unref(getCollapsed)
+      const opened = unref(getCollapsed)
 
       return {
         hideSider: opened,
@@ -53,11 +54,19 @@ export default defineComponent({
       }
     })
 
+    useEventListener(window, 'resize', () => {
+      if (unref(getIsMobile)) {
+        setMenuSetting({
+          animation: true
+        })
+      }
+    })
+
     onMounted(() => {
       if (unref(getIsMobile)) {
         setMenuSetting({
           collapsed: true,
-          animation: true
+          animation: false
         })
       }
     })
@@ -99,7 +108,7 @@ export default defineComponent({
     // reset element-ui css
     .horizontal-collapse-transition {
       transition: 0s width ease-in-out, 0s padding-left ease-in-out,
-        0s padding-right ease-in-out;
+      0s padding-right ease-in-out;
     }
 
     &-content {

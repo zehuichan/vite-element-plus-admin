@@ -7,8 +7,14 @@
     :placeholder="$attrs?.placeholder ?? '请选择'"
     :loading="loading"
     :options="getOptions"
-    @visible-change="handleFetch"
+    :filterable="getRemote"
+    :remote="getRemote"
+    :remote-method="getRemote ? handleFetch : null"
+    @clear="handleClear"
   >
+    <template #[item]="data" v-for="item in ['prefix', 'empty']">
+      <slot :name="item" v-bind="data || {}" />
+    </template>
     <template #default="{item}">
       <div @click="handleSelect(item)">{{ item.label }}</div>
     </template>
@@ -89,6 +95,10 @@ export default defineComponent({
       return data.length > 0 ? data : props.options
     })
 
+    const getRemote = computed(() => {
+      return props.options.length === 0
+    })
+
     watch(
       () => props.params,
       () => {
@@ -142,8 +152,10 @@ export default defineComponent({
       state,
       loading,
       getOptions,
+      getRemote,
       handleFetch,
       handleSelect,
+      handleClear
     }
   }
 })

@@ -26,3 +26,10 @@ function genType() {
 
 export const dateItemType = genType()
 
+export const simpleComponents = ['Divider', 'AppTitle', 'BasicTitle']
+
+export function isIncludeSimpleComponents(component) {
+  return simpleComponents.includes(component || '')
+}
+
+

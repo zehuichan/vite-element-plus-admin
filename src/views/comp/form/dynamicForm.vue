@@ -6,22 +6,19 @@
       <el-button @click="setProps({ size: 'large' })">large</el-button>
       <el-button @click="setProps({ disabled: true })">禁用表单</el-button>
       <el-button @click="setProps({ disabled: false })">解除禁用</el-button>
-      <el-button @click="setFieldsValue({ field1: 123123 })">
-        setFieldsValue
-      </el-button>
     </el-form-item>
-    <schema-form @register="register">
-      <template #f3="{ model, field }">
-        <el-input v-model="model[field]" placeholder="自定义slot" />
+    <vc-form ref="formRef" v-model="dataForm" @register="register">
+      <template #f3="scope">
+        <el-input v-model="dataForm.field3" placeholder="自定义slot" />
       </template>
-    </schema-form>
+    </vc-form>
   </div>
 </template>
 
-<script>
-import { defineComponent } from 'vue'
+<script setup>
+import { ref } from 'vue'
 import { dictApi } from '@/api'
-import { useForm } from '@/components/SchemaForm'
+import { useForm } from '@/components/Form'
 
 const schemas = [
   {
@@ -30,7 +27,7 @@ const schemas = [
     label: '字段1',
     defaultValue: 123,
     required: true,
-    show: ({ values }) => {
+    show: (values) => {
       return !!values.field4
     }
   },
@@ -38,13 +35,13 @@ const schemas = [
     field: 'field4',
     component: 'Switch',
     label: '字段4',
-    defaultValue: true
+    defaultValue: false
   },
   {
     field: 'field2',
     component: 'Input',
     label: '字段2',
-    dynamicDisabled: ({ values }) => {
+    dynamicDisabled: (values) => {
       return values.field35 == 1
     }
   },
@@ -53,7 +50,7 @@ const schemas = [
     component: 'Input',
     label: '字段3',
     slot: 'f3',
-    dynamicRules: ({ values }) => {
+    dynamicRules: (values) => {
       return values.field34 == 0 ? [{ required: true, message: '必填' }] : []
     }
   },
@@ -89,17 +86,10 @@ const schemas = [
   }
 ]
 
-export default defineComponent({
-  setup() {
-    const [, register, { setProps, setFieldsValue }] = useForm({
-      schemas
-    })
-
-    return {
-      register,
-      setProps,
-      setFieldsValue
-    }
-  }
+const formRef = ref(null)
+const dataForm = ref({})
+const [register, { setProps }] = useForm({
+  schemas,
+  baseColProps: { span: 8 }
 })
 </script>

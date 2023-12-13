@@ -12,7 +12,7 @@
 
 <script>
 import { computed, defineComponent } from 'vue'
-import { useErrorLogStore } from '@/store/modules/errorLog.js'
+import { useErrorLogStore } from '@/store/modules/errorLog'
 
 export default defineComponent({
   name: 'ErrorAction',

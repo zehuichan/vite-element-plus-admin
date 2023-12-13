@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <schema-form auto-submit-on-enter @register="register" @enter="handelQuery">
+    <vc-form auto-submit-on-enter @register="register" @enter="handelQuery">
       <template #actions>
         <div class="flex">
           <el-button>导入</el-button>
@@ -12,13 +12,13 @@
           </div>
         </div>
       </template>
-    </schema-form>
+    </vc-form>
   </div>
 </template>
 
-<script>
+<script setup>
 import { defineComponent } from 'vue'
-import { useForm } from '@/components/SchemaForm'
+import { useForm } from '@/components/Form'
 import { dictApi } from '@/api'
 
 const dictApiMap = {
@@ -85,25 +85,15 @@ const getSchemas = () => {
   ]
 }
 
-export default defineComponent({
-  setup() {
-    const [register, { getFieldsValue, resetFields }] = useForm({
-      schemas: getSchemas()
-    })
-
-    return {
-      register,
-      handelQuery() {
-        const data = getFieldsValue()
-        console.log(data)
-      },
-      handleReset() {
-        const data = resetFields()
-        console.log(data)
-      }
-    }
-  }
+const [register, { resetFields }] = useForm({
+  schemas: getSchemas()
 })
+
+const handelQuery = () => {
+}
+
+const handleReset = () => {
+}
 </script>
 
 <style>

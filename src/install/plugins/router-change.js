@@ -1,7 +1,5 @@
-import mitt from 'mitt'
+import { emitter } from '@/utils/mitt'
 import { getRawRoute } from '@/utils'
-
-const emitter = mitt()
 
 const key = Symbol()
 

@@ -1,4 +1,7 @@
-import Form from './src/Form.vue'
+import Form from './src/Form2.vue'
+
+// hooks
+export { useForm } from './src/hooks/useForm'
 
 // components
 export { default as ApiRadioGroup } from './src/components/ApiRadioGroup.vue'

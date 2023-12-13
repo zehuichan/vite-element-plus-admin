@@ -6,17 +6,14 @@
       <el-button @click="setProps({ size: 'large' })">large</el-button>
       <el-button @click="setProps({ disabled: true })">禁用表单</el-button>
       <el-button @click="setProps({ disabled: false })">解除禁用</el-button>
-      <el-button @click="setFieldsValue({ field1: 123123 })">
-        setFieldsValue
-      </el-button>
-      <el-button @click="getFieldsValue"> getFieldsValue</el-button>
+      <el-button @click="setFieldsValue({ field1: 123123 })">setFieldsValue</el-button>
       <el-button @click="handleChange">handleChange</el-button>
     </el-form-item>
-    <schema-form :model="modelRef" @register="register">
-      <template #f3="{ model, field }">
-        <el-input v-model="model[field]" placeholder="自定义slot" />
+    <vc-form v-model="dataForm" @register="register">
+      <template #f3="scope">
+        <el-input v-model="dataForm.field3" placeholder="自定义slot" />
       </template>
-    </schema-form>
+    </vc-form>
     <el-button text bg @click="handelReset">重置</el-button>
     <el-button text bg @click="handelQuery">查询</el-button>
   </div>
@@ -25,16 +22,13 @@
 <script setup>
 import { ref } from 'vue'
 import { dictApi } from '@/api'
-import { useForm } from '@/components/SchemaForm'
+import { useForm } from '@/components/Form'
 
 const schemas = [
   {
     field: 'field1',
     component: 'Input',
     label: '字段1',
-    colProps: {
-      span: 8
-    },
     defaultValue: 123,
     required: true
   },
@@ -42,18 +36,12 @@ const schemas = [
     field: 'field2',
     component: 'Input',
     label: '字段2',
-    colProps: {
-      span: 8
-    }
   },
   {
     field: 'field3',
     component: 'Input',
     label: '字段3',
     slot: 'f3',
-    colProps: {
-      span: 8
-    }
   },
   {
     field: 'field34',
@@ -67,9 +55,6 @@ const schemas = [
       labelField: 'name',
       // use id as value
       valueField: 'id'
-    },
-    colProps: {
-      span: 8
     },
     defaultValue: '1',
     required: true
@@ -87,30 +72,32 @@ const schemas = [
         { label: '北京烤鸭', value: 5 }
       ]
     },
-    colProps: {
-      span: 8
-    }
   }
 ]
 
-const modelRef = ref({})
-
-const [register, { setProps, setFieldsValue, getFieldsValue, resetFields }] = useForm({
-  schemas
+const dataForm = ref({
+  field1: '',
+  field2: '',
+  field3: '',
+})
+const [register, { setProps }] = useForm({
+  schemas,
+  baseColProps: { span: 8 }
 })
 
 function handleChange() {
-  modelRef.value = { field2: 123123 }
+  dataForm.value = { field2: 123123 }
+}
+
+const setFieldsValue = (obj) => {
+  dataForm.value = obj
 }
 
 const handelReset = () => {
-  const data = getFieldsValue()
-  resetFields()
-  console.log(data)
+
 }
+
 const handelQuery = () => {
-  const data = getFieldsValue()
-  console.log(data)
 }
 
 </script>

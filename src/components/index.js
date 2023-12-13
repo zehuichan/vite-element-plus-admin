@@ -8,8 +8,6 @@ import SvgIcon from './SvgIcon'
 import IconPark from './IconPark'
 import Segmented from './Segmented'
 import ToolBar from './ToolBar'
-import BasicForm from './BasicForm'
-import Field from './Field'
 import Table from './Table'
 import Pagination from './Pagination'
 
@@ -25,8 +23,6 @@ const components = [
   IconPark,
   Segmented,
   ToolBar,
-  BasicForm,
-  Field,
   Table,
   Pagination,
 ]

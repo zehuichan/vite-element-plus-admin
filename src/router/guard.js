@@ -5,11 +5,12 @@ import 'nprogress/nprogress.css'
 import { LOGIN_ROUTE, PAGE_NOT_FOUND_ROUTE } from '@/router'
 import { LOGIN_NAME } from '@/router/constant'
 
+import { useAppStoreWithOut } from '@/store/modules/app'
 import { useUserStoreWithOut } from '@/store/modules/user'
 import { usePermissionStoreWithOut } from '@/store/modules/permission'
 import { useMultipleTabStoreWithOut } from '@/store/modules/multipleTab'
 
-import { setRouteChange } from '@/install/plugins/router-change'
+import { removeTabChangeListener, setRouteChange } from '@/install/plugins/router-change'
 
 // no redirect whitelist
 const whiteList = ['/login', '/auth-redirect']
@@ -145,12 +146,15 @@ function createPermissionGuard(router) {
 function createStateGuard(router) {
   router.afterEach((to) => {
     if (to.name === LOGIN_NAME) {
+      const appStore = useAppStoreWithOut()
       const tabStore = useMultipleTabStoreWithOut()
       const userStore = useUserStoreWithOut()
       const permissionStore = usePermissionStoreWithOut()
+      appStore.resetAllState()
       permissionStore.resetState()
       tabStore.resetState()
       userStore.resetState()
+      removeTabChangeListener()
     }
   })
 }

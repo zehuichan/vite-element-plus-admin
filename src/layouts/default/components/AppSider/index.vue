@@ -8,10 +8,10 @@
     }"
   >
     <div class="basic-layout-aside-content">
-      <app-logo :collapse="collapse" />
+      <app-logo :collapse="getCollapsed" />
       <el-scrollbar wrap-class="scrollbar-wrapper">
         <app-menu
-          :collapse="collapse"
+          :collapse="getCollapsed"
           :routes="permissionStore?.menus"
           @click="handleClose(false)"
         />
@@ -21,9 +21,9 @@
 </template>
 
 <script>
-import { computed, defineComponent, unref } from 'vue'
+import { defineComponent } from 'vue'
 
-import { usePermissionStore } from '@/store/modules/permission.js'
+import { usePermissionStore } from '@/store/modules/permission'
 
 import { ElOverlay } from 'element-plus'
 import AppLogo from '../AppLogo/index.vue'
@@ -31,6 +31,7 @@ import AppMenu from '../AppMenu/index.vue'
 
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 import { useAppInjectStore } from '@/hooks/web/useAppProvideStore'
+import { useRootSetting } from '@/hooks/setting/useRootSetting'
 
 export default defineComponent({
   name: 'AppSider',
@@ -40,17 +41,9 @@ export default defineComponent({
 
     const { getIsMobile, getIsLaptop } = useAppInjectStore()
 
+    const { getShowLogo } = useRootSetting()
     const { setMenuSetting, getCollapsed } = useMenuSetting()
 
-    const collapse = computed(() => {
-      if (unref(getIsLaptop)) {
-        return true
-      }
-      if (unref(getIsMobile)) {
-        return false
-      }
-      return unref(getCollapsed)
-    })
 
     function handleClose(flag) {
       if (flag) {
@@ -63,7 +56,6 @@ export default defineComponent({
 
     return {
       permissionStore,
-      collapse,
       getIsMobile,
       getIsLaptop,
       getCollapsed,
