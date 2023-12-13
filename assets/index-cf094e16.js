@@ -1,1 +1,0 @@
-import{a as o,o as a,e as c,j as e}from"./index-6698fb93.js";const n={class:"app-container"},p=e("div",{class:"p-5px mt-[10px] bg-[#b2a8bb]"},"unocss",-1),u={__name:"index",setup(r){const s=o();function t(){s.go(0)}return(i,_)=>(a(),c("div",n,[e("div",{class:"w-100px h-100px p-10px text-white bg-amber",onClick:t},"unocss"),p]))}};export{u as default};
