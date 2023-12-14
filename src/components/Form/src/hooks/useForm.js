@@ -4,6 +4,7 @@ import { isEmpty, isObject } from '@/utils/is'
 export const useForm = (props) => {
   const formRef = ref(null)
 
+  // todo
   const register = (instance) => {
     formRef.value = instance
     instance.setProps(props)
@@ -23,17 +24,21 @@ export const useForm = (props) => {
   // 一些内置的方法
   const methods = {
     setProps: async (...args) => (await getInstance()).setProps(...args),
-    setSchema: async (schemaProps) => {
+    updateSchema: async (data) => {
       const form = await getInstance()
-      form?.setSchema(schemaProps)
+      form?.updateSchema(data)
     },
-    addSchema: async (formSchema, index) => {
+    resetSchema: async (data) => {
       const form = await getInstance()
-      form?.addSchema(formSchema, index)
+      form?.resetSchema(data)
     },
-    delSchema: async (field) => {
+    appendSchemaByField: async (schema, prefixField, first) => {
       const form = await getInstance()
-      form?.delSchema(field)
+      form?.appendSchemaByField(schema, prefixField, first)
+    },
+    removeSchemaByField: async (field) => {
+      const form = await getInstance()
+      form?.removeSchemaByField(field)
     },
     validate: async (...args) => (await getInstance()).validate(...args),
     validateField: async (...args) => (await getInstance()).validateField(...args),

@@ -32,4 +32,5 @@ export function isIncludeSimpleComponents(component) {
   return simpleComponents.includes(component || '')
 }
 
+export const defaultValueComponents = ['Input', 'InputPassword', 'InputSearch', 'InputTextArea']
 

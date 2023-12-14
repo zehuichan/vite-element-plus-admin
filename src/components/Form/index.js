@@ -1,4 +1,4 @@
-import Form from './src/Form2.vue'
+import Form from './src/Form.vue'
 
 // hooks
 export { useForm } from './src/hooks/useForm'

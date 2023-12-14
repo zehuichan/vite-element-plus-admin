@@ -7,9 +7,10 @@
       <el-button @click="setProps({ disabled: true })">禁用表单</el-button>
       <el-button @click="setProps({ disabled: false })">解除禁用</el-button>
       <el-button @click="setFieldsValue({ field1: 123123 })">setFieldsValue</el-button>
+      <el-button @click="handleActions('updateSchema')">updateSchema</el-button>
       <el-button @click="handleChange">handleChange</el-button>
     </el-form-item>
-    <vc-form v-model="dataForm" @register="register">
+    <vc-form v-model="dataForm" :schemas="schemas" @register="register">
       <template #f3="scope">
         <el-input v-model="dataForm.field3" placeholder="自定义slot" />
       </template>
@@ -75,15 +76,31 @@ const schemas = [
   }
 ]
 
-const dataForm = ref({
-  field1: '',
-  field2: '',
-  field3: '',
-})
-const [register, { setProps }] = useForm({
-  schemas,
-  baseColProps: { span: 8 }
-})
+const dataForm = ref({})
+const [register, { setProps, updateSchema }] = useForm()
+
+const handleActions = (type) => {
+  switch (type) {
+    case 'updateSchema':
+      updateSchema([
+        {
+          field: 'field2',
+          component: 'ApiSelect',
+          label: '字段2',
+          componentProps: {
+            options: [
+              { label: '黄金糕', value: 1 },
+              { label: '双皮奶', value: 2 },
+              { label: '蚵仔煎', value: 3 },
+              { label: '龙须面', value: 4 },
+              { label: '北京烤鸭', value: 5 }
+            ]
+          },
+        },
+      ])
+      break
+  }
+}
 
 function handleChange() {
   dataForm.value = { field2: 123123 }

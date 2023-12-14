@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <vc-form v-model="dataForm" @register="register">
-      <template #add="scope">
-        <el-button text icon="Plus" @click="add" />
-        <el-button text icon="Minus" @click="del()" />
+      <template #add="{ field }">
+        <el-button v-if="Number(field) === 0" text icon="Plus" @click="add" />
+        <el-button v-if="field > 0" text icon="Minus" @click="del(field)" />
       </template>
     </vc-form>
   </div>
@@ -19,7 +19,7 @@ const schemas = [
     component: 'Input',
     label: '字段1',
     defaultValue: 123,
-    required: true
+    required: true,
   },
   {
     field: 'field2',
@@ -29,40 +29,43 @@ const schemas = [
   {
     field: '0',
     component: 'Input',
-    slot: 'add'
+    colSlot: 'add',
   }
 ]
-const [register, { addSchema, delSchema }] = useForm({
-  schemas,
+const [register, { appendSchemaByField, removeSchemaByField }] = useForm({
+  schemas: schemas,
   baseColProps: { span: 8 }
 })
 const n = ref(1)
 const dataForm = ref({})
 
 function add() {
-  addSchema({
+  appendSchemaByField({
     field: `field${n.value}a`,
     component: 'Input',
     label: '字段' + n.value,
     required: true,
+    colProps: { span: 8 }
   })
-  addSchema({
+  appendSchemaByField({
     field: `field${n.value}b`,
     component: 'Input',
     label: '字段' + n.value,
     required: true,
+    colProps: { span: 8 }
   })
-  addSchema({
+  appendSchemaByField({
     field: `${n.value}`,
     component: 'Input',
     colSlot: 'add',
+    colProps: { span: 8 }
   })
   n.value++
 }
 
 function del(field) {
   console.log(field)
-  delSchema([`field${field}a`, `field${field}b`, `${field}`])
+  removeSchemaByField([`field${field}a`, `field${field}b`, `${field}`])
   n.value--
 }
 </script>

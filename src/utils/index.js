@@ -1,5 +1,5 @@
 import { unref } from 'vue'
-import { isObject } from '@/utils/is'
+import { isDef, isNumber, isObject } from '@/utils/is'
 
 export const noop = () => {
 }
@@ -72,4 +72,17 @@ export function withInstall(options) {
 
 export function sleep(timeout = 1 * 1000) {
   return new Promise((resolve) => setTimeout(resolve, timeout))
+}
+
+export function addUnit(value) {
+  if (isDef(value)) {
+    return isNumber(value) ? `${value}px` : String(value)
+  }
+  return undefined
+}
+
+export function closest(arr, target) {
+  return arr.reduce((pre, cur) =>
+    Math.abs(pre - target) < Math.abs(cur - target) ? pre : cur,
+  )
 }

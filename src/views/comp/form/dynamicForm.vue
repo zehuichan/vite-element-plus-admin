@@ -27,8 +27,8 @@ const schemas = [
     label: '字段1',
     defaultValue: 123,
     required: true,
-    show: (values) => {
-      return !!values.field4
+    show: ({ model }) => {
+      return !!model.field4
     }
   },
   {
@@ -41,8 +41,8 @@ const schemas = [
     field: 'field2',
     component: 'Input',
     label: '字段2',
-    dynamicDisabled: (values) => {
-      return values.field35 == 1
+    dynamicDisabled: ({ model }) => {
+      return model?.field35 == 1
     }
   },
   {
