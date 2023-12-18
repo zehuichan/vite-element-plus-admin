@@ -1,0 +1,1 @@
+import{_ as n,k as e}from"./index-94a5e6ca.js";const t=e({name:"Account"});function o(c,r,s,a,_,p){return"Account"}const d=n(t,[["render",o]]);export{d as default};
