@@ -1,44 +1,44 @@
 <template>
-  <div class="desc" :class="{'is-readonly': inputReadonly, 'is-disabled': inputDisabled}">
+  <div class="desc" :class="{'is-readonly': readonly, 'is-disabled': inputDisabled, [`desc-${inputSize}`]: true}">
     <div class="desc__wrapper" :class="{'placeholder': !state}">
-      {{ state ?? placeholder }}
+      <slot>
+        {{ dictType ? getDictDataLabel(dictType, state) : state ?? placeholder }}
+      </slot>
     </div>
   </div>
 </template>
 
 <script>
-import { computed, defineComponent } from 'vue'
+import { defineComponent } from 'vue'
 
 import { useVModel } from '@vueuse/core'
 
-import { useFormItem } from 'element-plus'
+import { useFormDisabled, useFormSize } from 'element-plus'
+
+import { getDictDataLabel } from '@/hooks/web/useDict'
 
 export default defineComponent({
   name: 'Desc',
   inheritAttrs: false,
   props: {
     modelValue: null,
+    dictType: String,
+    size: String,
     placeholder: String,
     disabled: Boolean,
     readonly: Boolean,
   },
   setup(props, { emit }) {
-    const { form } = useFormItem()
-
     const state = useVModel(props, 'modelValue', emit)
 
-    const inputDisabled = computed(() => {
-      return props.disabled || form?.disabled
-    })
-
-    const inputReadonly = computed(() => {
-      return props.readonly || form?.readonly
-    })
+    const inputSize = useFormSize()
+    const inputDisabled = useFormDisabled()
 
     return {
+      getDictDataLabel,
       state,
+      inputSize,
       inputDisabled,
-      inputReadonly,
     }
   }
 })
@@ -50,6 +50,7 @@ export default defineComponent({
   font-size: var(--el-font-size-base);
   display: inline-flex;
   width: 100%;
+  height: 32px;
   line-height: 32px;
   box-sizing: border-box;
   vertical-align: middle;
@@ -83,5 +84,11 @@ export default defineComponent({
       cursor: not-allowed;
     }
   }
+}
+
+.desc-small {
+  font-size: 12px;
+  height: 24px;
+  line-height: 24px;
 }
 </style>

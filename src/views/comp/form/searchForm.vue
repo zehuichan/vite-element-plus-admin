@@ -1,24 +1,13 @@
 <template>
   <div class="app-container">
-    <vc-form auto-submit-on-enter @register="register" @enter="handelQuery">
-      <template #actions>
-        <div class="flex">
-          <el-button>导入</el-button>
-          <el-button>导出</el-button>
-          <div class="flex-grow"></div>
-          <div>
-            <el-button @click="handleReset">重置</el-button>
-            <el-button type="primary" @click="handelQuery">查询</el-button>
-          </div>
-        </div>
-      </template>
-    </vc-form>
+    <vc-search v-model="queryParams" :schemas="getSchemas()" @reset="handleReset" @search="handelQuery">
+
+    </vc-search>
   </div>
 </template>
 
 <script setup>
-import { defineComponent } from 'vue'
-import { useForm } from '@/components/Form'
+import { reactive } from 'vue'
 import { dictApi } from '@/api'
 
 const dictApiMap = {
@@ -69,7 +58,7 @@ const getSchemas = () => {
     {
       field: 'field5',
       component: 'ApiSelect',
-      label: '字段4',
+      label: '字段5',
       colProps: {
         span: 8
       },
@@ -85,14 +74,14 @@ const getSchemas = () => {
   ]
 }
 
-const [register, { resetFields }] = useForm({
-  schemas: getSchemas()
-})
+const queryParams = reactive({})
 
 const handelQuery = () => {
+  console.log('handelQuery')
 }
 
 const handleReset = () => {
+  console.log('handleReset')
 }
 </script>
 

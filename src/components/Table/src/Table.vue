@@ -1,6 +1,6 @@
 <template>
   <div ref="wrapRef" class="vc-table" v-loading="loading">
-    <el-table ref="tableRef" v-bind="$attrs" border stripe>
+    <el-table ref="tableRef" v-bind="$attrs" border stripe :max-height="height">
       <slot />
       <el-table-column v-for="column in getViewColumns" v-bind="column">
         <template #default="scope">
@@ -19,12 +19,14 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted, useAttrs, } from 'vue'
+import { computed, ref, onMounted, useAttrs, unref } from 'vue'
 
 import { tableProps } from './Table'
 
 import { usePagination } from './hooks/usePagination'
 import { useColumns } from './hooks/useColumns'
+import { useExpose } from '@/hooks/core/useExpose'
+import { useAdaptive } from '@/hooks/web/useAdaptive'
 
 const COMPONENT_NAME = 'VcTable'
 defineOptions({
@@ -42,18 +44,38 @@ const getProps = computed(() => {
   return { ...props, ...attrs }
 })
 
+const { height } = useAdaptive(unref(tableRef)?.$refs?.tableWrapper)
 const { getPaginationProps } = usePagination(getProps)
 const { getViewColumns } = useColumns(getProps)
 
-const tableActions = {}
+const setProps = (props) => {
+  innerPropsRef.value = { ...unref(innerPropsRef), ...props }
+}
+
+const tableActions = {
+  setProps,
+  clearSelection: () => unref(tableRef).clearSelection(),
+  getSelectionRows: () => unref(tableRef).getSelectionRows(),
+  toggleRowSelection: (row, selected) => unref(tableRef).toggleRowSelection(row, selected),
+  toggleAllSelection: () => unref(tableRef).toggleAllSelection(),
+  toggleRowExpansion: (row, expanded) => unref(tableRef).toggleRowExpansion(row, expanded),
+  setCurrentRow: (row) => unref(tableRef).setCurrentRow(row),
+  clearSort: () => unref(tableRef).clearSort(),
+  clearFilter: (columnKeys) => unref(tableRef).clearFilter(columnKeys),
+  doLayout: () => unref(tableRef).doLayout(),
+  sort: (prop, order) => unref(tableRef).sort(prop, order),
+  scrollTo: (options) => unref(tableRef).scrollTo(options),
+  setScrollTop: (top) => unref(tableRef).setScrollTop(top),
+  setScrollLeft: (left) => unref(tableRef).setScrollLeft(left),
+}
 
 onMounted(() => {
-  
+  emit('register', tableAction)
 })
 
-defineExpose(tableActions)
+useExpose(tableActions)
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 
 </style>

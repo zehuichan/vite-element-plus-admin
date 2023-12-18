@@ -15,8 +15,6 @@
         <el-input v-model="dataForm.field3" placeholder="自定义slot" />
       </template>
     </vc-form>
-    <el-button text bg @click="handelReset">重置</el-button>
-    <el-button text bg @click="handelQuery">查询</el-button>
   </div>
 </template>
 
@@ -109,12 +107,4 @@ function handleChange() {
 const setFieldsValue = (obj) => {
   dataForm.value = obj
 }
-
-const handelReset = () => {
-
-}
-
-const handelQuery = () => {
-}
-
 </script>

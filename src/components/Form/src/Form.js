@@ -42,4 +42,4 @@ export const formProps = {
   autoFocusFirstItem: Boolean,
 }
 
-export const formEmits = ['update:modelValue', 'register', 'advanced-change']
+export const formEmits = ['update:modelValue', 'register', 'enter', 'advanced-change']

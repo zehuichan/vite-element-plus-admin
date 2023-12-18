@@ -7,23 +7,15 @@
         auto-submit-on-enter
         show-advanced-button
         @enter="handelQuery"
-      >
-        <template #[item]="data" v-for="item in Object.keys($slots)" :key="item">
-          <slot :name="item" v-bind="data || {}"></slot>
-        </template>
-      </vc-form>
+      />
     </div>
     <div class="vc-search__tools flex-center">
       <slot name="tools" />
       <div class="flex-grow"></div>
       <div>
         <slot name="extra" />
-        <el-button @click="handelReset">
-          重置
-        </el-button>
-        <el-button type="primary" @click="handelQuery">
-          查询
-        </el-button>
+        <el-button @click="handelReset">重置</el-button>
+        <el-button type="primary" @click="handelQuery">查询</el-button>
         <el-button v-if="!advanceState.hideAdvanceBtn" text bg @click="handleToggleAdvanced">
           <div class="mr-4px">{{ advanceState.isAdvanced ? '收起' : '展开' }}</div>
           <icon-park :name="advanceState.isAdvanced ? 'up' : 'down'" />
@@ -34,7 +26,7 @@
 </template>
 
 <script setup>
-import { computed,  ref, unref } from 'vue'
+import { computed, ref, unref } from 'vue'
 
 import { searchEmits, searchProps } from './Search'
 

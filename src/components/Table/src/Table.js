@@ -12,4 +12,6 @@ export const tableProps = {
     type: Boolean,
     default: true
   },
+  adaptive: Boolean,
+  adaptiveConfig: Object,
 }

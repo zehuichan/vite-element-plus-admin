@@ -204,7 +204,8 @@ export function useFormEvents({
     validateField,
     resetFields,
     scrollToField,
-    clearValidate
+    clearValidate,
+    handleEnter
   }
 }
 

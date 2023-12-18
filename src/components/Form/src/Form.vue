@@ -23,6 +23,7 @@ import { useFormValues } from './hooks/useFormValues'
 import { useComputed } from '@/hooks/web/useComputed'
 
 import { formProps, formEmits } from './Form'
+import { useExpose } from '@/hooks/core/useExpose'
 
 const COMPONENT_NAME = 'VcForm'
 export default defineComponent({
@@ -118,7 +119,8 @@ export default defineComponent({
       validateField,
       resetFields,
       scrollToField,
-      clearValidate
+      clearValidate,
+      handleEnter
     } = useFormEvents({
       emit,
       getProps,
@@ -132,6 +134,21 @@ export default defineComponent({
 
     const setProps = (formProps) => {
       propsRef.value = deepMerge(unref(propsRef) || {}, formProps)
+    }
+
+    const handleEnterPress = (e) => {
+      const { autoSubmitOnEnter } = unref(getProps)
+      if (!autoSubmitOnEnter) return
+      if (e.key === 'Enter' && e.target && e.target instanceof HTMLElement) {
+        const { target } = e
+        if (
+          target &&
+          target.tagName &&
+          target.tagName.toUpperCase() == 'INPUT'
+        ) {
+          handleEnter()
+        }
+      }
     }
 
     const formActions = {
@@ -172,6 +189,8 @@ export default defineComponent({
       initDefault()
       emit('register', formActions)
     })
+
+    useExpose(formActions)
 
     const getValues = useComputed((schema) => {
       return {
@@ -236,12 +255,8 @@ export default defineComponent({
     })
 
     const renderFormItemWrap = () => {
-      console.log(1)
       return unref(getSchema).map(schema => {
-        const { colProps = {}, colSlot, renderColContent, component, slot } = schema
-        if (!component || (!componentMap.has(component) && !slot)) {
-          return null
-        }
+        const { colProps = {}, colSlot, renderColContent } = schema
 
         const { baseColProps = {} } = unref(getProps)
         const realColProps = { ...baseColProps, ...colProps }
@@ -258,9 +273,13 @@ export default defineComponent({
               : renderFormItem(schema)
         }
 
-        return isIfShow && <el-col {...realColProps} vShow={isShow}>
-          {getContent()}
-        </el-col>
+        return (
+          isIfShow && (
+            <el-col {...realColProps} v-show={isShow}>
+              {getContent()}
+            </el-col>
+          )
+        )
       })
     }
 
@@ -337,18 +356,18 @@ export default defineComponent({
       }
 
       if (!renderComponentContent) {
-        return <Comp {...propsData} vModel={state.value[schema.field]} />
+        return <Comp {...propsData} v-model={state.value[schema.field]} />
       }
 
       const compSlot = isFunction(renderComponentContent)
         ? { ...renderComponentContent(getValues(schema)) }
         : { default: () => renderComponentContent }
 
-      return <Comp  {...propsData} vModel={state.value[schema.field]}>{compSlot}</Comp>
+      return <Comp  {...propsData} v-model={state.value[schema.field]}>{compSlot}</Comp>
     }
 
     return () => (
-      <el-form {...unref(getBindValue)} ref={formElRef} model={state}>
+      <el-form {...unref(getBindValue)} ref={formElRef} model={state} onKeyup={handleEnterPress}>
         <el-row {...unref(getRow)}>
           {renderFormItemWrap()}
         </el-row>
