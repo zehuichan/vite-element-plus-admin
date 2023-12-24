@@ -27,11 +27,11 @@ import { useExpose } from '@/hooks/core/useExpose'
 
 const COMPONENT_NAME = 'VcForm'
 export default defineComponent({
-  name: COMPONENT_NAME,
+  name: 'VcForm',
   inheritAttrs: false,
   props: formProps,
   emits: formEmits,
-  setup(props, { attrs, emit, slots }) {
+  setup(props, { attrs, emit, slots,expose }) {
     const defaultValueRef = ref({})
     const isInitedDefaultRef = ref(false)
     const propsRef = ref({})
@@ -321,9 +321,9 @@ export default defineComponent({
     }
 
     const renderComponent = (schema) => {
-      const { renderComponentContent, component, field } = schema
+      const { renderComponentContent, component, slot, field } = schema
 
-      if (!componentMap.has(component)) {
+      if (!((component && componentMap.has(component)) || slot)) {
         return null
       }
 
@@ -354,7 +354,6 @@ export default defineComponent({
       } else if (isCreatePlaceholder && component) {
         propsData.placeholder = getComponentsProps(schema)?.placeholder || createPlaceholderMessage(component)
       }
-
       if (!renderComponentContent) {
         return <Comp {...propsData} v-model={state.value[schema.field]} />
       }
@@ -367,7 +366,14 @@ export default defineComponent({
     }
 
     return () => (
-      <el-form {...unref(getBindValue)} ref={formElRef} model={state} onKeyup={handleEnterPress}>
+      <el-form
+        {...unref(getBindValue)}
+        ref={formElRef}
+        model={state}
+        validate-on-rule-change={false}
+        require-asterisk-position="right"
+        onKeyup={handleEnterPress}
+      >
         <el-row {...unref(getRow)}>
           {renderFormItemWrap()}
         </el-row>

@@ -1,6 +1,6 @@
 <template>
   <div ref="wrapRef" class="vc-table" v-loading="loading">
-    <el-table ref="tableRef" v-bind="$attrs" border stripe :max-height="height">
+    <el-table ref="tableRef" v-bind="$attrs" border stripe>
       <slot />
       <el-table-column v-for="column in getViewColumns" v-bind="column">
         <template #default="scope">
@@ -19,33 +19,41 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted, useAttrs, unref } from 'vue'
+import { computed, nextTick, ref, onMounted, useAttrs, unref } from 'vue'
 
-import { tableProps } from './Table'
+import { omit } from 'lodash-es'
 
-import { usePagination } from './hooks/usePagination'
-import { useColumns } from './hooks/useColumns'
 import { useExpose } from '@/hooks/core/useExpose'
 import { useAdaptive } from '@/hooks/web/useAdaptive'
 
+import { useColumns } from './hooks/useColumns'
+
+import { tableEmits, tableProps } from './Table'
+
 const COMPONENT_NAME = 'VcTable'
 defineOptions({
-  name: COMPONENT_NAME,
+  name: 'VcTable',
   inheritAttrs: false,
 })
 
 const props = defineProps(tableProps)
+const emit = defineEmits(tableEmits)
+
 const attrs = useAttrs()
 
 const wrapRef = ref(null)
 const tableRef = ref(null)
 
+const innerPropsRef = ref({})
+
 const getProps = computed(() => {
-  return { ...props, ...attrs }
+  return { ...props, ...unref(innerPropsRef) }
+})
+const getPaginationProps = computed(() => {
+  return omit(attrs, ['columns', 'data'])
 })
 
 const { height } = useAdaptive(unref(tableRef)?.$refs?.tableWrapper)
-const { getPaginationProps } = usePagination(getProps)
 const { getViewColumns } = useColumns(getProps)
 
 const setProps = (props) => {
@@ -70,7 +78,7 @@ const tableActions = {
 }
 
 onMounted(() => {
-  emit('register', tableAction)
+  emit('register', tableActions)
 })
 
 useExpose(tableActions)

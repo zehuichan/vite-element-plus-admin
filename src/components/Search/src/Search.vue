@@ -32,7 +32,7 @@ import { searchEmits, searchProps } from './Search'
 
 const COMPONENT_NAME = 'VcSearch'
 defineOptions({
-  name: COMPONENT_NAME,
+  name: 'VcSearch',
   inheritAttrs: false,
 })
 

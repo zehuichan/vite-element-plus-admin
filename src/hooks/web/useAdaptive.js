@@ -1,5 +1,6 @@
-import { defineComponent, h, nextTick, reactive, ref } from 'vue'
-import { tryOnMounted, unrefElement, useEventListener, useWindowSize } from '@vueuse/core'
+import { defineComponent, h, nextTick, reactive, ref, onMounted } from 'vue'
+import { tryOnMounted, unrefElement, useEventListener } from '@vueuse/core'
+import { debounce } from 'lodash-es'
 
 export const UseAdaptive = defineComponent({
   name: 'UseAdaptive',
@@ -17,16 +18,10 @@ export const UseAdaptive = defineComponent({
 export function useAdaptive(target, options) {
   const height = ref(0)
 
-  const update = async () => {
-    await nextTick()
+  const update = () => {
     const ele = unrefElement(target)
-    const { height: windowHeight } = useWindowSize()
-    const offsetBottom = options?.offsetBottom ?? 0
-    height.value = `${
-      windowHeight.value -
-      ele.getBoundingClientRect().top -
-      offsetBottom
-    }`
+    const offsetBottom = options?.offsetBottom || 38
+    height.value = window.innerHeight - ele?.getBoundingClientRect().top - offsetBottom
   }
 
   update()

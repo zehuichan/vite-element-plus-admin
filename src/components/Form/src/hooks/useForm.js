@@ -1,5 +1,4 @@
 import { ref, unref, nextTick } from 'vue'
-import { isEmpty, isObject } from '@/utils/is'
 
 export const useForm = (props) => {
   const formRef = ref(null)
@@ -7,7 +6,7 @@ export const useForm = (props) => {
   // todo
   const register = (instance) => {
     formRef.value = instance
-    instance.setProps(props)
+    // instance.setProps(props)
   }
 
   const getInstance = async () => {

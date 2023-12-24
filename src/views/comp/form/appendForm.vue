@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <vc-form v-model="dataForm" @register="register">
+    <vc-form v-model="dataForm" :schemas="schemas" :base-col-props="{span:8}" @register="register">
       <template #add="{ field }">
         <el-button v-if="Number(field) === 0" text icon="Plus" @click="add" />
         <el-button v-if="field > 0" text icon="Minus" @click="del(field)" />
@@ -32,10 +32,7 @@ const schemas = [
     colSlot: 'add',
   }
 ]
-const [register, { appendSchemaByField, removeSchemaByField }] = useForm({
-  schemas: schemas,
-  baseColProps: { span: 8 }
-})
+const [register, { appendSchemaByField, removeSchemaByField }] = useForm()
 const n = ref(1)
 const dataForm = ref({})
 

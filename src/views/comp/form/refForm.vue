@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <vc-form ref="formRef" v-model="dataForm" :schemas="schemas" :baseColProps="{span: 8}">
+    <vc-form v-if="show" ref="formRef" v-model="dataForm" :schemas="schemas" :baseColProps="{span: 8}">
       <template #f3="scope">
         {{ scope }}
       </template>
@@ -17,7 +17,6 @@ const schemas = [
     field: 'field1',
     component: 'Input',
     label: '字段1',
-    defaultValue: 123,
     required: true
   },
   {
@@ -50,10 +49,15 @@ const schemas = [
   }
 ]
 
+const show = ref(false)
 const formRef = ref(null)
 const dataForm = ref({})
 
 onMounted(() => {
-  console.log(formRef.value)
+  console.log(formRef)
+  setTimeout(() => {
+    show.value = true
+    dataForm.value = {}
+  }, 300)
 })
 </script>

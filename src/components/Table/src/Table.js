@@ -15,3 +15,5 @@ export const tableProps = {
   adaptive: Boolean,
   adaptiveConfig: Object,
 }
+
+export const tableEmits = ['register']

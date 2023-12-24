@@ -7,7 +7,7 @@
       <el-button @click="setProps({ disabled: true })">禁用表单</el-button>
       <el-button @click="setProps({ disabled: false })">解除禁用</el-button>
     </el-form-item>
-    <vc-form ref="formRef" v-model="dataForm" @register="register">
+    <vc-form ref="formRef" v-model="dataForm" :schemas="schemas" @register="register">
       <template #f3="scope">
         <el-input v-model="dataForm.field3" placeholder="自定义slot" />
       </template>
@@ -88,8 +88,5 @@ const schemas = [
 
 const formRef = ref(null)
 const dataForm = ref({})
-const [register, { setProps }] = useForm({
-  schemas,
-  baseColProps: { span: 8 }
-})
+const [register, { setProps }] = useForm()
 </script>
