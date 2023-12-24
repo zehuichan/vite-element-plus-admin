@@ -1,1 +1,0 @@
-import{d as o,o as t,e as c,f as n}from"./index-94a5e6ca.js";const s={class:"app-container"},m={__name:"index",setup(a){return(r,_)=>{const e=o("vc-form");return t(),c("div",s,[n(e)])}}};export{m as default};
