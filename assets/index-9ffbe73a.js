@@ -1,1 +1,0 @@
-import{d as e,o,p as s,k as c}from"./index-494b4da1.js";const t={},n={class:"app-container"},a=c("code",null,"Dashboard",-1),r=[a];function _(d,i){return o(),s("div",n,r)}const p=e(t,[["render",_]]);export{p as default};
