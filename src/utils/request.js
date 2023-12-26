@@ -1,7 +1,11 @@
 import axios from 'axios'
+
 import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
+
 import { useUserStoreWithOut } from '@/store/modules/user'
+
 import { Cache } from '@/utils/cache'
+
 import { TOKEN_KEY } from '@/enums/cacheEnum'
 
 const errorCode = {
@@ -11,6 +15,8 @@ const errorCode = {
   'default': '系统未知错误，请反馈给管理员'
 }
 
+const abortControllerMap = new Map()
+
 // create an axios instance
 const http = axios.create({
   baseURL: import.meta.env.VITE_BASE_API, // api的base_url
@@ -18,6 +24,9 @@ const http = axios.create({
 })
 
 http.interceptors.request.use((config) => {
+  const controller = new AbortController()
+  config.signal = controller.signal
+  abortControllerMap.set(config.url, controller)
   const token = Cache.getItem(TOKEN_KEY)
   if (token) {
     config.headers.Authorization = 'Bearer ' + token
@@ -25,7 +34,26 @@ http.interceptors.request.use((config) => {
   return config
 }, null)
 
-http.interceptors.response.use((response) => response.data, null)
+http.interceptors.response.use((response) => {
+  const url = response.config.url || ''
+  abortControllerMap.delete(url)
+  return response.data
+}, null)
+
+export const cancelRequest = (url) => {
+  const urlList = Array.isArray(url) ? url : [url]
+  for (const _url of urlList) {
+    abortControllerMap.get(_url)?.abort()
+    abortControllerMap.delete(_url)
+  }
+}
+
+export const cancelAllRequest = () => {
+  for (const [_, controller] of abortControllerMap) {
+    controller.abort()
+  }
+  abortControllerMap.clear()
+}
 
 export default (config) =>
   new Promise((resolve, reject) => {
@@ -57,13 +85,13 @@ export default (config) =>
           return reject(new Error(msg))
         } else if (code !== 200) {
           ElNotification.error({ title: msg })
-          return reject('error')
+          return reject(new Error('error'))
         } else {
           return resolve(res)
         }
       })
       .catch((err) => {
         console.log(err)
-        return reject(err)
+        return reject(new Error(err))
       })
   })

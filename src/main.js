@@ -12,16 +12,20 @@ import './assets/styles/index.scss'
 
 import { setupElementPlus } from './install/framework/element-plus'
 import { setupIconPark } from './install/icons/icon-park'
+import { setupErrorHandle } from './install/plugins/error-handle'
+import { setupGlobDirectives } from './install/directives'
+import { setupI18n } from './install/locales/setupI18n'
 import { setupStore } from './store'
 import { router, setupRouter } from './router'
 import { setupGuard } from './router/guard'
-import { setupErrorHandle } from './install/plugins/error-handle'
 import { registerComponents } from './components'
 
 async function bootstrap() {
   const app = createApp(App)
 
   setupStore(app)
+  setupGlobDirectives(app)
+  await setupI18n(app)
   setupElementPlus(app)
   setupIconPark(app)
   registerComponents(app)
