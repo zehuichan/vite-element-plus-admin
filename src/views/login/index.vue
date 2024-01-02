@@ -1,5 +1,8 @@
 <template>
-  <div class="login-container">
+  <div class="login-container relative">
+    <div class="flex items-center absolute right-4 top-4 text-16px text-#fff">
+      <app-locale-picker />
+    </div>
     <el-form
       ref="loginFormRef"
       :model="loginForm"
@@ -62,6 +65,8 @@ import { computed, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { validUsername } from '@/utils/validate'
 import { useUserStore } from '@/store/modules/user'
+
+import AppLocalePicker from '@/components/AppProvider/src/AppLocalePicker.vue'
 
 const userStore = useUserStore()
 const { currentRoute, replace } = useRouter()

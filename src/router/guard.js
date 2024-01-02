@@ -2,21 +2,28 @@ import { useTitle } from '@vueuse/core'
 import nprogress from 'nprogress'
 import 'nprogress/nprogress.css'
 
-import { LOGIN_ROUTE, PAGE_NOT_FOUND_ROUTE } from '@/router'
-import { LOGIN_NAME } from '@/router/constant'
-
 import { useAppStoreWithOut } from '@/store/modules/app'
 import { useUserStoreWithOut } from '@/store/modules/user'
 import { usePermissionStoreWithOut } from '@/store/modules/permission'
 import { useMultipleTabStoreWithOut } from '@/store/modules/multipleTab'
 
+import { PageEnum } from '@/enums/pageEnum'
+import { DICT_DATA_KEY, TOKEN_KEY } from '@/enums/cacheEnum'
+
+import { LOGIN_ROUTE, PAGE_NOT_FOUND_ROUTE } from '@/router'
+
+import { cancelAllRequest } from '@/utils/request'
+
 import { removeTabChangeListener, setRouteChange } from '@/install/plugins/router-change'
+
+import projectSetting from '@/settings/projectSetting'
 
 // no redirect whitelist
 const whiteList = ['/login', '/auth-redirect']
 
 export function setupGuard(router) {
   createPageGuard(router)
+  createHttpGuard(router)
   createProgressGuard(router)
   createPermissionGuard(router)
   createStateGuard(router)
@@ -36,6 +43,18 @@ function createPageGuard(router) {
 
   router.afterEach((to) => {
     loadedPageMap.set(to.path, true)
+  })
+}
+
+function createHttpGuard(router) {
+  const { removeAllHttpPending } = projectSetting
+
+  router.beforeEach(async () => {
+    // Switching the route will delete the previous request
+    if (removeAllHttpPending) {
+      cancelAllRequest()
+    }
+    return true
   })
 }
 
@@ -144,16 +163,17 @@ function createPermissionGuard(router) {
 }
 
 function createStateGuard(router) {
+  const appStore = useAppStoreWithOut()
+  const tabStore = useMultipleTabStoreWithOut()
+  const userStore = useUserStoreWithOut()
+  const permissionStore = usePermissionStoreWithOut()
+
   router.afterEach((to) => {
-    if (to.name === LOGIN_NAME) {
-      const appStore = useAppStoreWithOut()
-      const tabStore = useMultipleTabStoreWithOut()
-      const userStore = useUserStoreWithOut()
-      const permissionStore = usePermissionStoreWithOut()
+    if (to.path === LOGIN_ROUTE.path) {
       appStore.resetAllState()
-      permissionStore.resetState()
       tabStore.resetState()
       userStore.resetState()
+      permissionStore.resetState()
       removeTabChangeListener()
     }
   })
