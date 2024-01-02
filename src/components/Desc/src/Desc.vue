@@ -18,7 +18,7 @@ import { useFormDisabled, useFormSize } from 'element-plus'
 import { getDictDataLabel } from '@/hooks/web/useDict'
 
 export default defineComponent({
-  name: 'Desc',
+  name: 'VcDesc',
   inheritAttrs: false,
   props: {
     modelValue: null,

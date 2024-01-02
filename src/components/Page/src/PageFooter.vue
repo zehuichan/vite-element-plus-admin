@@ -1,6 +1,6 @@
 <template>
   <div :style="{height: height ? `${height}px` : undefined}">
-    <div ref="contentRef" class="tool-bar van-safe-area-bottom">
+    <div ref="contentRef" class="page-footer">
       <div class="flex p-12px" :class="{[`align-${align}`]: align, [`justify-${justify}`]: justify}">
         <slot />
       </div>
@@ -8,36 +8,32 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, ref } from 'vue'
+<script setup>
+import { ref } from 'vue'
 import { usePlaceholder } from '@/hooks/web/usePlaceholder'
 
-export default defineComponent({
-  name: 'ToolBar',
-  props: {
-    align: {
-      type: String,
-      default: 'top'
-    },
-    justify: {
-      type: String,
-      default: 'start'
-    }
-  },
-  setup() {
-    const contentRef = ref(null)
-    const height = usePlaceholder(contentRef, true)
+defineOptions({
+  name: 'PageFooter',
+  inheritAttrs: false
+})
 
-    return {
-      contentRef,
-      height
-    }
+const props = defineProps({
+  align: {
+    type: String,
+    default: 'top'
+  },
+  justify: {
+    type: String,
+    default: 'start'
   }
 })
+
+const contentRef = ref(null)
+const height = usePlaceholder(contentRef, true)
 </script>
 
 <style lang="scss">
-.tool-bar {
+.page-footer {
   position: fixed;
   right: 0;
   bottom: 0;

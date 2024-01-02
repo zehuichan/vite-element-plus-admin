@@ -1,6 +1,6 @@
 import { getCurrentInstance, shallowReactive, unref, watch } from 'vue'
 import { isBoolean, isFunction } from '@/utils/is'
-import { useDebounceFn } from '@vueuse/core'
+import { tryOnMounted, useDebounceFn } from '@vueuse/core'
 
 const BASIC_COL_LEN = 24
 
@@ -25,7 +25,6 @@ export function useAdvanced({
         debounceUpdateAdvanced()
       }
     },
-    { immediate: true }
   )
 
   function getAdvanced(itemCol, itemColSum = 0, isLastAction = false) {
@@ -108,6 +107,13 @@ export function useAdvanced({
     advanceState.isAdvanced = !advanceState.isAdvanced
     emit('advanced-change')
   }
+
+  tryOnMounted(()=>{
+    const { showAdvancedButton } = unref(getProps)
+    if (showAdvancedButton) {
+      updateAdvanced()
+    }
+  })
 
   return {
     handleToggleAdvanced,

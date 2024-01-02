@@ -1,15 +1,13 @@
 import Renderer from './Renderer'
 import AppProvider from './AppProvider'
 import Fullcontent from './Fullcontent'
-import Icon from './Icon'
-import SvgIcon from './SvgIcon'
 import IconPark from './IconPark'
 import Segmented from './Segmented'
-import ToolBar from './ToolBar'
 import { Form, ApiSelect } from './Form'
 import Search from './Search'
 import Table from './Table'
 import Pagination from './Pagination'
+import { PageWrapper, PageFooter } from './Page'
 
 const components = [
   Renderer,
@@ -17,14 +15,13 @@ const components = [
   Search,
   Form,
   Fullcontent,
-  Icon,
   ApiSelect,
-  SvgIcon,
   IconPark,
   Segmented,
-  ToolBar,
   Table,
   Pagination,
+  PageWrapper,
+  PageFooter,
 ]
 
 export function registerComponents(app) {
