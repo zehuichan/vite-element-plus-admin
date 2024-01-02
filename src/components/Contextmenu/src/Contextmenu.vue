@@ -13,7 +13,6 @@
       :class="{ 'contextmenu-item__disabled': item.disabled }"
       @click="handleAction(item, $event)"
     >
-      <icon-park v-if="item.icon" :name="item.icon" />
       <span>{{ item.text }}</span>
     </li>
   </ul>
@@ -21,6 +20,7 @@
 
 <script>
 import { computed, defineComponent, nextTick, onMounted, onUnmounted, ref, unref } from 'vue'
+import { onClickOutside } from '@vueuse/core'
 
 export default defineComponent({
   name: 'Contextmenu',
@@ -94,6 +94,8 @@ export default defineComponent({
       handler?.()
     }
 
+    onClickOutside(wrapRef, event => showRef.value = false)
+
     onMounted(() => {
       nextTick(() => (showRef.value = true))
     })
@@ -126,7 +128,9 @@ export default defineComponent({
   font-size: 12px;
   font-weight: 400;
   color: #333;
-  box-shadow: var(--el-box-shadow-dark);
+  background: var(--el-bg-color-overlay);
+  border: 1px solid var(--el-border-color-light);
+  box-shadow: var(--el-box-shadow-light);
 
   .contextmenu-item {
     margin: 0;

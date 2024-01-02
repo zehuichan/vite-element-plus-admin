@@ -1,11 +1,11 @@
+import { createVNode, render } from 'vue'
 import contextmenuVue from './Contextmenu.vue'
 import { isClient } from '@/utils/is'
-import { createVNode, render } from 'vue'
+import { noop } from '@/utils'
 
 const menuManager = {
   domList: [],
-  resolve: () => {
-  },
+  resolve: noop,
 }
 
 export const createContextmenu = function(options) {
@@ -37,10 +37,6 @@ export const createContextmenu = function(options) {
     const vm = createVNode(contextmenuVue, propsData)
     render(vm, container)
 
-    const handleClick = function() {
-      menuManager.resolve('')
-    }
-
     menuManager.domList.push(container)
 
     const remove = function() {
@@ -51,8 +47,6 @@ export const createContextmenu = function(options) {
           //
         }
       })
-      body.removeEventListener('click', handleClick)
-      body.removeEventListener('scroll', handleClick)
     }
 
     menuManager.resolve = function(arg) {
@@ -61,8 +55,6 @@ export const createContextmenu = function(options) {
     }
     remove()
     body.appendChild(container)
-    body.addEventListener('click', handleClick)
-    body.addEventListener('scroll', handleClick)
   })
 }
 

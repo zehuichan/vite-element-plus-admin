@@ -2,7 +2,7 @@ import { toRaw, unref } from 'vue'
 import { isArray, isEmpty, isNullOrUnDef, isObject, isString } from '@/utils/is'
 import { cloneDeep, set, uniqBy } from 'lodash-es'
 import { deepMerge } from '@/utils'
-import { defaultValueComponents } from '@/components/Form/src/helper'
+import { defaultValueComponents, isIncludeSimpleComponents } from '@/components/Form/src/helper'
 
 export function useFormEvents({
                                 emit,
@@ -40,7 +40,8 @@ export function useFormEvents({
     }
 
     const hasField = updateData.every(
-      (item) => item.component === 'Divider' || (Reflect.has(item, 'field') && item.field)
+      (item) =>
+        isIncludeSimpleComponents(item.component) || (Reflect.has(item, 'field') && item.field),
     )
 
     if (!hasField) {
@@ -50,21 +51,19 @@ export function useFormEvents({
       return
     }
     const schema = []
+    const updatedSchema = []
     unref(getSchema).forEach((val) => {
-      let _val
-      updateData.forEach((item) => {
-        if (val.field === item.field) {
-          _val = item
-        }
-      })
-      if (_val !== undefined && val.field === _val.field) {
-        const newSchema = deepMerge(val, _val)
+      const updatedItem = updateData.find((item) => val.field === item.field)
+
+      if (updatedItem) {
+        const newSchema = deepMerge(val, updatedItem)
+        updatedSchema.push(newSchema)
         schema.push(newSchema)
       } else {
         schema.push(val)
       }
     })
-    _setDefaultValue(schema)
+    _setDefaultValue(updatedSchema)
 
     schemaRef.value = uniqBy(schema, 'field')
   }
@@ -79,7 +78,8 @@ export function useFormEvents({
     }
 
     const hasField = updateData.every(
-      (item) => item.component === 'Divider' || (Reflect.has(item, 'field') && item.field)
+      (item) =>
+        isIncludeSimpleComponents(item.component) || (Reflect.has(item, 'field') && item.field),
     )
 
     if (!hasField) {
@@ -127,6 +127,16 @@ export function useFormEvents({
     schemaRef.value = schemaList
   }
 
+  function _removeSchemaByFeild(field, schemaList) {
+    if (isString(field)) {
+      const index = schemaList.findIndex((schema) => schema.field === field)
+      if (index !== -1) {
+        delete formModel[field]
+        schemaList.splice(index, 1)
+      }
+    }
+  }
+
   async function handleEnter() {
     const formEl = unref(formElRef)
     if (!formEl) return
@@ -135,16 +145,6 @@ export function useFormEvents({
       emit('enter')
     } catch (error) {
       console.log(error)
-    }
-  }
-
-  function _removeSchemaByFeild(field, schemaList) {
-    if (isString(field)) {
-      const index = schemaList.findIndex((schema) => schema.field === field)
-      if (index !== -1) {
-        delete formModel[field]
-        schemaList.splice(index, 1)
-      }
     }
   }
 
@@ -217,6 +217,9 @@ function getDefaultValue(schema, defaultValueRef, key) {
   }
   if (!defaultValue && schema && checkIsRangeSlider(schema)) {
     defaultValue = [0, 0]
+  }
+  if (!defaultValue && schema && schema.component === 'ApiTree') {
+    defaultValue = []
   }
   return defaultValue
 }

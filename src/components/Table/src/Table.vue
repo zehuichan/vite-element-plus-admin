@@ -53,7 +53,6 @@ const getPaginationProps = computed(() => {
   return omit(attrs, ['columns', 'data'])
 })
 
-const { height } = useAdaptive(unref(tableRef)?.$refs?.tableWrapper)
 const { getViewColumns } = useColumns(getProps)
 
 const setProps = (props) => {
@@ -81,7 +80,7 @@ onMounted(() => {
   emit('register', tableActions)
 })
 
-useExpose(tableActions)
+defineExpose(tableActions)
 </script>
 
 <style lang="scss">
