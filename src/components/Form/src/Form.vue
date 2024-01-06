@@ -15,15 +15,14 @@ import { getSlot } from '@/utils/jsxHelper'
 import { componentMap } from './componentMap'
 import { createPlaceholderMessage, dateItemType } from './helper'
 
-import { useAdvanced } from './hooks/useAdvanced'
 import { useFormEvents } from './hooks/useFormEvents'
 import { useAutoFocus } from './hooks/useAutoFocus'
 import { useFormValues } from './hooks/useFormValues'
 
 import { useComputed } from '@/hooks/web/useComputed'
+import { useExpose } from '@/hooks/core/useExpose'
 
 import { formProps, formEmits } from './Form'
-import { useExpose } from '@/hooks/core/useExpose'
 
 const COMPONENT_NAME = 'VcForm'
 export default defineComponent({
@@ -31,18 +30,12 @@ export default defineComponent({
   inheritAttrs: false,
   props: formProps,
   emits: formEmits,
-  setup(props, { attrs, emit, slots,expose }) {
+  setup(props, { attrs, emit, slots, expose }) {
     const defaultValueRef = ref({})
     const isInitedDefaultRef = ref(false)
     const propsRef = ref({})
     const schemaRef = ref(null)
     const formElRef = ref(null)
-
-    const advanceState = reactive({
-      isAdvanced: true,
-      hideAdvanceBtn: false,
-      isLoad: false,
-    })
 
     const state = useVModel(props, 'modelValue', emit, { defaultValue: {} })
 
@@ -86,14 +79,6 @@ export default defineComponent({
         }
       }
       return cloneDeep(schemas)
-    })
-
-    const { handleToggleAdvanced, fieldsIsAdvancedMap } = useAdvanced({
-      advanceState,
-      emit,
-      getProps,
-      getSchema,
-      formModel: unref(state),
     })
 
     const { handleFormRules, handleFormValues, initDefault } = useFormValues({
@@ -162,7 +147,6 @@ export default defineComponent({
       resetFields,
       scrollToField,
       clearValidate,
-      handleToggleAdvanced
     }
 
     watch(
@@ -196,7 +180,8 @@ export default defineComponent({
       return {
         field: schema.field,
         model: unref(state),
-        schema,
+        values: unref(state),
+        schema: schema,
       }
     })
 
@@ -216,7 +201,6 @@ export default defineComponent({
 
     const getShow = useComputed((schema) => {
       const { show, ifShow } = schema
-      schema.isAdvanced = fieldsIsAdvancedMap[schema.field]
       const itemIsAdvanced = isBoolean(schema.isAdvanced) ? schema.isAdvanced : true
 
       let isShow = true

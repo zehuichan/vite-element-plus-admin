@@ -1,71 +1,29 @@
 <template>
-  <div class="m-12px">
-    <div class="bg-#fff p-12px">
-      <vc-table
-        ref="tableRef"
-        :columns="columns"
-        :data="tableData"
-        @cell-click="handleCellClick"
+  <page-wrapper>
+    <div class="table-container">
+      <vc-search
+        :schemas="getSearchSchemas()"
       />
     </div>
-  </div>
+  </page-wrapper>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
-import VcTable from '@/components/Table/src/Table.vue'
-import { useContextmenu } from '@/hooks/web/useContextmenu'
 
-const columns = [
-  { label: 'date', prop: 'date' },
-  { label: 'name', prop: 'name' },
-  { label: 'address', prop: 'address' },
-]
-const tableRef = ref(null)
-const tableData = ref([
-  {
-    date: '2016-05-03',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-04',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-  {
-    date: '2016-05-01',
-    name: 'Tom',
-    address: 'No. 189, Grove St, Los Angeles',
-  },
-])
-const [createContextmenu] = useContextmenu()
-const handleCellClick = (row, column, cell, event) => {
-  if (column.label === 'name') {
-    const items = [
-      {
-        text: '订单号', handler() {
-        }
-      },
-      {
-        text: '拼箱单号', handler() {
-        }
-      },
-      {
-        text: '工作单号', handler() {
-        }
-      },
-      {
-        text: '转运单', handler() {
-        }
-      },
-    ]
-    createContextmenu({ event: event, items })
-  }
+import { createFieldHelper } from '@/enums/busEnum'
+
+const getSearchSchemas = () => {
+  return [
+    createFieldHelper('Input', { field: 'nameZh', label: 'name' }),
+    createFieldHelper('Input', { field: 'a', label: 'a' }),
+    createFieldHelper('Input', { field: 'b', label: 'b' }),
+    createFieldHelper('Input', { field: 'c', label: 'c' }),
+    createFieldHelper('Input', { field: 'd', label: 'd' }),
+    createFieldHelper('Input', { field: 'e', label: 'e' }),
+    createFieldHelper('Input', { field: 'f', label: 'f' }),
+    createFieldHelper('Input', { field: 'g', label: 'g' }),
+    createFieldHelper('Input', { field: 'h', label: 'h' }),
+    createFieldHelper('Input', { field: 'i', label: 'i' }),
+  ]
 }
 </script>

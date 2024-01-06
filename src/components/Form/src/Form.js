@@ -21,15 +21,6 @@ export const formProps = {
   },
   size: String,
   disabled: Boolean,
-  autoAdvancedLine: {
-    type: Number,
-    default: 3
-  },
-  alwaysShowLines: {
-    type: Number,
-    default: 1
-  },
-  showAdvancedButton: Boolean,
   rulesMessageJoinLabel: {
     type: Boolean,
     default: true
@@ -42,4 +33,4 @@ export const formProps = {
   autoFocusFirstItem: Boolean,
 }
 
-export const formEmits = ['update:modelValue', 'register', 'enter', 'advanced-change']
+export const formEmits = ['update:modelValue', 'register', 'enter']

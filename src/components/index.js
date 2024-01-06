@@ -1,6 +1,8 @@
 import Renderer from './Renderer'
 import AppProvider from './AppProvider'
 import Fullcontent from './Fullcontent'
+import Icon from './Icon'
+import SvgIcon from './SvgIcon'
 import IconPark from './IconPark'
 import Segmented from './Segmented'
 import { Form, ApiSelect } from './Form'
@@ -16,6 +18,8 @@ const components = [
   Form,
   Fullcontent,
   ApiSelect,
+  Icon,
+  SvgIcon,
   IconPark,
   Segmented,
   Table,

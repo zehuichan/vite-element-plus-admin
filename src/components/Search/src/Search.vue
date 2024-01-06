@@ -4,8 +4,9 @@
       <vc-form
         ref="formRef"
         v-bind="$attrs"
+        :schemas="getSchema"
+        :base-col-props="baseColProps"
         auto-submit-on-enter
-        show-advanced-button
         @enter="handelQuery"
       />
     </div>
@@ -26,7 +27,9 @@
 </template>
 
 <script setup>
-import { computed, ref, unref } from 'vue'
+import { computed, getCurrentInstance, reactive, ref, unref } from 'vue'
+
+import { cloneDeep } from 'lodash-es'
 
 import { searchEmits, searchProps } from './Search'
 
@@ -39,9 +42,73 @@ defineOptions({
 const props = defineProps(searchProps)
 const emit = defineEmits(searchEmits)
 
+const BASIC_COL_LEN = 24
+
+const vm = getCurrentInstance()
+
 const formRef = ref(null)
 
-const advanceState = computed(() => unref(formRef)?.advanceState || {})
+const advanceState = reactive({
+  isAdvanced: false,
+  hideAdvanceBtn: false,
+  isLoad: false,
+})
+
+const getSchema = computed(() => {
+  let itemColSum = 0
+  let realItemColSum = 0
+  const { schemas = [], baseColProps = {} } = props
+
+  for (const schema of schemas) {
+    const { colProps } = schema
+
+    if (colProps || baseColProps) {
+      const { itemColSum: sum, isAdvanced } = getAdvanced({ ...baseColProps, ...colProps }, itemColSum)
+
+      itemColSum = sum || 0
+      if (isAdvanced) {
+        realItemColSum = itemColSum
+      }
+      schema.isAdvanced = isAdvanced
+    }
+  }
+
+  // 确保页面发送更新
+  vm?.proxy?.$forceUpdate()
+
+  getAdvanced({ span: BASIC_COL_LEN }, itemColSum, true)
+
+  return cloneDeep(schemas)
+})
+
+const getAdvanced = (itemCol, itemColSum = 0, isLastAction = false) => {
+  const mdWidth = itemCol.span || BASIC_COL_LEN
+
+  itemColSum += mdWidth
+  if (isLastAction) {
+    advanceState.hideAdvanceBtn = false
+    if (itemColSum <= BASIC_COL_LEN * 2) {
+      // When less than or equal to 2 lines, the collapse and expand buttons are not displayed
+      advanceState.hideAdvanceBtn = true
+      advanceState.isAdvanced = true
+    } else if (
+      itemColSum > BASIC_COL_LEN * 2 &&
+      itemColSum <= BASIC_COL_LEN * (props.autoAdvancedLine || 3)
+    ) {
+      advanceState.hideAdvanceBtn = false
+      // More than 3 lines collapsed by default
+    } else if (!advanceState.isLoad) {
+      advanceState.isLoad = true
+    }
+    return { isAdvanced: advanceState.isAdvanced, itemColSum }
+  }
+  if (itemColSum > BASIC_COL_LEN * (props.alwaysShowLines || 1)) {
+    return { isAdvanced: advanceState.isAdvanced, itemColSum }
+  } else {
+    // The first line is always displayed
+    return { isAdvanced: true, itemColSum }
+  }
+}
 
 const handelReset = () => {
   unref(formRef).resetFields()
@@ -53,7 +120,8 @@ const handelQuery = () => {
 }
 
 const handleToggleAdvanced = () => {
-  unref(formRef).handleToggleAdvanced()
+  advanceState.isAdvanced = !advanceState.isAdvanced
+  emit('advanced-change')
 }
 </script>
 
