@@ -40,11 +40,11 @@
 }
 
 .el-table {
-  --el-table-header-bg-color: #F4F4F4;
-  --el-table-text-color: rgba(0, 0, 0, .85);
+  --el-table-header-bg-color: #f5f7fa;
+  --el-table-text-color: var(--el-text-color-regular);
 
   th.el-table__cell {
-    color: #222;
+    color: var(--el-text-color-primary);
     font-weight: 500;
   }
 }

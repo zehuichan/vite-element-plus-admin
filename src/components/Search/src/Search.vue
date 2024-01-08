@@ -4,7 +4,7 @@
       <vc-form
         ref="formRef"
         v-bind="$attrs"
-        :schemas="getSchema"
+        :schemas="getSchemas"
         :base-col-props="baseColProps"
         auto-submit-on-enter
         @enter="handelQuery"
@@ -54,7 +54,7 @@ const advanceState = reactive({
   isLoad: false,
 })
 
-const getSchema = computed(() => {
+const getSchemas = computed(() => {
   let itemColSum = 0
   let realItemColSum = 0
   const { schemas = [], baseColProps = {} } = props

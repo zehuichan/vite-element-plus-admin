@@ -20,7 +20,7 @@ import { useHeaderSetting } from '@/hooks/setting/useHeaderSetting'
 import { useMultipleTabSetting } from '@/hooks/setting/useMultipleTabSetting'
 
 const HEADER_HEIGHT = 48
-const TABS_HEIGHT = 40
+const TABS_HEIGHT = 44
 
 export default defineComponent({
   name: 'AppHeader',

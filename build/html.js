@@ -9,6 +9,7 @@ export function configHtmlPlugin(env, isBuild) {
       data: {
         title: VITE_GLOB_APP_TITLE
       }
-    }
+    },
+    viteNext: true
   })
 }
