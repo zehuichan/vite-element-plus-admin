@@ -147,7 +147,6 @@ export default defineComponent({
       top: 0;
       z-index: 505;
       width: calc(100% - v-bind(getMenuWidth));
-      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 12%), 0 0 3px 0 rgb(0 0 0 / 4%);
       transition: width 0.28s;
     }
   }

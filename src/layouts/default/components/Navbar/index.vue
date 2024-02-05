@@ -6,7 +6,7 @@
     </div>
     <div class="basic-layout-navbar-action">
       <error-action v-if="getUseErrorHandle" />
-      <search v-if="getShowSearch" />
+      <query v-if="getShowSearch" />
       <screenfull v-if="getShowFullScreen" />
       <notification v-if="getShowNotice" />
       <userinfo />
@@ -22,7 +22,7 @@ import Breadcrumb from './breadcrumb.vue'
 import Notification from './notification.vue'
 import Userinfo from './userinfo.vue'
 import Settings from './settings.vue'
-import Search from './search.vue'
+import Query from './query.vue'
 import Screenfull from './screenfull.vue'
 import ErrorAction from './error-action.vue'
 
@@ -33,7 +33,7 @@ export default defineComponent({
   name: 'Navbar',
   components: {
     Screenfull,
-    Search,
+    Query,
     Settings,
     Trigger,
     Breadcrumb,

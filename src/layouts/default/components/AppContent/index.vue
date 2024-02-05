@@ -42,5 +42,6 @@ export default defineComponent({
   position: relative;
   width: 100%;
   min-height: 0;
+  padding: 0 10px;
 }
 </style>

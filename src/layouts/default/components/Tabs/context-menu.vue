@@ -21,7 +21,7 @@ import { useMultipleTabStore } from '@/store/modules/multipleTab'
 import { TableActionEnum, useTabs } from '@/hooks/web/useTabs'
 
 export default defineComponent({
-  name: 'Contextmenu',
+  name: 'ContextMenu',
   props: {
     tabItem: Object,
     x: Number,
@@ -35,6 +35,7 @@ export default defineComponent({
     })
 
     const tabStore = useMultipleTabStore()
+
     const { currentRoute } = useRouter()
     const {
       refreshPage,
@@ -70,10 +71,7 @@ export default defineComponent({
       const disabled = tabStore.getTabList.length === 1
 
       // Close right
-      const closeRightDisabled =
-        !isCurItem ||
-        (index === tabStore.getTabList.length - 1 &&
-          tabStore.getLastDragEndIndex >= 0)
+      const closeRightDisabled = !isCurItem || (index === tabStore.getTabList.length - 1 && tabStore.getLastDragEndIndex >= 0)
 
       return [
         {

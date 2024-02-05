@@ -130,7 +130,7 @@ const handleToggleAdvanced = () => {
   padding: 16px;
   background-color: #fff;
   margin-bottom: 12px;
-  border-radius: 2px;
+  border-radius: 4px;
 
   .vc-search__content {
   }

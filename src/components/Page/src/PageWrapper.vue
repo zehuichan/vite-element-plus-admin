@@ -65,7 +65,6 @@ const getHeaderSlots = computed(() => {
   }
 
   .page-content {
-    margin: 12px;
   }
 }
 </style>

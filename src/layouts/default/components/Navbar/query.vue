@@ -97,7 +97,7 @@ function createSearchReg(key) {
 }
 
 export default defineComponent({
-  name: 'Search',
+  name: 'Query',
   setup() {
     const router = useRouter()
 
@@ -232,6 +232,7 @@ export default defineComponent({
 
 <style lang="scss">
 .search-dialog {
+  padding: 0;
   border-radius: 6px;
   background-color: #f9f9f9;
 

@@ -9,19 +9,16 @@
     <div class="tabs-view-main">
       <div
         ref="navWrap"
-        class="tabs-card"
-        :class="{ 'tabs-card-scrollable': scrollable }"
+        class="tabs-card tabs-card-scrollable"
       >
         <div
           class="tabs-card-prev"
-          :class="{ 'tabs-card-prev-hide': !scrollable }"
           @click="scrollPrev"
         >
           <icon-park class="text-16px" name="left" />
         </div>
         <div
           class="tabs-card-next"
-          :class="{ 'tabs-card-next-hide': !scrollable }"
           @click="scrollNext"
         >
           <icon-park class="text-16px" name="right" />
@@ -54,8 +51,13 @@
           </draggable>
         </div>
       </div>
+      <div class="tabs-extra">
+        <div class="tabs-card-item haptics-feedback" @click="refreshPage">
+          <icon-park class="text-16px " name="undo" />
+        </div>
+      </div>
     </div>
-    <contextmenu
+    <context-menu
       ref="contextmenu"
       v-show="showDropdown"
       :tab-item="currentTab"
@@ -84,7 +86,7 @@ import { onClickOutside, useElementSize } from '@vueuse/core'
 import { useRoute, useRouter } from 'vue-router'
 
 import Draggable from 'vuedraggable'
-import Contextmenu from './contextmenu.vue'
+import ContextMenu from './context-menu.vue'
 
 import { useMultipleTabStore } from '@/store/modules/multipleTab'
 import { useUserStore } from '@/store/modules/user'
@@ -100,7 +102,7 @@ export default defineComponent({
   name: 'AppTabs',
   components: {
     Draggable,
-    Contextmenu
+    ContextMenu
   },
   setup() {
     const navWrap = ref(null)
@@ -116,7 +118,7 @@ export default defineComponent({
     const route = useRoute()
     const go = useGo()
 
-    const { close } = useTabs()
+    const { refreshPage, close } = useTabs()
 
     const { width, height } = useElementSize(navWrap)
 
@@ -133,7 +135,7 @@ export default defineComponent({
     // 标签页列表
     const getTabsState = computed(() => tabStore.getTabList)
 
-    watch([width, height], updateNavScroll)
+    watch([() => width.value, () => height.value], updateNavScroll)
 
     listenerRouteChange((route) => {
       const { name } = route
@@ -301,6 +303,7 @@ export default defineComponent({
       currentTab,
       getTabsState,
 
+      refreshPage,
       scrollPrev,
       scrollNext,
       handleClick,
@@ -318,10 +321,9 @@ export default defineComponent({
   padding: 6px 10px;
   display: flex;
   transition: all 0.2s ease-in-out;
-  background-color: #fff;
+  background-color: #f4f7f9;
 
   &-main {
-    height: 32px;
     display: flex;
     max-width: 100%;
     min-width: 100%;
@@ -331,6 +333,11 @@ export default defineComponent({
       flex-shrink: 1;
       overflow: hidden;
       position: relative;
+
+      &.tabs-card-scrollable {
+        padding: 0 32px;
+        overflow: hidden;
+      }
 
       .tabs-card-prev,
       .tabs-card-next {
@@ -400,9 +407,19 @@ export default defineComponent({
       }
     }
 
-    .tabs-card-scrollable {
-      padding: 0 32px;
-      overflow: hidden;
+    .tabs-extra {
+      display: flex;
+
+      .tabs-card-item {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        cursor: pointer;
+        background-color: #fff;
+      }
     }
   }
 }
