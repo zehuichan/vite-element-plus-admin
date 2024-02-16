@@ -1,1 +1,0 @@
-import{v as n,a as c,o as p,f as u}from"./index-A1Q-xROe.js";const h={__name:"index",setup(_){const{currentRoute:r,replace:a}=n(),{params:s,query:o}=c(r),{path:t}=s,e=Array.isArray(t)?t.join("/"):t;return a({path:e.startsWith("/")?e:"/"+e,query:o}),(i,m)=>(p(),u("div"))}};export{h as default};

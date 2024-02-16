@@ -1,1 +1,0 @@
-import{_ as e,o,f as s,e as c}from"./index-A1Q-xROe.js";const t={},n={class:"app-container"},a=c("code",null,"Dashboard",-1),_=[a];function r(d,i){return o(),s("div",n,_)}const l=e(t,[["render",r]]);export{l as default};
