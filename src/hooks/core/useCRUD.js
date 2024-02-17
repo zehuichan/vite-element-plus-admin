@@ -1,8 +1,8 @@
 import { computed, ref, unref } from 'vue'
-import { noop } from '@/utils'
+import { initData } from '@/api/data'
 
 export function useCRUD(config) {
-  const { api = noop, transform = noop, immediate = true } = config || {}
+  const { url, transform, immediate = true } = config || {}
 
   const loading = ref(true)
   const page = ref(1)
@@ -35,7 +35,7 @@ export function useCRUD(config) {
   async function query() {
     try {
       loading.value = true
-      const res = await api(payload.value)
+      const res = await initData(url, payload.value)
       list.value = res.rows
       total.value = res.total
     } catch (e) {

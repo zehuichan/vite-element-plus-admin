@@ -30,16 +30,7 @@
   }
 }
 
-.el-tree-border {
-  margin-top: 5px;
-  border: 1px solid #e5e6e7;
-  background: #FFFFFF none;
-  border-radius: 4px;
-  width: 100%;
-  padding: 8px;
-}
-
-.el-table {
+.el-table.el-table--small {
   --el-table-header-bg-color: #f5f7fa;
   --el-table-text-color: var(--el-text-color-regular);
 
