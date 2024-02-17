@@ -1,0 +1,1 @@
+import{_ as e,o,h as s,e as c}from"./index-BLjFcgUy.js";const t={},n={class:"app-container"},a=c("code",null,"Dashboard",-1),_=[a];function r(d,i){return o(),s("div",n,_)}const f=e(t,[["render",r]]);export{f as default};
