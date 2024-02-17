@@ -15,13 +15,13 @@
           class="tabs-card-prev"
           @click="scrollPrev"
         >
-          <icon-park class="text-16px" name="left" />
+          <icon-park class="text-16px" type="left" />
         </div>
         <div
           class="tabs-card-next"
           @click="scrollNext"
         >
-          <icon-park class="text-16px" name="right" />
+          <icon-park class="text-16px" type="right" />
         </div>
         <div ref="navScroll" class="tabs-card-scroll">
           <draggable
@@ -53,7 +53,7 @@
       </div>
       <div class="tabs-extra">
         <div class="tabs-card-item haptics-feedback" @click="refreshPage">
-          <icon-park class="text-16px " name="undo" />
+          <icon-park class="text-16px " type="undo" />
         </div>
       </div>
     </div>

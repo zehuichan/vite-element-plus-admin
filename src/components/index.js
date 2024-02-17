@@ -3,7 +3,6 @@ import AppProvider from './AppProvider'
 import Fullcontent from './Fullcontent'
 import Icon from './Icon'
 import SvgIcon from './SvgIcon'
-import IconPark from './IconPark'
 import Segmented from './Segmented'
 import { Form, ApiSelect } from './Form'
 import Search from './Search'
@@ -20,7 +19,6 @@ const components = [
   ApiSelect,
   Icon,
   SvgIcon,
-  IconPark,
   Segmented,
   Table,
   Pagination,

@@ -1,6 +1,6 @@
+import { IconPark } from '@icon-park/vue-next/es/all'
 import '@icon-park/vue-next/styles/index.css'
-import { install } from '@icon-park/vue-next/es/all'
 
 export function setupIconPark(app) {
-  install(app)
+  app.component(IconPark.name, IconPark)
 }

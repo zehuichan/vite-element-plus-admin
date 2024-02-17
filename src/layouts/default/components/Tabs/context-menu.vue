@@ -7,7 +7,7 @@
       :class="{ 'tabs-view-contextmenu-item__disabled': item.disabled }"
       @click="handleMenuEvent(item)"
     >
-      <icon-park :name="item.icon" />
+      <icon-park :type="item.icon" />
       <span>{{ item.text }}</span>
     </li>
   </ul>
