@@ -15,6 +15,7 @@ const errorCode = {
   'default': '系统未知错误，请反馈给管理员'
 }
 
+// 取消请求缓存
 const abortControllerMap = new Map()
 
 // create an axios instance

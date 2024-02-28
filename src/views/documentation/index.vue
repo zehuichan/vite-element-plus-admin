@@ -9,7 +9,7 @@
     <el-button @click="fireVueError">点击触发vue错误</el-button>
     <el-button @click="fireResourceError">点击触发资源加载错误</el-button>
     <el-button @click="fireAjaxError">点击触发ajax错误</el-button>
-    <el-table :data="data" style="width: 100%">
+    <el-table :data="data" border style="width: 100%">
       <el-table-column prop="type" label="类型" width="90">
         <template #default="scope">
           <el-tag :type="filterColor(scope.row.type)" disable-transitions>

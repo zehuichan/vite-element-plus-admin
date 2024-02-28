@@ -349,6 +349,7 @@ export default defineComponent({
         justify-content: center;
         text-align: center;
         cursor: pointer;
+        background-color: #fff;
       }
 
       .tabs-card-prev {
@@ -380,7 +381,7 @@ export default defineComponent({
           padding: 0 8px;
           font-size: 12px;
           border-radius: 2px;
-          margin-right: 6px;
+          margin-left: 6px;
 
           &:hover {
             color: #515a6e;
