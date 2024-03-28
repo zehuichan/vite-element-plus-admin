@@ -1,4 +1,5 @@
 import Mock from 'mockjs'
+import { defineFakeRoute } from 'vite-plugin-fake-server/client'
 import { resultError, resultSuccess } from './_util'
 
 const { Random } = Mock
@@ -23,7 +24,7 @@ const user = {
   ]
 }
 
-export default [
+export default defineFakeRoute([
   // user login
   {
     url: '/user/login',
@@ -40,8 +41,9 @@ export default [
   {
     url: '/user/info',
     method: 'get',
-    response: () => {
+    response: (ctx) => {
+      console.log(ctx)
       return resultSuccess(user)
     }
   }
-]
+])

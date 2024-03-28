@@ -1,15 +1,10 @@
-import { viteMockServe } from 'vite-plugin-mock'
+import { vitePluginFakeServer } from 'vite-plugin-fake-server'
 
 export function configMockPlugin(isBuild) {
-  return viteMockServe({
-    ignore: /^\_/,
-    mockPath: 'mock',
-    localEnabled: !isBuild,
-    prodEnabled: isBuild,
-    injectCode: `
-      import { setupProdMockServer } from '../mock/_createProductionServer';
-
-      setupProdMockServer();
-      `
+  return vitePluginFakeServer({
+    include: 'mock',
+    infixName: false,
+    enableDev: !isBuild,
+    enableProd: isBuild,
   })
 }
