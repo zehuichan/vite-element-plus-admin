@@ -6,6 +6,8 @@ export default defineConfig({
     'flex-center': 'flex items-center',
     'flex-between': 'flex items-center justify-between',
     'flex-end': 'flex items-center justify-end',
+    'action-wrapper': 'p-12px bg-white',
+    'table-wrapper': 'p-12px bg-white',
   },
   theme: {
     colors: {
