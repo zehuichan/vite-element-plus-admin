@@ -1,8 +1,7 @@
-import { withInstall } from '@/utils'
+import Table from './src/Table.vue'
 
-// @ts-ignore
-import _Table from './src/Table.vue'
+export { useTable } from './src/hooks/useTable'
+// export { useSummaries } from './src/hooks/useSummaries'
+export { useSelection } from './src/hooks/useSelection'
 
-export const Table = withInstall(_Table)
-
-export default Table
+export { Table }

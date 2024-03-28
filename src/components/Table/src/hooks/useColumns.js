@@ -1,48 +1,23 @@
-import { computed, ref, unref, watch } from 'vue'
-
-import { cloneDeep } from 'lodash-es'
+import { computed, ref, toRaw, unref, watch } from 'vue'
 
 import { usePermission } from '@/hooks/web/usePermission'
 
-import { isArray, isBoolean, isFunction } from '@/utils/is'
+import { isBoolean, isFunction } from '@/utils/is'
+import { localForage } from '@/utils/localforage'
 
-function handleItem(item, ellipsis) {
-  const { key, dataIndex, children } = item
-  item.align = item.align || 'center'
-  if (ellipsis) {
-    if (!key) {
-      item.key = dataIndex
-    }
-    if (!isBoolean(item.ellipsis)) {
-      Object.assign(item, {
-        ellipsis,
-      })
-    }
-  }
-  if (children && children.length) {
-    handleChildren(children, !!ellipsis)
-  }
-}
-
-function handleChildren(children, ellipsis) {
-  if (!children) return
-  children.forEach((item) => {
-    const { children } = item
-    handleItem(item, ellipsis)
-    handleChildren(children, ellipsis)
-  })
-}
-
-export function useColumns(propsRef, getPaginationRef) {
+export function useColumns(propsRef) {
   const columnsRef = ref(unref(propsRef).columns)
-  let cacheColumns = unref(propsRef).columns
+
+  const initialized = ref(false)
+  const columnProps = ref({})
+
+  const key = 'columnProps_' + unref(propsRef).name
 
   watch(
     () => unref(propsRef).columns,
     (columns) => {
       columnsRef.value = columns
-      cacheColumns = columns?.filter((item) => !item.flag) ?? []
-    },
+    }
   )
 
   function isIfShow(column) {
@@ -62,44 +37,37 @@ export function useColumns(propsRef, getPaginationRef) {
   const { hasPermission } = usePermission()
 
   const getViewColumns = computed(() => {
-    const viewColumns = sortFixedColumn(unref(columnsRef))
-    const columns = cloneDeep(viewColumns)
-    return columns
-      .filter((column) => hasPermission(column.auth) && isIfShow(column))
+    const columns = unref(columnsRef).filter((column) => hasPermission(column.auth) && isIfShow(column))
+    return columns.map((column) => {
+      column = Object.assign(column, columnProps.value[column.prop])
+      return column
+    })
   })
 
-  function getCacheColumns() {
-    return cacheColumns
+  const getHeaderDragend = async () => {
+    if (!unref(propsRef).name) {
+      initialized.value = true
+      return
+    }
+    columnProps.value = await localForage().getItem(key) || {}
+    initialized.value = true
   }
 
-  function setCacheColumns(columns) {
-    if (!isArray(columns)) return
-    cacheColumns = columns.filter((item) => !item.flag)
+  const setHeaderDragend = async (newWidth, oldWidth, column) => {
+    if (!unref(propsRef).name) return
+    if (columnProps.value[column.property]) {
+      columnProps.value[column.property].width = newWidth
+    } else {
+      columnProps.value[column.property] = { width: newWidth }
+    }
+    await localForage().setItem(key, toRaw(columnProps.value))
   }
 
   return {
+    initialized,
+    columnProps,
     getViewColumns,
-    getCacheColumns,
-    setCacheColumns
+    getHeaderDragend,
+    setHeaderDragend
   }
-}
-
-function sortFixedColumn(columns) {
-  const fixedLeftColumns = []
-  const fixedRightColumns = []
-  const defColumns = []
-  for (const column of columns) {
-    if (column.fixed === 'left') {
-      fixedLeftColumns.push(column)
-      continue
-    }
-    if (column.fixed === 'right') {
-      fixedRightColumns.push(column)
-      continue
-    }
-    defColumns.push(column)
-  }
-  return [...fixedLeftColumns, ...defColumns, ...fixedRightColumns].filter(
-    (item) => !item.hidden,
-  )
 }

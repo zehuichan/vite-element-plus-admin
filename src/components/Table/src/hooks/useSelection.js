@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue'
 import { createGlobalState } from '@vueuse/core'
+import { listenerRouteChange } from '@/install/plugins/router-change'
 
 export const useSelection = createGlobalState(() => {
   // 选中项
@@ -9,6 +10,10 @@ export const useSelection = createGlobalState(() => {
   const table = ref(null)
 
   const tempIds = computed(() => selectionRef.value.map(item => item.id))
+
+  listenerRouteChange((route) => {
+    selectionRef.value = []
+  })
 
   const handleCurrentChange = (val, bus_table) => {
     currentRef.value = val

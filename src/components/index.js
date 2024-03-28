@@ -6,7 +6,7 @@ import SvgIcon from './SvgIcon'
 import Segmented from './Segmented'
 import { Form, ApiSelect } from './Form'
 import Search from './Search'
-import Table from './Table'
+import { Table } from './Table'
 import Pagination from './Pagination'
 import { PageWrapper, PageFooter } from './Page'
 

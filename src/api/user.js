@@ -18,16 +18,13 @@ const USER_DATA = {
 }
 
 export function login(data) {
-  return http.request({
-    url: '/user/login',
-    method: 'post',
-    data
+  return new Promise((resolve, reject) => {
+    resolve(USER_DATA)
   })
 }
 
 export function getInfo() {
-  return http.request({
-    url: '/user/info',
-    method: 'get',
+  return new Promise((resolve, reject) => {
+    resolve(USER_DATA)
   })
 }

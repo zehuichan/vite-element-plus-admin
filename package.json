@@ -18,6 +18,7 @@
     "cleave.js": "^1.6.0",
     "dayjs": "^1.11.10",
     "element-plus": "^2.6.2",
+    "localforage": "^1.10.0",
     "lodash-es": "^4.17.21",
     "mitt": "^3.0.1",
     "mockjs": "^1.1.0",

@@ -1,6 +1,15 @@
 <template>
-  <div ref="wrapRef" class="vc-table" v-loading="loading">
-    <el-table ref="tableRef" v-bind="$attrs" border stripe>
+  <div ref="wrapRef" class="vc-table">
+    <el-table
+      v-loading="loading"
+      v-show="initialized"
+      ref="tableRef"
+      v-bind="$attrs"
+      border
+      stripe
+      :max-height="height"
+      @header-dragend="setHeaderDragend"
+    >
       <slot />
       <el-table-column v-for="column in getViewColumns" v-bind="column">
         <template #default="scope">
@@ -19,11 +28,12 @@
 </template>
 
 <script setup>
-import { computed, nextTick, ref, onMounted, useAttrs, unref } from 'vue'
+import { computed, ref, useAttrs, unref } from 'vue'
+
+import { tryOnMounted } from '@vueuse/core'
 
 import { omit } from 'lodash-es'
 
-import { useExpose } from '@/hooks/core/useExpose'
 import { useAdaptive } from '@/hooks/web/useAdaptive'
 
 import { useColumns } from './hooks/useColumns'
@@ -43,17 +53,20 @@ const attrs = useAttrs()
 
 const wrapRef = ref(null)
 const tableRef = ref(null)
-
 const innerPropsRef = ref({})
 
 const getProps = computed(() => {
   return { ...props, ...unref(innerPropsRef) }
 })
 const getPaginationProps = computed(() => {
-  return omit(attrs, ['columns', 'data'])
+  return omit({ ...attrs, }, ['columns', 'data'])
+})
+const pagination = computed(() => {
+  return unref(getProps).currentPage !== undefined || unref(getProps).pageSize !== undefined
 })
 
-const { getViewColumns } = useColumns(getProps)
+const { initialized, getViewColumns, getHeaderDragend, setHeaderDragend } = useColumns(getProps)
+const { height } = useAdaptive(tableRef, { adaptive: props.adaptive })
 
 const setProps = (props) => {
   innerPropsRef.value = { ...unref(innerPropsRef), ...props }
@@ -76,7 +89,8 @@ const tableActions = {
   setScrollLeft: (left) => unref(tableRef).setScrollLeft(left),
 }
 
-onMounted(() => {
+tryOnMounted(() => {
+  getHeaderDragend()
   emit('register', tableActions)
 })
 
