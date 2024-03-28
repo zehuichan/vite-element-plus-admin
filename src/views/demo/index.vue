@@ -6,13 +6,17 @@
         adaptive
         :columns="columns"
         :data="data"
+        :total="data.length"
+        v-model:current-page="queryParams.pageNum"
+        v-model:page-size="queryParams.pageSize"
       />
     </div>
   </page-wrapper>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, reactive } from 'vue'
+import { sleep } from '@/utils'
 
 const columns = [
   { label: '姓名', prop: 'name' },
@@ -20,8 +24,13 @@ const columns = [
   { label: '地址', prop: 'address' }
 ]
 const data = ref([])
-onMounted(() => {
-  console.log('mounted')
+
+const queryParams = reactive({
+  pageNum: 1,
+  pageSize: 30,
+})
+onMounted(async () => {
+  await sleep(250)
   data.value = [
     { name: '张三', age: 18, address: '北京' },
     { name: '李四', age: 20, address: '上海' },

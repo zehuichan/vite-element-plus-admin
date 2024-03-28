@@ -5,6 +5,10 @@ export const tableProps = {
     default: []
   },
   loading: Boolean,
+  pagination: {
+    type: Boolean,
+    default: true
+  },
   adaptive: Boolean,
   adaptiveConfig: Object,
 }

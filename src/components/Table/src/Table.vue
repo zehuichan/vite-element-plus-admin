@@ -61,12 +61,9 @@ const getProps = computed(() => {
 const getPaginationProps = computed(() => {
   return omit({ ...attrs, }, ['columns', 'data'])
 })
-const pagination = computed(() => {
-  return unref(getProps).currentPage !== undefined || unref(getProps).pageSize !== undefined
-})
 
 const { initialized, getViewColumns, getHeaderDragend, setHeaderDragend } = useColumns(getProps)
-const { height } = useAdaptive(tableRef, { adaptive: props.adaptive })
+const { height } = useAdaptive(wrapRef, { adaptive: props.adaptive })
 
 const setProps = (props) => {
   innerPropsRef.value = { ...unref(innerPropsRef), ...props }
