@@ -1,4 +1,4 @@
-import { intersection } from 'lodash-es'
+import { intersection } from 'lodash-unified'
 
 import { useUserStore } from '@/store/modules/user'
 

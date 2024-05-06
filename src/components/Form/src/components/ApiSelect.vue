@@ -1,24 +1,22 @@
 <template>
-  <el-select-v2
+  <el-select
     class="w-full"
     v-bind="$attrs"
     v-model="state"
-    clearable
-    :placeholder="$attrs?.placeholder ?? '请选择'"
     :loading="loading"
-    :options="getOptions"
-    :filterable="getRemote"
-    :remote="getRemote"
-    :remote-method="getRemote ? handleFetch : null"
-    @clear="handleClear"
+    :placeholder="placeholder"
+    @change="handleChange"
   >
-    <template #[item]="data" v-for="item in ['prefix', 'empty']">
-      <slot :name="item" v-bind="data || {}" />
-    </template>
-    <template #default="{item}">
-      <div @click="handleSelect(item)">{{ item.label }}</div>
-    </template>
-  </el-select-v2>
+    <el-option
+      v-for="item in getOptions"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value"
+      :disabled="item.disabled"
+    >
+      <slot name="item" :item="item" />
+    </el-option>
+  </el-select>
 </template>
 
 <script>
@@ -26,7 +24,7 @@ import { defineComponent, ref, computed, unref, watch } from 'vue'
 
 import { useVModel } from '@vueuse/core'
 
-import { get } from 'lodash-es'
+import { find, get } from 'lodash-unified'
 
 import { isFunction } from '@/utils/is'
 
@@ -36,6 +34,10 @@ export default defineComponent({
   props: {
     modelValue: null,
     numberToString: Boolean,
+    placeholder: {
+      type: String,
+      default: '请填写'
+    },
     api: {
       type: Function,
       default: null
@@ -69,7 +71,7 @@ export default defineComponent({
     },
     readonly: Boolean,
   },
-  emits: ['select', 'options-change', 'update:modelValue'],
+  emits: ['change', 'options-change', 'update:modelValue'],
   setup(props, { emit }) {
     const options = ref([])
     const loading = ref(false)
@@ -93,10 +95,6 @@ export default defineComponent({
       }, [])
 
       return data.length > 0 ? data : props.options
-    })
-
-    const getRemote = computed(() => {
-      return props.options.length === 0
     })
 
     watch(
@@ -135,13 +133,9 @@ export default defineComponent({
       }
     }
 
-    function handleSelect(val) {
-      emit('select', val)
-    }
-
-    function handleClear() {
-      state.value = null
-      emit('select')
+    function handleChange(val) {
+      const data = find(unref(getOptions), option => option.value === val)
+      emit('change', data)
     }
 
     function emitChange() {
@@ -152,10 +146,7 @@ export default defineComponent({
       state,
       loading,
       getOptions,
-      getRemote,
-      handleFetch,
-      handleSelect,
-      handleClear
+      handleChange
     }
   }
 })

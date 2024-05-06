@@ -1,12 +1,14 @@
 export function createPlaceholderMessage(component) {
-  if (component.includes('Input') || component.includes('Complete')) {
-    return '请输入'
+  if (component.includes('Input') || component.includes('ApiSuggestion')) {
+    return '请填写'
   }
   if (component.includes('Picker')) {
     return '请选择'
   }
   if (
     component.includes('Select') ||
+    component.includes('ApiSelect') ||
+    component.includes('ApiTreeSelect') ||
     component.includes('Cascader') ||
     component.includes('Checkbox') ||
     component.includes('Radio') ||

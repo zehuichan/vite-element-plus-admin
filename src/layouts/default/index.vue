@@ -111,6 +111,11 @@ export default defineComponent({
       0s padding-right ease-in-out;
     }
 
+    .operations {
+      padding: 8px 20px;
+      color: #fff;
+    }
+
     &-content {
       display: flex;
       flex-direction: column;

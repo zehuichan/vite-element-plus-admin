@@ -12,13 +12,13 @@
         class="tabs-card tabs-card-scrollable"
       >
         <div
-          class="tabs-card-prev"
+          class="tabs-card-prev haptics-feedback"
           @click="scrollPrev"
         >
           <icon-park class="text-16px" type="left" />
         </div>
         <div
-          class="tabs-card-next"
+          class="tabs-card-next haptics-feedback"
           @click="scrollNext"
         >
           <icon-park class="text-16px" type="right" />
@@ -52,6 +52,9 @@
         </div>
       </div>
       <div class="tabs-extra">
+        <div class="tabs-card-item haptics-feedback" @click="fullContent">
+          <icon-park class="text-16px " type="screenshot-one" />
+        </div>
         <div class="tabs-card-item haptics-feedback" @click="refreshPage">
           <icon-park class="text-16px " type="undo" />
         </div>
@@ -79,9 +82,8 @@ import {
   toRaw,
   toRefs,
   unref,
-  watch
 } from 'vue'
-import { onClickOutside, useElementSize } from '@vueuse/core'
+import { onClickOutside } from '@vueuse/core'
 
 import { useRoute, useRouter } from 'vue-router'
 
@@ -118,9 +120,7 @@ export default defineComponent({
     const route = useRoute()
     const go = useGo()
 
-    const { refreshPage, close } = useTabs()
-
-    const { width, height } = useElementSize(navWrap)
+    const { refreshPage, close, fullContent } = useTabs()
 
     const state = reactive({
       activeKey: route.fullPath,
@@ -134,8 +134,6 @@ export default defineComponent({
 
     // 标签页列表
     const getTabsState = computed(() => tabStore.getTabList)
-
-    watch([() => width.value, () => height.value], updateNavScroll)
 
     listenerRouteChange((route) => {
       const { name } = route
@@ -165,6 +163,8 @@ export default defineComponent({
       } else {
         tabStore.addTab(unref(route))
       }
+
+      updateNavScroll(true)
     })
 
     function filterAffixTabs(routes) {
@@ -245,15 +245,6 @@ export default defineComponent({
       }
     }
 
-    function handleClick(e) {
-      currentTab.value = e
-      state.showDropdown = false
-      const { path, fullPath } = e
-      if (fullPath === route.fullPath) return
-      state.activeKey = fullPath || path
-      go(state.activeKey, true)
-    }
-
     function handleClose(item) {
       close(item)
     }
@@ -304,9 +295,9 @@ export default defineComponent({
       getTabsState,
 
       refreshPage,
+      fullContent,
       scrollPrev,
       scrollNext,
-      handleClick,
       handleClose,
       handleContextMenu,
       handleSortTabs

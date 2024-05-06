@@ -1,5 +1,5 @@
 import { unref } from 'vue'
-import { cloneDeep, set } from 'lodash-es'
+import { cloneDeep, set } from 'lodash-unified'
 import {
   isArray,
   isFunction, isNull,
@@ -47,78 +47,6 @@ function tryDeconstructObject(key, value, target) {
 
 export function useFormValues({ defaultValueRef, getSchema, formModel, getProps }) {
 
-  function handleFormRules(schema) {
-    const {
-      rules: defRules = [],
-      component,
-      rulesMessageJoinLabel,
-      label,
-      dynamicRules,
-      required
-    } = schema
-
-    if (isFunction(dynamicRules)) {
-      return dynamicRules(formModel)
-    }
-
-    let rules = cloneDeep(defRules)
-    const { rulesMessageJoinLabel: globalRulesMessageJoinLabel } = unref(getProps)
-
-    const joinLabel = Reflect.has(schema, 'rulesMessageJoinLabel')
-      ? rulesMessageJoinLabel
-      : globalRulesMessageJoinLabel
-    const assertLabel = joinLabel ? label : ''
-    const defaultMsg = component
-      ? createPlaceholderMessage(component) + assertLabel
-      : assertLabel
-
-    function validator(rule, value, callback) {
-      const msg = rule.message || defaultMsg
-      if (value === undefined || isNull(value)) {
-        // 空值
-        callback(new Error(msg))
-      } else if (Array.isArray(value) && value.length === 0) {
-        // 数组类型
-        callback(new Error(msg))
-      } else if (typeof value === 'string' && value.trim() === '') {
-        // 空字符串
-        callback(new Error(msg))
-      } else if (
-        typeof value === 'object' &&
-        Reflect.has(value, 'checked') &&
-        Reflect.has(value, 'halfChecked') &&
-        Array.isArray(value.checked) &&
-        Array.isArray(value.halfChecked) &&
-        value.checked.length === 0 &&
-        value.halfChecked.length === 0
-      ) {
-        // 非关联选择的tree组件
-        callback(new Error(msg))
-      }
-      callback()
-    }
-
-    const getRequired = isFunction(required)
-      ? required(formModel)
-      : required
-
-    if (getRequired) {
-      if (!rules || rules.length === 0) {
-        rules = [{ required: getRequired, validator }]
-      } else {
-        const requiredIndex = rules.findIndex((rule) =>
-          Reflect.has(rule, 'required')
-        )
-
-        if (requiredIndex === -1) {
-          rules.push({ required: getRequired, validator })
-        }
-      }
-    }
-
-    return rules
-  }
-
   function handleFormValues(values) {
     if (!isObject(values)) {
       return {}
@@ -159,7 +87,6 @@ export function useFormValues({ defaultValueRef, getSchema, formModel, getProps 
   }
 
   return {
-    handleFormRules,
     handleFormValues,
     initDefault
   }

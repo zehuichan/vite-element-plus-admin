@@ -24,7 +24,7 @@
 
 <script setup>
 import { computed, useAttrs, useSlots } from 'vue'
-import { omit } from 'lodash-es'
+import { omit } from 'lodash-unified'
 import { useTabs } from '@/hooks/web/useTabs'
 
 defineOptions({

@@ -7,6 +7,10 @@ export const searchProps = {
     type: Object,
     default: () => ({ span: 6 })
   },
+  threshold: {
+    type: Number,
+    default: 4
+  },
   autoAdvancedLine: {
     type: Number,
     default: 3

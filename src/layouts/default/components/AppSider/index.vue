@@ -8,7 +8,7 @@
     }"
   >
     <div class="basic-layout-aside-content">
-      <app-logo :collapse="getCollapsed" />
+      <app-logo v-if="getShowLogo" :collapse="getCollapsed" />
       <el-scrollbar wrap-class="scrollbar-wrapper">
         <app-menu
           :collapse="getCollapsed"
@@ -16,13 +16,14 @@
           @click="handleClose(false)"
         />
       </el-scrollbar>
+      <div class="operations">
+        version: v{{ version }}
+      </div>
     </div>
   </div>
 </template>
 
-<script>
-import { defineComponent } from 'vue'
-
+<script setup>
 import { usePermissionStore } from '@/store/modules/permission'
 
 import { ElOverlay } from 'element-plus'
@@ -33,35 +34,26 @@ import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 import { useAppInjectStore } from '@/hooks/web/useAppProvideStore'
 import { useRootSetting } from '@/hooks/setting/useRootSetting'
 
-export default defineComponent({
-  name: 'AppSider',
-  components: { ElOverlay, AppLogo, AppMenu },
-  setup() {
-    const permissionStore = usePermissionStore()
 
-    const { getIsMobile, getIsLaptop } = useAppInjectStore()
+const { version } = __APP_INFO__
 
-    const { getShowLogo } = useRootSetting()
-    const { setMenuSetting, getCollapsed } = useMenuSetting()
+const globAppTitle = import.meta.env.VITE_GLOB_APP_TITLE
+const globAppFooter = import.meta.env.VITE_GLOB_APP_FOOTER
+const globAppICP = import.meta.env.VITE_GLOB_APP_ICP
 
+const permissionStore = usePermissionStore()
 
-    function handleClose(flag) {
-      if (flag) {
-        setMenuSetting({
-          collapsed: true,
-          animation: false
-        })
-      }
-    }
+const { getIsMobile, getIsLaptop } = useAppInjectStore()
 
-    return {
-      permissionStore,
-      getIsMobile,
-      getIsLaptop,
-      getCollapsed,
+const { getShowLogo } = useRootSetting()
+const { setMenuSetting, getCollapsed } = useMenuSetting()
 
-      handleClose
-    }
+function handleClose(flag) {
+  if (flag) {
+    setMenuSetting({
+      collapsed: true,
+      animation: false
+    })
   }
-})
+}
 </script>

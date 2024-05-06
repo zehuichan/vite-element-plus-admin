@@ -1,4 +1,4 @@
-import { set } from 'lodash-es'
+import { set } from 'lodash-unified'
 
 export const loadLocalePool = []
 

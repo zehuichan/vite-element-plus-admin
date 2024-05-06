@@ -4,7 +4,7 @@ import { AxiosCanceler } from './axiosCancel'
 import { ContentTypeEnum, RequestEnum } from './enums'
 
 import { isFunction } from '@/utils/is'
-import { cloneDeep } from 'lodash-es'
+import { cloneDeep } from 'lodash-unified'
 
 export class VAxios {
   constructor(options) {

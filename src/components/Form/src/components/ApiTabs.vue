@@ -1,40 +1,27 @@
 <template>
-  <el-radio-group class="api-radio-group" v-bind="$attrs" v-model="state">
-    <template v-for="item in getOptions" :key="`${item.value}`">
-      <el-radio-button
-        v-if="button"
-        :value="item.value"
-        :disabled="item.disabled"
-      >
-        {{ item.label }}
-      </el-radio-button>
-      <el-radio
-        v-else
-        :value="item.value"
-        :border="border"
-        :disabled="item.disabled"
-      >
-        {{ item.label }}
-      </el-radio>
-    </template>
-  </el-radio-group>
+  <el-tabs v-bind="$attrs" v-model="state" class="api-tabs">
+    <el-tab-pane
+      v-for="item in getOptions"
+      v-bind="item"
+      :label="item.label"
+      :name="item.value"
+    />
+  </el-tabs>
 </template>
 
 <script>
 import { computed, defineComponent, ref, unref, watch, watchEffect } from 'vue'
 import { useVModel } from '@vueuse/core'
-import { get } from 'lodash-unified'
 import { isFunction } from '@/utils/is'
+import { get } from 'lodash-unified'
 
 export default defineComponent({
-  name: 'ApiRadioGroup',
+  name: 'ApiTabs',
   inheritAttrs: false,
   props: {
     modelValue: null,
     options: Array,
     numberToString: Boolean,
-    button: Boolean,
-    border: Boolean,
     api: {
       type: Function,
       default: null
@@ -64,7 +51,6 @@ export default defineComponent({
     const options = ref([])
     const loading = ref(false)
     const isFirstLoad = ref(true)
-
     // Embedded in the form, just use the hook binding to perform form verification
     const state = useVModel(props, 'modelValue', emit)
 
@@ -133,3 +119,14 @@ export default defineComponent({
   }
 })
 </script>
+
+<style lang="scss">
+.api-tabs {
+  --el-tabs-header-height: 32px;
+  --el-font-size-base: 12px;
+
+  .el-tabs__header {
+    margin-bottom: 8px;
+  }
+}
+</style>

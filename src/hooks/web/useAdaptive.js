@@ -1,6 +1,6 @@
 import { defineComponent, getCurrentInstance, h, reactive, ref, nextTick } from 'vue'
 import { tryOnMounted, unrefElement, useEventListener } from '@vueuse/core'
-import { debounce } from 'lodash-es'
+import { debounce } from 'lodash-unified'
 import { getViewportOffset } from '@/utils/domUtil'
 
 export const UseAdaptive = defineComponent({
@@ -17,14 +17,13 @@ export const UseAdaptive = defineComponent({
 })
 
 export function useAdaptive(target, options) {
-  const { adaptive = false, offsetBottom = 36, timeout = 60 } = options || {}
+  const { adaptive = false, offsetBottom = 24 + 12, timeout = 60 } = options || {}
 
   const vm = getCurrentInstance()
 
   const height = ref()
 
   const update = () => {
-    if (!adaptive) return
     const ele = unrefElement(target)
     const { bottomIncludeBody } = getViewportOffset(ele)
     // height.value = window.innerHeight - ele?.getBoundingClientRect().top - offsetBottom - 12
@@ -39,9 +38,11 @@ export function useAdaptive(target, options) {
   )
 
   tryOnMounted(() => {
-    nextTick(debounceUpdate)
-    for (let i = 1; i <= 3; i++) {
-      setTimeout(debounceUpdate, 100 * i)
+    if (adaptive) {
+      nextTick(debounceUpdate)
+      for (let i = 1; i <= 3; i++) {
+        setTimeout(debounceUpdate, 100 * i)
+      }
     }
   })
   useEventListener('resize', debounceUpdate, { passive: true })

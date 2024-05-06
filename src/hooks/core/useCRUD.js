@@ -10,6 +10,7 @@ export function useCRUD(config) {
   const total = ref(0)
   const params = ref({})
   const list = ref([])
+  const data = ref({})
 
   // 请求上传的表单 (为了方便处理搜索绑定的表单与请求所需表单存在差异的情况)
   const payload = computed(() => {
@@ -72,6 +73,7 @@ export function useCRUD(config) {
     params,
     total,
     list,
+    data,
 
     query,
     refresh

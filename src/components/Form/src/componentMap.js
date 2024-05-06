@@ -14,9 +14,13 @@ import {
 
 import ApiSelect from './components/ApiSelect.vue'
 import ApiRadioGroup from './components/ApiRadioGroup.vue'
+import ApiTabs from './components/ApiTabs.vue'
+import ApiCheckbox from './components/ApiCheckbox.vue'
+import ApiCheckTag from './components/ApiCheckTag.vue'
+import ApiSuggestion from './components/ApiSuggestion.vue'
+import ApiDropdown from './components/ApiDropdown.vue'
 
 // todo 自定义表单组件在这里也要新增配置
-import { Segmented } from '@/components/Segmented'
 import { Desc } from '@/components/Desc'
 
 const componentMap = new Map()
@@ -41,10 +45,16 @@ componentMap.set('ColorPicker', 'el-color-picker')
 
 componentMap.set('Divider', ElDivider)
 
+// 自定义表单组件在这里也要新增配置
 componentMap.set('ApiSelect', ApiSelect)
 componentMap.set('ApiRadioGroup', ApiRadioGroup)
+componentMap.set('ApiTabs', ApiTabs)
+componentMap.set('ApiCheckbox', ApiCheckbox)
+componentMap.set('ApiCheckTag', ApiCheckTag)
+componentMap.set('ApiSuggestion', ApiSuggestion)
+componentMap.set('ApiDropdown', ApiDropdown)
 
-componentMap.set('Segmented', Segmented)
+// 自定义表单组件在这里也要新增配置
 componentMap.set('Desc', Desc)
 
 export function add(compName, component) {

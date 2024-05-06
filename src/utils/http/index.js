@@ -9,7 +9,7 @@ import {
 import { checkStatus } from './checkStatus'
 
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { clone } from 'lodash-es'
+import { clone } from 'lodash-unified'
 
 import { useUserStoreWithOut } from '@/store/modules/user'
 import { useErrorLogStoreWithOut } from '@/store/modules/errorLog'

@@ -1,23 +1,23 @@
 <template>
-  <el-radio-group class="api-radio-group" v-bind="$attrs" v-model="state">
-    <template v-for="item in getOptions" :key="`${item.value}`">
-      <el-radio-button
-        v-if="button"
-        :value="item.value"
-        :disabled="item.disabled"
-      >
-        {{ item.label }}
-      </el-radio-button>
-      <el-radio
-        v-else
-        :value="item.value"
-        :border="border"
-        :disabled="item.disabled"
-      >
-        {{ item.label }}
-      </el-radio>
-    </template>
-  </el-radio-group>
+  <el-checkbox-group v-bind="$attrs" v-model="state">
+    <el-space wrap>
+      <template v-for="item in getOptions" :key="`${item.value}`">
+        <el-checkbox-button
+          v-if="button"
+          :label="item.label"
+          :value="item.value"
+          :disabled="item.disabled"
+        />
+        <el-checkbox
+          v-else
+          :label="item.label"
+          :value="item.value"
+          :border="border"
+          :disabled="item.disabled"
+        />
+      </template>
+    </el-space>
+  </el-checkbox-group>
 </template>
 
 <script>
@@ -27,7 +27,7 @@ import { get } from 'lodash-unified'
 import { isFunction } from '@/utils/is'
 
 export default defineComponent({
-  name: 'ApiRadioGroup',
+  name: 'ApiCheckbox',
   inheritAttrs: false,
   props: {
     modelValue: null,

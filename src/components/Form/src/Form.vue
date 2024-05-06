@@ -1,14 +1,14 @@
 <script lang="jsx">
-import { computed, defineComponent, reactive, ref, unref, onMounted, watch } from 'vue'
+import { computed, defineComponent, ref, unref, onMounted, watch } from 'vue'
 
 import { formProps as elFormProps } from 'element-plus'
 
-import { cloneDeep, pick } from 'lodash-es'
+import { cloneDeep, pick } from 'lodash-unified'
 
 import { useVModel } from '@vueuse/core'
 
 import { dateUtil } from '@/utils/dateUtil'
-import { isBoolean, isFunction } from '@/utils/is'
+import { isBoolean, isFunction, isNull } from '@/utils/is'
 import { deepMerge } from '@/utils'
 import { getSlot } from '@/utils/jsxHelper'
 
@@ -81,7 +81,7 @@ export default defineComponent({
       return cloneDeep(schemas)
     })
 
-    const { handleFormRules, handleFormValues, initDefault } = useFormValues({
+    const { handleFormValues, initDefault } = useFormValues({
       getProps,
       defaultValueRef,
       getSchema,
@@ -238,6 +238,92 @@ export default defineComponent({
       return disabled
     })
 
+    const getReadonly = useComputed((schema) => {
+      const { disabled: globReadonly } = props
+      const { dynamicReadonly } = schema
+      const { readonly: itemReadonly = false } = getComponentsProps(schema)
+      let readonly = globReadonly || itemReadonly
+      if (isBoolean(dynamicReadonly)) {
+        readonly = dynamicReadonly
+      }
+      if (isFunction(dynamicReadonly)) {
+        readonly = dynamicReadonly(getValues(schema))
+      }
+      return readonly
+    })
+
+    const getFormRules = useComputed((schema) => {
+      const {
+        rules: defRules = [],
+        component,
+        rulesMessageJoinLabel,
+        label,
+        dynamicRules,
+        required
+      } = schema
+
+      if (isFunction(dynamicRules)) {
+        return dynamicRules(getValues(schema))
+      }
+
+      let rules = cloneDeep(defRules)
+      const { rulesMessageJoinLabel: globalRulesMessageJoinLabel } = unref(getProps)
+
+      const joinLabel = Reflect.has(schema, 'rulesMessageJoinLabel')
+        ? rulesMessageJoinLabel
+        : globalRulesMessageJoinLabel
+      const assertLabel = joinLabel ? label : ''
+      const defaultMsg = component
+        ? createPlaceholderMessage(component) + assertLabel
+        : assertLabel
+
+      function validator(rule, value, callback) {
+        const msg = rule.message || defaultMsg
+        if (value === undefined || isNull(value)) {
+          // 空值
+          callback(new Error(msg))
+        } else if (Array.isArray(value) && value.length === 0) {
+          // 数组类型
+          callback(new Error(msg))
+        } else if (typeof value === 'string' && value.trim() === '') {
+          // 空字符串
+          callback(new Error(msg))
+        } else if (
+          typeof value === 'object' &&
+          Reflect.has(value, 'checked') &&
+          Reflect.has(value, 'halfChecked') &&
+          Array.isArray(value.checked) &&
+          Array.isArray(value.halfChecked) &&
+          value.checked.length === 0 &&
+          value.halfChecked.length === 0
+        ) {
+          // 非关联选择的tree组件
+          callback(new Error(msg))
+        }
+        callback()
+      }
+
+      const getRequired = isFunction(required)
+        ? required(getValues(schema))
+        : required
+
+      if (getRequired) {
+        if (!rules || rules.length === 0) {
+          rules = [{ required: getRequired, validator }]
+        } else {
+          const requiredIndex = rules.findIndex((rule) =>
+            Reflect.has(rule, 'required')
+          )
+
+          if (requiredIndex === -1) {
+            rules.push({ required: getRequired, validator })
+          }
+        }
+      }
+
+      return rules
+    })
+
     const renderFormItemWrap = () => {
       return unref(getSchema).map(schema => {
         const { colProps = {}, colSlot, renderColContent } = schema
@@ -294,7 +380,7 @@ export default defineComponent({
         }
 
         return (
-          <el-form-item {...itemProps} label={label} prop={field} rules={handleFormRules(schema)}>
+          <el-form-item {...itemProps} label={label} prop={field} rules={getFormRules(schema)}>
             {{
               label: () => renderLabelHelpMessage(schema),
               default: () => getContent(schema)
@@ -321,15 +407,13 @@ export default defineComponent({
         size,
         ...getComponentsProps(schema),
         disabled: getDisable(schema),
-        class: 'w-full'
+        class: 'w-full',
       }
 
       const isCreatePlaceholder = !propsData.disabled && autoSetPlaceHolder
       // RangePicker place is an array
       if (
-        ['daterange', 'datetimerange'].includes(
-          getComponentsProps(schema)?.type
-        ) &&
+        ['daterange', 'datetimerange'].includes(getComponentsProps(schema)?.type) &&
         component === 'DatePicker'
       ) {
         const [startPlaceholder, endPlaceholder] = getComponentsProps(schema)?.placeholder || []
@@ -352,6 +436,7 @@ export default defineComponent({
     return () => (
       <el-form
         {...unref(getBindValue)}
+        class="vc-form"
         ref={formElRef}
         model={state}
         validate-on-rule-change={false}
@@ -368,5 +453,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
+.vc-form {
+  overflow: hidden;
+}
 
+.pv-form {
+  overflow: hidden;
+}
 </style>

@@ -1,9 +1,7 @@
 <template>
   <div class="app-container">
     <vc-form v-if="show" ref="formRef" v-model="dataForm" :schemas="schemas" :baseColProps="{span: 8}">
-      <template #f3="scope">
-        {{ scope }}
-      </template>
+
     </vc-form>
   </div>
 </template>
@@ -31,7 +29,6 @@ const schemas = [
     field: 'field3',
     component: 'Input',
     label: '字段3',
-    slot: 'f3',
   },
   {
     field: 'field4',

@@ -1,40 +1,32 @@
 <template>
-  <el-radio-group class="api-radio-group" v-bind="$attrs" v-model="state">
-    <template v-for="item in getOptions" :key="`${item.value}`">
-      <el-radio-button
-        v-if="button"
-        :value="item.value"
-        :disabled="item.disabled"
-      >
-        {{ item.label }}
-      </el-radio-button>
-      <el-radio
-        v-else
-        :value="item.value"
-        :border="border"
-        :disabled="item.disabled"
-      >
-        {{ item.label }}
-      </el-radio>
+  <el-dropdown
+    class="w-full"
+    v-bind="$attrs"
+  >
+    <slot/>
+    <template #dropdown>
+      <el-dropdown-menu>
+        <el-dropdown-item v-for="item in getOptions" :command="item.value">{{ item.label }}</el-dropdown-item>
+      </el-dropdown-menu>
     </template>
-  </el-radio-group>
+  </el-dropdown>
 </template>
 
 <script>
-import { computed, defineComponent, ref, unref, watch, watchEffect } from 'vue'
+import { defineComponent, ref, computed, unref, watch } from 'vue'
+
 import { useVModel } from '@vueuse/core'
-import { get } from 'lodash-unified'
+
+import { find, get } from 'lodash-unified'
+
 import { isFunction } from '@/utils/is'
 
 export default defineComponent({
-  name: 'ApiRadioGroup',
+  name: 'ApiDropdown',
   inheritAttrs: false,
   props: {
     modelValue: null,
-    options: Array,
     numberToString: Boolean,
-    button: Boolean,
-    border: Boolean,
     api: {
       type: Function,
       default: null
@@ -58,14 +50,22 @@ export default defineComponent({
       type: Boolean,
       default: true
     },
+    alwaysLoad: {
+      type: Boolean,
+      default: false
+    },
+    options: {
+      type: Array,
+      default: () => []
+    },
+    readonly: Boolean,
   },
-  emits: ['options-change', 'update:modelValue'],
+  emits: ['change', 'options-change', 'update:modelValue'],
   setup(props, { emit }) {
     const options = ref([])
     const loading = ref(false)
-    const isFirstLoad = ref(true)
+    const isFirstLoaded = ref(false)
 
-    // Embedded in the form, just use the hook binding to perform form verification
     const state = useVModel(props, 'modelValue', emit)
 
     const getOptions = computed(() => {
@@ -86,25 +86,26 @@ export default defineComponent({
       return data.length > 0 ? data : props.options
     })
 
-    watchEffect(() => {
-      props.immediate && fetch()
-    })
-
     watch(
       () => props.params,
       () => {
-        !unref(isFirstLoad) && fetch()
+        !unref(isFirstLoaded) && handleFetch()
       },
-      { deep: true }
+      { deep: true, immediate: props.immediate }
     )
 
-    async function fetch() {
-      const api = props.api
+    async function handleFetch(query) {
+      const { api, params } = props
       if (!api || !isFunction(api)) return
       options.value = []
       try {
         loading.value = true
-        const res = await api(props.params)
+        const data = {
+          ...params,
+          ...(params?.key ? { [params?.key]: query } : null)
+        }
+        const res = await api(data)
+        isFirstLoaded.value = true
         if (Array.isArray(res)) {
           options.value = res
           emitChange()
@@ -121,14 +122,20 @@ export default defineComponent({
       }
     }
 
+    function handleChange(val) {
+      const data = find(unref(getOptions), option => option.value === val)
+      emit('change', data)
+    }
+
     function emitChange() {
       emit('options-change', unref(getOptions))
     }
 
     return {
       state,
+      loading,
       getOptions,
-      loading
+      handleChange
     }
   }
 })

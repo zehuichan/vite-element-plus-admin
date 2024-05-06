@@ -1,6 +1,6 @@
 import { toRaw, unref } from 'vue'
 import { isArray, isEmpty, isNullOrUnDef, isObject, isString } from '@/utils/is'
-import { cloneDeep, set, uniqBy } from 'lodash-es'
+import { cloneDeep, set, uniqBy } from 'lodash-unified'
 import { deepMerge } from '@/utils'
 import { defaultValueComponents } from '@/components/Form/src/helper'
 
@@ -213,7 +213,7 @@ function getDefaultValue(schema, defaultValueRef, key) {
   let defaultValue = cloneDeep(defaultValueRef.value[key])
   const isInput = checkIsInput(schema)
   if (isInput) {
-    return defaultValue || ''
+    return defaultValue || undefined
   }
   if (!defaultValue && schema && checkIsRangeSlider(schema)) {
     defaultValue = [0, 0]

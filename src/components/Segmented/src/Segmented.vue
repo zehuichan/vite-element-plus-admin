@@ -24,7 +24,7 @@ import { computed, defineComponent } from 'vue'
 
 import { useVModel } from '@vueuse/core'
 
-import { omit } from 'lodash-es'
+import { omit } from 'lodash-unified'
 
 import { useFormItem } from 'element-plus'
 

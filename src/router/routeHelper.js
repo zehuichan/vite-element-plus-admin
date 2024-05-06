@@ -1,5 +1,5 @@
 import { LAYOUT, BLANK, getParentLayout } from '@/router/constant'
-import { cloneDeep, omit } from 'lodash-es'
+import { cloneDeep, omit } from 'lodash-unified'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { treeMap } from '@/utils/treeHelper'
 import { joinParentPath } from '@/router/menuHelper'

@@ -64,13 +64,6 @@ const getSchemas = () => {
       },
       componentProps: dictApiMap
     },
-    {
-      field: 'actions',
-      colSlot: 'actions',
-      colProps: {
-        span: 24
-      }
-    }
   ]
 }
 

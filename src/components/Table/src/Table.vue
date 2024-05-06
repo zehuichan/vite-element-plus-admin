@@ -6,7 +6,6 @@
       ref="tableRef"
       v-bind="$attrs"
       border
-      stripe
       :max-height="height"
       @header-dragend="setHeaderDragend"
     >
@@ -32,13 +31,14 @@ import { computed, ref, useAttrs, unref } from 'vue'
 
 import { tryOnMounted } from '@vueuse/core'
 
-import { omit } from 'lodash-es'
+import { omit } from 'lodash-unified'
 
 import { useAdaptive } from '@/hooks/web/useAdaptive'
 
 import { useColumns } from './hooks/useColumns'
 
 import { tableEmits, tableProps } from './Table'
+import { useTableHeader } from '@/components/Table/src/hooks/useTableHeader'
 
 const COMPONENT_NAME = 'VcTable'
 defineOptions({
@@ -62,7 +62,8 @@ const getPaginationProps = computed(() => {
   return omit({ ...attrs, }, ['columns', 'data'])
 })
 
-const { initialized, getViewColumns, getHeaderDragend, setHeaderDragend } = useColumns(getProps)
+const { initialized, getHeaderDragend, setHeaderDragend } = useTableHeader({ tableId: props.name })
+const { getViewColumns } = useColumns(getProps)
 const { height } = useAdaptive(wrapRef, { adaptive: props.adaptive })
 
 const setProps = (props) => {

@@ -1,5 +1,5 @@
 import { toRaw } from 'vue'
-import { cloneDeep } from 'lodash-es'
+import { cloneDeep } from 'lodash-unified'
 import { findPath, treeMap } from '@/utils/treeHelper'
 import { isUrl } from '@/utils/is'
 

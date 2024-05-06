@@ -4,18 +4,27 @@
       <vc-table
         name="name"
         adaptive
+        highlight-current-row
         :columns="columns"
         :data="data"
         :total="data.length"
         v-model:current-page="queryParams.pageNum"
         v-model:page-size="queryParams.pageSize"
-      />
+        @current-change="handleCurrentChange"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="55" align="center" />
+        <el-table-column type="index" label="序号" width="55" align="center" />
+      </vc-table>
     </div>
   </page-wrapper>
 </template>
 
 <script setup>
 import { onMounted, ref, reactive } from 'vue'
+
+import { useSelection } from '@/components/Table'
+
 import { sleep } from '@/utils'
 
 const columns = [
@@ -29,6 +38,9 @@ const queryParams = reactive({
   pageNum: 1,
   pageSize: 30,
 })
+
+const { currentRef, selectionRef, selectionIds, handleCurrentChange, handleSelectionChange } = useSelection()
+
 onMounted(async () => {
   await sleep(250)
   data.value = [

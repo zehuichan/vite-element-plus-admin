@@ -64,7 +64,7 @@ export default (config) =>
         // 未设置状态码则默认成功状态
         const code = res.code || 200
         // 获取错误信息
-        const msg = errorCode[code] || res.msg || errorCode['default']    // 二进制数据则直接返回
+        const msg = errorCode[code] || res.msg || errorCode['default']
         // 二进制数据则直接返回
         if (config.responseType === 'blob' || config.responseType === 'arraybuffer') {
           return resolve(res)
@@ -76,8 +76,8 @@ export default (config) =>
             type: 'warning'
           })
           const userStore = useUserStoreWithOut()
-          await userStore.logout(true)
-          return reject('无效的会话，或者会话已过期，请重新登录。')
+          userStore.logout(true)
+          return reject(new Error('无效的会话，或者会话已过期，请重新登录。'))
         } else if (code === 500) {
           ElMessage({ message: msg, type: 'error' })
           return reject(new Error(msg))

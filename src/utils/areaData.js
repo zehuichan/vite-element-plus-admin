@@ -1,5 +1,5 @@
 import REGION_DATA from 'china-area-data'
-import { cloneDeep } from 'lodash-es'
+import { cloneDeep } from 'lodash-unified'
 
 // code转汉字大对象,例：CodeToText['110000']输出北京市
 const CodeToText = {}
