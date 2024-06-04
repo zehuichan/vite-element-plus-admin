@@ -9,6 +9,7 @@ import Search from './Search'
 import { Table } from './Table'
 import Pagination from './Pagination'
 import { PageWrapper, PageFooter } from './Page'
+import { Dropdown, DropdownItem } from './Dropdown'
 
 const components = [
   Renderer,
@@ -24,6 +25,8 @@ const components = [
   Pagination,
   PageWrapper,
   PageFooter,
+  Dropdown,
+  DropdownItem
 ]
 
 export function registerComponents(app) {

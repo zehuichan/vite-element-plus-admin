@@ -4,9 +4,9 @@ import { usePermissionStore } from './permission'
 
 import { PAGE_NOT_FOUND_ROUTE, router } from '@/router'
 import { getInfo, login } from '@/api/user'
-import { Cache, ROLES_KEY, TOKEN_KEY, USER_INFO_KEY } from '@/utils/cache'
+import { Cache, } from '@/utils/cache'
+import { PERMISSIONS_KEY, ROLES_KEY, TOKEN_KEY, USER_INFO_KEY } from '@/enums/cacheEnum'
 import { isArray } from '@/utils/is'
-import { PERMISSIONS_KEY } from '@/enums/cacheEnum'
 
 export const useUserStore = defineStore({
   id: 'user',

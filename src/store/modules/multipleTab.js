@@ -3,7 +3,8 @@ import { defineStore } from 'pinia'
 import { store } from '..'
 
 import { getRawRoute } from '@/utils'
-import { Cache, MULTIPLE_TABS_KEY } from '@/utils/cache'
+import { Cache } from '@/utils/cache'
+import { MULTIPLE_TABS_KEY } from '@/enums/cacheEnum'
 
 import { useGo, useRedo } from '@/hooks/web/usePage'
 
