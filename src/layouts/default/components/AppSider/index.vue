@@ -16,7 +16,7 @@
           @click="handleClose(false)"
         />
       </el-scrollbar>
-      <div class="operations">
+      <div v-if="!getCollapsed" class="operations">
         version: v{{ version }}
       </div>
     </div>
