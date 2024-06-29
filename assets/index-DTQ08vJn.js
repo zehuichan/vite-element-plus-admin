@@ -1,1 +1,0 @@
-import{d as n,cK as u,v as c,aN as p,f as i}from"./index-Bql2dAU_.js";const f=n({name:"Redirect",setup(){const t=u(),o=c();return p(()=>{const{params:a,query:r}=t,{path:e}=a,s=Array.isArray(e)?e.join("/"):e;o.replace({path:s,query:r})}),()=>i("div",null,null)}});export{f as default};
