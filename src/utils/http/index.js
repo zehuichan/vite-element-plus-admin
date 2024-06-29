@@ -16,7 +16,8 @@ import { useErrorLogStoreWithOut } from '@/store/modules/errorLog'
 
 import { isString } from '@/utils/is'
 import { setObjToUrlParams } from '@/utils'
-import { Cache, TOKEN_KEY } from '@/utils/cache'
+import { Cache } from '@/utils/cache'
+import { TOKEN_KEY } from '@/enums/cacheEnum'
 
 /**
  * @description: 数据处理，方便区分多种处理方式
@@ -61,13 +62,12 @@ const transform = {
     // 如果不希望中断当前请求，请return数据，否则直接抛出异常即可
     let timeoutMsg = ''
     switch (code) {
-      case ResultEnum.TIMEOUT:
-        {
-          timeoutMsg = '登录超时,请重新登录!'
-          const userStore = useUserStoreWithOut()
-          userStore.setToken(undefined)
-          userStore.logout(true)
-        }
+      case ResultEnum.TIMEOUT: {
+        timeoutMsg = '登录超时,请重新登录!'
+        const userStore = useUserStoreWithOut()
+        userStore.setToken(undefined)
+        userStore.logout(true)
+      }
         break
       default: {
         if (message) {

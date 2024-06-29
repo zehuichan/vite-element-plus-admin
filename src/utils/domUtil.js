@@ -1,4 +1,5 @@
 import { upperFirst } from 'lodash-unified'
+import { useWindowSize } from '@vueuse/core'
 
 export function getBoundingClientRect(element) {
   if (!element || !element.getBoundingClientRect) {
@@ -119,3 +120,5 @@ export function hackCss(attr, value) {
     [attr]: value,
   }
 }
+
+export const { width: windowWidth, height: windowHeight } = useWindowSize();

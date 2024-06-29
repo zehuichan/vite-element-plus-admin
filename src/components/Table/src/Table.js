@@ -1,8 +1,11 @@
 export const tableProps = {
-  name: String,
+  name: {
+    type: String,
+    default: ''
+  },
   columns: {
     type: Array,
-    default: []
+    default: () => []
   },
   loading: Boolean,
   pagination: {
@@ -13,4 +16,4 @@ export const tableProps = {
   adaptiveConfig: Object,
 }
 
-export const tableEmits = ['register']
+export const tableEmits = ['register', 'columns-change']

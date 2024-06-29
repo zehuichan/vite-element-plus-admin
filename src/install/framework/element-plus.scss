@@ -37,5 +37,26 @@
   th.el-table__cell {
     color: var(--el-text-color-primary);
     font-weight: 500;
+
+    .cell {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+  }
+}
+
+.el-input-number.w-full {
+  width: 100%;
+
+  &.is-without-controls {
+    .el-input__wrapper {
+      padding-left: 7px;
+      padding-right: 7px;
+    }
+  }
+
+  .el-input__inner {
+    text-align: left;
   }
 }

@@ -1,38 +1,28 @@
 <template>
-  <div class="basic-layout-content">
+  <div class="basic-layout-content" v-loading="getPageLoading">
     <fullcontent v-model="fullContent">
       <page-layout />
     </fullcontent>
   </div>
 </template>
 
-<script>
-import { computed, defineComponent } from 'vue'
+<script setup>
+import { computed } from 'vue'
 
 import PageLayout from '@/layouts/page/index.vue'
 
 import { useRootSetting } from '@/hooks/setting/useRootSetting'
 
-export default defineComponent({
-  name: 'AppContent',
-  components: { PageLayout },
-  setup() {
-    const { setRootSetting, getFullContent } = useRootSetting()
+const { setRootSetting, getPageLoading, getFullContent } = useRootSetting()
 
-    const fullContent = computed({
-      get() {
-        return getFullContent.value
-      },
-      set(val) {
-        setRootSetting({
-          fullContent: val
-        })
-      }
+const fullContent = computed({
+  get() {
+    return getFullContent.value
+  },
+  set(val) {
+    setRootSetting({
+      fullContent: val
     })
-
-    return {
-      fullContent
-    }
   }
 })
 </script>

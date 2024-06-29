@@ -21,7 +21,7 @@ export function useTabs(_router) {
   function canIUseTabs() {
     const { show } = appStore.getMultiTabsSetting
     if (!show) {
-      throw new Error(
+      console.warn(
         'The multi-tab page is currently not open, please open it in the settings！'
       )
     }
@@ -31,7 +31,7 @@ export function useTabs(_router) {
   const tabStore = useMultipleTabStore()
   const router = _router || useRouter()
 
-  const { currentRoute } = router
+  const { currentRoute, back } = router
 
   function getCurrentTab() {
     const route = unref(currentRoute)
@@ -48,7 +48,7 @@ export function useTabs(_router) {
   }
 
   async function updateTabPath(path, tab) {
-    const canIUse = canIUseTabs
+    const canIUse = canIUseTabs()
     if (!canIUse) {
       return
     }
@@ -57,7 +57,7 @@ export function useTabs(_router) {
   }
 
   async function handleTabAction(action, tab) {
-    const canIUse = canIUseTabs
+    const canIUse = canIUseTabs()
     if (!canIUse) {
       return
     }
@@ -89,11 +89,8 @@ export function useTabs(_router) {
         break
 
       case TableActionEnum.FULL_CONTENT:
-        // eslint-disable-next-line no-case-declarations
         const { fullContent } = appStore.getProjectConfig
-        appStore.setProjectConfig({
-          fullContent: !fullContent
-        })
+        appStore.setProjectConfig({ fullContent: !fullContent })
         break
     }
   }

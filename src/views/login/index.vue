@@ -66,8 +66,6 @@ import { useRouter } from 'vue-router'
 import { validUsername } from '@/utils/validate'
 import { useUserStore } from '@/store/modules/user'
 
-import AppLocalePicker from '@/components/AppProvider/src/AppLocalePicker.vue'
-
 const userStore = useUserStore()
 const { currentRoute, replace } = useRouter()
 

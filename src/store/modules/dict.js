@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
+import { store } from '..'
 import { dictApi } from '@/api'
 import { Cache } from '@/utils/cache'
 import { DICT_DATA_KEY } from '@/enums/cacheEnum'
-import { store } from '@/store'
 
 export const useDictStore = defineStore('dict',
   {

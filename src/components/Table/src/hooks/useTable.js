@@ -4,7 +4,7 @@ import { isProdMode } from '@/utils/env'
 export function useTable(options) {
   const { propertys = [] } = options ?? {}
 
-  const tableRef = ref(null)
+  const tableRef = ref()
   const loadedRef = ref(false)
 
   function getTableInstance() {

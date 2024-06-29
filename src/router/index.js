@@ -3,9 +3,10 @@ import {
   ERROR_PAGE,
   LAYOUT,
   REDIRECT_PAGE,
+  PAGE,
   LOGIN_NAME,
   PAGE_NOT_FOUND_NAME,
-  REDIRECT_NAME
+  REDIRECT_NAME,
 } from '@/router/constant'
 
 const modulesRoutes = import.meta.glob('./modules/**/*.js', { eager: true })
@@ -18,8 +19,7 @@ const modules = Object.keys(modulesRoutes).reduce((modules, modulePath) => {
 
 export const ROOT_ROUTE = {
   path: '/',
-  name: 'Root',
-  redirect: '/dashboard'
+  component: () => import('@/views/before-enter/index.vue')
 }
 
 export const LOGIN_ROUTE = {
@@ -31,26 +31,65 @@ export const LOGIN_ROUTE = {
 export const REDIRECT_ROUTE = {
   path: '/redirect',
   component: LAYOUT,
-  name: REDIRECT_NAME,
+  name: 'RedirectTo',
   meta: {
+    title: REDIRECT_NAME,
     hideBreadcrumb: true,
-    hideMenu: true
+    hideMenu: true,
   },
   children: [
     {
-      path: '/redirect/:path(.*)',
+      path: '/redirect/:path(.*)/:_redirect_type(.*)/:_origin_params(.*)?',
       name: REDIRECT_NAME,
       component: REDIRECT_PAGE,
       meta: {
+        title: REDIRECT_NAME,
         hideBreadcrumb: true,
-        hideMenu: true
+      },
+    },
+  ]
+}
+
+export const EXCEPTION_ROUTE = {
+  path: '/exception',
+  component: PAGE,
+  meta: {
+    title: '异常页',
+    icon: 'ExceptionOutlined'
+  },
+  children: [
+    {
+      path: '404',
+      name: 'PageNotFound',
+      component: () => import('@/views/error-page/exception.vue'),
+      meta: {
+        title: '404',
+        icon: '404'
+      }
+    },
+    {
+      path: '403',
+      name: 'Forbidden',
+      component: () => import('@/views/error-page/exception.vue'),
+      meta: {
+        title: '403',
+        icon: '403'
+      }
+    },
+    {
+      path: '500',
+      name: 'ServerError',
+      component: () => import('@/views/error-page/exception.vue'),
+      meta: {
+        title: '500',
+        icon: '500'
       }
     }
   ]
 }
 
 export const PAGE_NOT_FOUND_ROUTE = {
-  path: '/:path(.*)*',
+  path: '/',
   name: PAGE_NOT_FOUND_NAME,
   component: LAYOUT,
   meta: {

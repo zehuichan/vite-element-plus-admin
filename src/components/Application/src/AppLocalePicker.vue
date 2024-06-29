@@ -2,7 +2,7 @@
   <el-popover popper-class="app-locale-picker">
     <template #reference>
       <div :class="$attrs.class">
-        <icon-park name="translate" />
+        <icon-park type="translate" />
       </div>
     </template>
     <template #default>

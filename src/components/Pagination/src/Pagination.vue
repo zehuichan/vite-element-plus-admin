@@ -3,7 +3,7 @@
     <el-pagination
       v-bind="$attrs"
       background
-      small
+      size="small"
       :layout="layout"
       @update:current-page="handleSizeChange"
       @update:page-size="handleCurrentChange"

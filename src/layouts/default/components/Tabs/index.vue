@@ -15,13 +15,13 @@
           class="tabs-card-prev haptics-feedback"
           @click="scrollPrev"
         >
-          <icon-park class="text-16px" type="left" />
+          <icon-park class="text-12px" type="left" />
         </div>
         <div
           class="tabs-card-next haptics-feedback"
           @click="scrollNext"
         >
-          <icon-park class="text-16px" type="right" />
+          <icon-park class="text-12px" type="right" />
         </div>
         <div ref="navScroll" class="tabs-card-scroll">
           <draggable
@@ -53,10 +53,10 @@
       </div>
       <div class="tabs-extra">
         <div class="tabs-card-item haptics-feedback" @click="fullContent">
-          <icon-park class="text-16px " type="screenshot-one" />
+          <icon-park class="text-12px " type="screenshot-one" />
         </div>
         <div class="tabs-card-item haptics-feedback" @click="refreshPage">
-          <icon-park class="text-16px " type="undo" />
+          <icon-park class="text-12px " type="undo" />
         </div>
       </div>
     </div>
@@ -118,7 +118,6 @@ export default defineComponent({
 
     const router = useRouter()
     const route = useRoute()
-    const go = useGo()
 
     const { refreshPage, close, fullContent } = useTabs()
 
