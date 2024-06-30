@@ -32,8 +32,8 @@ export default defineComponent({
     background-color: #f6f6f6;
   }
 
-  .el-icon {
-    font-size: 16px;
+  .i-icon {
+    font-size: 14px;
   }
 }
 </style>

@@ -1,5 +1,19 @@
-import { upperFirst } from 'lodash-unified'
 import { useWindowSize } from '@vueuse/core'
+
+import { upperFirst } from 'lodash-unified'
+
+export const stopPropagation = (event) => event.stopPropagation()
+
+export function preventDefault(event, isStopPropagation) {
+  /* istanbul ignore else */
+  if (typeof event.cancelable !== 'boolean' || event.cancelable) {
+    event.preventDefault()
+  }
+
+  if (isStopPropagation) {
+    stopPropagation(event)
+  }
+}
 
 export function getBoundingClientRect(element) {
   if (!element || !element.getBoundingClientRect) {
@@ -121,4 +135,5 @@ export function hackCss(attr, value) {
   }
 }
 
-export const { width: windowWidth, height: windowHeight } = useWindowSize();
+export const { width: windowWidth, height: windowHeight } = useWindowSize()
+

@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
 import { store } from '..'
-import { usePermissionStore } from './permission'
 
-import { PAGE_NOT_FOUND_ROUTE, router } from '@/router'
+import { router } from '@/router'
 import { getInfo, login } from '@/api/user'
-import { Cache, } from '@/utils/cache'
+import { Cache } from '@/utils/cache'
 import { PERMISSIONS_KEY, ROLES_KEY, TOKEN_KEY, USER_INFO_KEY } from '@/enums/cacheEnum'
 import { isArray } from '@/utils/is'
+import { PageEnum } from '@/enums/pageEnum'
 
 export const useUserStore = defineStore({
   id: 'user',
@@ -60,8 +60,8 @@ export const useUserStore = defineStore({
       this.sessionTimeout = flag
     },
     resetState() {
-      this.token = ''
       this.userInfo = null
+      this.token = ''
       this.roles = []
       this.permissions = []
       this.sessionTimeout = false
@@ -70,60 +70,51 @@ export const useUserStore = defineStore({
     async login(params) {
       try {
         const { username, password } = params
-        const data = await login({
+        const res = await login({
           username: username.trim(),
           password: password
         })
-        const { token } = data
-        this.setToken(token)
-        return this.afterLoginAction()
+        console.log(res)
+        this.setToken(res.data.token)
+        return Promise.resolve()
       } catch (error) {
         return Promise.reject(error)
-      }
-    },
-    async afterLoginAction() {
-      if (!this.getToken) return null
-      // get user info
-      await this.getUserInfoAction()
-
-      const { sessionTimeout } = this
-      if (sessionTimeout) {
-        this.setSessionTimeout(false)
-      } else {
-        const permissionStore = usePermissionStore()
-        if (!permissionStore.isDynamicAddedRoute) {
-          const routes = await permissionStore.buildRoutesAction()
-          routes.unshift({ path: '/', redirect: routes[0].children[0].path })
-          routes.forEach((route) => {
-            router.addRoute(route)
-          })
-          router.addRoute(PAGE_NOT_FOUND_ROUTE)
-          console.log(routes)
-          permissionStore.setDynamicAddedRoute(true)
-        }
       }
     },
     async getUserInfoAction() {
       if (!this.getToken) return null
 
-      const data = await getInfo()
-      const { roles = [] } = data
+      console.log('getInfo')
+      const res = await getInfo()
+      console.log(res.data)
+      const { fields = null, permissions = [], roles = [], user = null } = res.data
 
       // roles must be a non-empty array
       if (isArray(roles)) {
         this.setRoles(roles)
       } else {
-        data.roles = []
         this.setRoles([])
       }
 
-      this.setUserInfo(data)
-      return Promise.resolve(data)
+      this.setUserInfo(user)
+      return user
     },
-    logout() {
+    logout(goLogin = false) {
       this.setToken(undefined)
       this.setSessionTimeout(false)
       this.setUserInfo(null)
+      if (goLogin) {
+        // 直接回登陆页
+        router.replace(PageEnum.BASE_LOGIN)
+      } else {
+        // 回登陆页带上当前路由地址
+        router.replace({
+          path: PageEnum.BASE_LOGIN,
+          query: {
+            redirect: encodeURIComponent(router.currentRoute.value.fullPath),
+          },
+        })
+      }
     }
   }
 })

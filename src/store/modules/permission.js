@@ -1,11 +1,13 @@
 import { defineStore } from 'pinia'
 import { store } from '..'
 
+import { constantRoutes, PAGE_NOT_FOUND_ROUTE } from '@/router'
 import { menu } from '@/api/sys'
-import { constantRoutes } from '@/router'
 
 import { flatMultiLevelRoutes, routerGenerator, transformObjToRoute } from '@/router/routeHelper'
 import { transformRouteToMenu } from '@/router/menuHelper'
+import { filter } from '@/utils/treeHelper'
+import { PageEnum } from '@/enums/pageEnum'
 
 export const usePermissionStore = defineStore({
   id: 'permission',
@@ -50,10 +52,50 @@ export const usePermissionStore = defineStore({
       this.lastBuildMenuTime = 0
     },
     async buildRoutesAction() {
+      let routes = []
+
+      const routeRemoveIgnoreFilter = (route) => {
+        const { meta } = route
+        // ignoreRoute 为true 则路由仅用于菜单生成，不会在实际的路由表中出现
+        const { ignoreRoute } = meta || {}
+        // arr.filter 返回 true 表示该元素通过测试
+        return !ignoreRoute
+      }
+
+      // 根据设置的首页path，修正routes中的affix标记（固定首页）
+      const patchHomeAffix = (routes) => {
+        if (!routes || routes.length === 0) return
+        let homePath = PageEnum.BASE_HOME
+
+        function patcher(routes, parentPath = '') {
+          if (parentPath) parentPath = parentPath + '/'
+          routes.forEach((route) => {
+            const { path, children, redirect } = route
+            const currentPath = path.startsWith('/') ? path : parentPath + path
+            if (currentPath === homePath) {
+              if (redirect) {
+                homePath = route.redirect
+              } else {
+                route.meta = Object.assign({}, route.meta, { affix: true })
+                throw new Error('end')
+              }
+            }
+            children && children.length > 0 && patcher(children, currentPath)
+          })
+        }
+
+        try {
+          patcher(routes)
+        } catch (e) {
+          // 已处理完毕跳出循环
+        }
+        return
+      }
+
       let routeList = []
 
       try {
-        const res  = await menu()
+        const res = await menu()
         routeList = res.data
       } catch (error) {
         console.log(error)
@@ -69,14 +111,22 @@ export const usePermissionStore = defineStore({
       // Background routing to menu structure
       // 后台路由到菜单结构
       const menus = transformRouteToMenu(routeList)
+      console.log(menus)
       this.setMenus(menus)
+
+      // remove meta.ignoreRoute item
+      // 删除 meta.ignoreRoute 项
+      routeList = filter(routeList, routeRemoveIgnoreFilter)
+      routeList = routeList.filter(routeRemoveIgnoreFilter)
 
       // Convert multi-level routing to level 2 routing
       // 将多级路由转换为 2 级路由
       routeList = flatMultiLevelRoutes(routeList)
-      this.setRouters(routeList)
+      routes = [PAGE_NOT_FOUND_ROUTE, ...routeList]
+      this.setRouters(routes)
 
-      return routeList
+      patchHomeAffix(routes)
+      return routes
     }
   }
 })

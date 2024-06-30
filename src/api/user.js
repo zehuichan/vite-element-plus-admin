@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { resultSuccess } from './_util'
 
 const USER_DATA = {
   userId: '1',
@@ -19,12 +20,12 @@ const USER_DATA = {
 
 export function login(data) {
   return new Promise((resolve, reject) => {
-    resolve(USER_DATA)
+    resolve(resultSuccess(USER_DATA))
   })
 }
 
 export function getInfo() {
   return new Promise((resolve, reject) => {
-    resolve(USER_DATA)
+    resolve(resultSuccess(USER_DATA))
   })
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="trigger" @click.stop="toggleCollapsed">
-    <icon name="Expand" v-if="getCollapsed" />
-    <icon name="Fold" v-else />
+    <icon-park type="menu-fold-one" v-if="getCollapsed" />
+    <icon-park type="menu-unfold-one" v-else />
   </div>
 </template>
 

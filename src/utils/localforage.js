@@ -33,7 +33,7 @@ class Storage {
     }
   }
 
-  remove(k) {
+  removeItem(k) {
     return this.storageInstance.removeItem(k).catch(console.error)
   }
 

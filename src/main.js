@@ -1,8 +1,9 @@
 // Register icon sprite
 import 'virtual:svg-icons-register'
 // unocss
-import 'virtual:uno.css'
 import '@unocss/reset/normalize.css'
+import 'virtual:uno.css'
+// import 'virtual:unocss-devtools'
 
 import { createApp } from 'vue'
 import App from './App.vue'
@@ -35,7 +36,7 @@ async function bootstrap() {
   app.mount('#app')
 }
 
-bootstrap()
+void bootstrap()
 
 // eslint-disable-next-line no-undef
 console.table(__APP_INFO__)

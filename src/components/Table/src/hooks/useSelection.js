@@ -1,15 +1,15 @@
 import { computed, ref } from 'vue'
 import { listenerRouteChange } from '@/install/plugins/router-change'
 
-export function useSelection(tableRef) {
-
+export function useSelection() {
   const currentRef = ref(null)
   const selectionRef = ref([])
 
   const selectionIds = computed(() => selectionRef.value.map(item => item.id))
 
-  listenerRouteChange(() => {
-    tableRef.value?.clearSelection()
+  listenerRouteChange((route) => {
+    currentRef.value = null
+    selectionRef.value = []
   })
 
   const handleCurrentChange = (val) => {

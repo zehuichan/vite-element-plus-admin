@@ -1,5 +1,9 @@
 <template>
-  <ul class="tabs-view-contextmenu" :style="{ left: x + 'px', top: y + 'px' }">
+  <ul
+    class="tabs-view-contextmenu"
+    :style="{ left: x + 'px', top: y + 'px' }"
+    @contextmenu.prevent.stop
+  >
     <li
       v-for="item in getDropMenuList"
       :key="item.event"
@@ -35,7 +39,6 @@ export default defineComponent({
     })
 
     const tabStore = useMultipleTabStore()
-
     const { currentRoute } = useRouter()
     const {
       refreshPage,

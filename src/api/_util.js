@@ -1,7 +1,7 @@
 export function resultSuccess(result, { message = 'ok' } = {}) {
   return {
     code: 200,
-    result,
+    data: result,
     message,
     type: 'success'
   }
@@ -10,7 +10,7 @@ export function resultSuccess(result, { message = 'ok' } = {}) {
 export function resultError(message = 'Request failed', { code = -1, result = null } = {}) {
   return {
     code,
-    result,
+    data: result,
     message,
     type: 'error'
   }

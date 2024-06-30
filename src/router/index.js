@@ -17,6 +17,8 @@ const modules = Object.keys(modulesRoutes).reduce((modules, modulePath) => {
   return modules
 }, [])
 
+const WHITE_NAME_LIST = ['Root', 'Dashboard', 'Login', 'Redirect', 'RedirectTo', 'PageNotFound']
+
 export const ROOT_ROUTE = {
   path: '/',
   component: () => import('@/views/before-enter/index.vue')
@@ -89,12 +91,12 @@ export const EXCEPTION_ROUTE = {
 }
 
 export const PAGE_NOT_FOUND_ROUTE = {
-  path: '/',
+  path: '/not-found',
   name: PAGE_NOT_FOUND_NAME,
   component: LAYOUT,
   meta: {
     hideBreadcrumb: true,
-    hideMenu: false
+    hideMenu: true
   },
   children: [
     {
@@ -103,7 +105,7 @@ export const PAGE_NOT_FOUND_ROUTE = {
       component: ERROR_PAGE,
       meta: {
         hideBreadcrumb: true,
-        hideMenu: false
+        hideMenu: true
       }
     }
   ]
@@ -114,6 +116,7 @@ export const constantRoutes = [
   ROOT_ROUTE,
   LOGIN_ROUTE,
   REDIRECT_ROUTE,
+  EXCEPTION_ROUTE,
   PAGE_NOT_FOUND_ROUTE
 ]
 
@@ -123,6 +126,16 @@ export const router = createRouter({
   strict: true,
   scrollBehavior: () => ({ left: 0, top: 0 })
 })
+
+// reset router
+export function resetRouter() {
+  router.getRoutes().forEach((route) => {
+    const { name } = route
+    if (name && !WHITE_NAME_LIST.includes(name)) {
+      router.hasRoute(name) && router.removeRoute(name)
+    }
+  })
+}
 
 // config router
 export function setupRouter(app) {

@@ -10,7 +10,8 @@ import { useGo, useRedo } from '@/hooks/web/usePage'
 
 import projectSetting from '@/settings/projectSetting'
 
-import { LOGIN_NAME, PAGE_NOT_FOUND_NAME, REDIRECT_NAME } from '@/router/constant'
+import { PAGE_NOT_FOUND_NAME, REDIRECT_NAME } from '@/router/constant'
+import { PageEnum } from '@/enums/pageEnum'
 
 //保留固定路由
 function filterAffixTabs(routes) {
@@ -82,7 +83,7 @@ export const useMultipleTabStore = defineStore({
       const len = this.tabList.length
       const { path } = unref(router.currentRoute)
 
-      let toPath = '/dashboard'
+      let toPath = '/'
 
       if (len > 0) {
         const page = this.tabList[len - 1]
@@ -106,12 +107,14 @@ export const useMultipleTabStore = defineStore({
       await redo()
     },
     async addTab(route) {
-      const { path, name, fullPath, params, query } = getRawRoute(route)
+      const { path, name, fullPath, params, query, meta } = getRawRoute(route)
 
       // 404 The page does not need to add a tab
       if (
+        path === PageEnum.ERROR_PAGE ||
+        path === PageEnum.BASE_LOGIN ||
         !name ||
-        [LOGIN_NAME, REDIRECT_NAME, PAGE_NOT_FOUND_NAME].includes(name)
+        [REDIRECT_NAME, PAGE_NOT_FOUND_NAME].includes(name)
       ) {
         return
       }
@@ -159,6 +162,7 @@ export const useMultipleTabStore = defineStore({
       if (path !== tab.path) {
         // Closed is not the activation tab
         close(tab)
+        this.updateCacheTab()
         return
       }
 
@@ -171,7 +175,7 @@ export const useMultipleTabStore = defineStore({
       if (index === 0) {
         // There is only one tab, then jump to the homepage, otherwise jump to the right tab
         if (this.tabList.length === 1) {
-          toTarget = '/dashboard'
+          toTarget = '/'
         } else {
           //  Jump to the right tab
           const page = this.tabList[index + 1]
@@ -183,7 +187,7 @@ export const useMultipleTabStore = defineStore({
         toTarget = getToTarget(page)
       }
       close(currentRoute.value)
-      await replace(toTarget)
+      replace(toTarget)
     },
     // Close the tab on the right and jump
     async closeLeftTabs(route, router) {
@@ -230,7 +234,7 @@ export const useMultipleTabStore = defineStore({
 
       for (const path of closePathList) {
         if (path !== route.fullPath) {
-          const closeItem = this.tabList.find((item) => item.path === path)
+          const closeItem = this.tabList.find((item) => item.fullPath === path)
           if (!closeItem) {
             continue
           }
@@ -242,7 +246,9 @@ export const useMultipleTabStore = defineStore({
       }
       this.bulkCloseTabs(pathList)
       this.updateCacheTab()
+      cacheTab && Cache.setItem(MULTIPLE_TABS_KEY, this.tabList)
     },
+    // Close all tabs
     async closeAllTab(router) {
       this.tabList = this.tabList.filter((item) => item?.meta?.affix ?? false)
       this.clearCacheTabs()

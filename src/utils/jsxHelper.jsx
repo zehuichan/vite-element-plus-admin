@@ -3,7 +3,7 @@ import { isFunction } from '@/utils/is'
 /**
  * @description:  Get slot to prevent empty error
  */
-export function getSlot(slots, slot = 'default', data) {
+export function getSlot(slots, slot = 'default', data, opts) {
   if (!slots || !Reflect.has(slots, slot)) {
     return null
   }
@@ -13,7 +13,8 @@ export function getSlot(slots, slot = 'default', data) {
   }
   const slotFn = slots[slot]
   if (!slotFn) return null
-  return slotFn(data)
+  const params = { ...data, ...opts }
+  return slotFn(params)
 }
 
 /**

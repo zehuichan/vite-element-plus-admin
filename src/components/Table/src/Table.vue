@@ -8,11 +8,17 @@
       border
       show-overflow-tooltip
       :max-height="height"
+      :row-class-name="tableRowClassName"
+      @row-dblclick="onRowDblclick"
       @header-contextmenu="headerContextmenu"
       @header-dragend="headerDragend"
+      @contextmenu.prevent.stop
     >
       <slot />
       <el-table-column v-for="column in getViewColumns" v-bind="column">
+        <template #header>
+          <slot :name="`header-${[column.prop]}`" v-bind="column" />
+        </template>
         <template #default="scope">
           <slot v-if="$slots[column.prop]" :name="column.prop" v-bind="scope || {}" />
         </template>
@@ -24,7 +30,11 @@
     <pagination
       v-if="pagination"
       v-bind="getPaginationProps"
-    />
+    >
+      <template #default>
+        <slot name="pagination" />
+      </template>
+    </pagination>
     <table-setting
       v-model="show"
       @columns-change="onColumnsChange"
@@ -33,14 +43,13 @@
 </template>
 
 <script setup>
-import { computed, useSlots, ref, useAttrs, unref } from 'vue'
+import { computed, onMounted, useSlots, ref, useAttrs, unref } from 'vue'
 
 import { omit } from 'lodash-unified'
 
 import { useAdaptive } from '@/hooks/web/useAdaptive'
 
 import { useColumns } from './hooks/useColumns'
-import { useTableHeader } from './hooks/useTableHeader'
 import { createTableContext } from './hooks/useTableContext'
 
 import { tableEmits, tableProps } from './Table'
@@ -68,7 +77,15 @@ const getProps = computed(() => {
   return { ...props, ...unref(innerPropsRef) }
 })
 const getPaginationProps = computed(() => {
-  return omit({ ...attrs, }, ['columns', 'data'])
+  return omit({ ...attrs, }, ['columns', 'data', 'pagination', 'show-summary', 'summary-method'])
+})
+
+const highlight = computed(() => {
+  const selection = tableRef.value?.getSelectionRows() || []
+  if (selection.length > 0) {
+    return tableRef.value.getSelectionRows().map((item) => item.id)
+  }
+  return []
 })
 
 const {
@@ -79,10 +96,33 @@ const {
   setCacheColumns,
   setColumnWidth
 } = useColumns(getProps)
-const { height } = useAdaptive(wrapRef, { adaptive: props.adaptive })
+const { height, setAdaptive } = useAdaptive(wrapRef, { adaptive: props.adaptive })
 
 const setProps = (props) => {
   innerPropsRef.value = { ...unref(innerPropsRef), ...props }
+}
+
+const onRowDblclick = (row, column, event) => {
+  tableRef.value.toggleRowSelection(row)
+}
+
+const tableRowClassName = ({ row, rowIndex }) => {
+  if (highlight.value.includes(row.id)) {
+    return 'highlight-row'
+  }
+  if (row.auditStatusId == 2) {
+    return 'audit-row'
+  }
+  if (row.isPacked == 1) {
+    return 'command-row'
+  }
+  if (row.isPacked == 2) {
+    return 'packed-row'
+  }
+  if (row.isLocked == 1) {
+    return 'locked-row'
+  }
+  return ''
 }
 
 const onColumnsChange = (data) => {
@@ -99,6 +139,7 @@ const headerDragend = (newWidth, oldWidth, column, event) => {
 
 const tableActions = {
   setProps,
+  setAdaptive,
   getColumns,
   setColumns,
   getCacheColumns,
@@ -119,11 +160,11 @@ const tableActions = {
   setScrollLeft: (left) => unref(tableRef).setScrollLeft(left),
 }
 
-createTableContext({ name: props.name, ...tableActions })
+createTableContext({ ...tableActions, tableKey: props.tableKey, tableRef })
 
 emit('register', tableActions)
 
-defineExpose(tableActions)
+defineExpose({ ...tableActions })
 </script>
 
 <style lang="scss">

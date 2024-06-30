@@ -112,8 +112,9 @@ export default defineComponent({
     }
 
     .operations {
-      padding: 8px 20px;
+      padding: 8px 0;
       color: #fff;
+      text-align: center;
     }
 
     &-content {
@@ -123,11 +124,46 @@ export default defineComponent({
       background-color: v-bind(getMenuBackgroundColor);
 
       .el-menu {
+        --el-menu-item-font-size: 12px;
         border-right: 0;
 
         &:not(.el-menu--collapse) {
           width: v-bind(getMenuWidth);
         }
+
+        .i-icon {
+          flex-shrink: 0;
+          vertical-align: middle;
+          margin-right: 5px;
+          width: var(--el-menu-icon-width);
+          text-align: center;
+          font-size: 18px;
+        }
+      }
+
+      .el-sub-menu {
+        .i-icon {
+          vertical-align: middle;
+          margin-right: 5px;
+          width: var(--el-menu-icon-width);
+          text-align: center;
+          font-size: 14px;
+        }
+      }
+
+      .el-menu--collapse > .el-menu-item [class^=i-icon],
+      .el-menu--collapse > .el-sub-menu > .el-sub-menu__title [class^=i-icon],
+      .el-menu--collapse > .el-menu-item-group > ul > .el-sub-menu > .el-sub-menu__title [class^=i-icon] {
+        margin: 0;
+        vertical-align: middle;
+        width: var(--el-menu-icon-width);
+        text-align: center;
+        height: auto;
+        visibility: visible;
+      }
+
+      .el-sub-menu__title .i-icon {
+        color: inherit;
       }
     }
 

@@ -119,13 +119,18 @@ export default defineComponent({
 <style lang="scss">
 .app-breadcrumb {
   display: inline-block;
-  font-size: 14px;
-  line-height: 50px;
+  font-size: 12px;
+  line-height: 40px;
   margin-left: 8px;
 
   .no-redirect {
     color: #97a8be;
     cursor: text;
+  }
+
+  .el-breadcrumb__inner.is-link,
+  .el-breadcrumb__inner a {
+    font-weight: 500;
   }
 }
 

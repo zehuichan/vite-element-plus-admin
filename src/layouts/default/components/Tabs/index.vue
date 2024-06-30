@@ -40,9 +40,10 @@
               >
                 <div class="tabs-card-scroll-item__inner">
                   <span>{{ element.meta.title }}</span>
-                  <icon
+                  <icon-park
+                    class="ml-8px"
                     v-show="!element.meta.affix && activeKey === element.fullPath"
-                    name="CloseBold"
+                    type="close"
                     @click.prevent.stop="handleClose(element)"
                   />
                 </div>
@@ -93,7 +94,6 @@ import ContextMenu from './context-menu.vue'
 import { useMultipleTabStore } from '@/store/modules/multipleTab'
 import { useUserStore } from '@/store/modules/user'
 
-import { useGo } from '@/hooks/web/usePage'
 import { useTabs } from '@/hooks/web/useTabs'
 
 import { PAGE_NOT_FOUND_NAME, REDIRECT_NAME } from '@/router/constant'
@@ -325,15 +325,15 @@ export default defineComponent({
       position: relative;
 
       &.tabs-card-scrollable {
-        padding: 0 32px;
+        padding: 0 28px;
         overflow: hidden;
       }
 
       .tabs-card-prev,
       .tabs-card-next {
         position: absolute;
-        width: 32px;
-        height: 32px;
+        width: 28px;
+        height: 28px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -363,14 +363,11 @@ export default defineComponent({
           flex-shrink: 0;
           position: relative;
           cursor: pointer;
-          height: 32px;
-          line-height: 32px;
-          border: 1px solid #f0f0f0;
+          line-height: 24px;
           color: #1f2225;
           background: #fff;
-          padding: 0 8px;
+          padding: 2px 6px;
           font-size: 12px;
-          border-radius: 2px;
           margin-left: 6px;
 
           &:hover {
@@ -392,7 +389,7 @@ export default defineComponent({
 
         .active-item {
           color: #fff;
-          background: #0960bd;
+          background: theme('colors.primary');
           border: 0;
         }
       }
@@ -402,8 +399,8 @@ export default defineComponent({
       display: flex;
 
       .tabs-card-item {
-        width: 32px;
-        height: 32px;
+        width: 28px;
+        height: 28px;
         display: flex;
         align-items: center;
         justify-content: center;

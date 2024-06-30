@@ -14,7 +14,6 @@
         @current-change="handleCurrentChange"
         @selection-change="handleSelectionChange"
         @row-contextmenu="(row, column, event) => createDropdown({ row, event })"
-        @contextmenu.prevent.stop
       >
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column type="index" label="序号" width="55" align="center" />
@@ -38,11 +37,13 @@ import { sleep } from '@/utils'
 
 defineOptions({ name: 'Demo' })
 
-const columns = [
-  { label: '姓名', prop: 'name' },
-  { label: '年龄', prop: 'age' },
-  { label: '地址', prop: 'address' }
-]
+const columns = (() => {
+  return [
+    { label: '姓名', prop: 'name' },
+    { label: '年龄', prop: 'age' },
+    { label: '地址', prop: 'address' }
+  ]
+})()
 
 const tableRef = ref()
 const loading = ref(false)

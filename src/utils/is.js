@@ -1,5 +1,7 @@
 const { toString } = Object.prototype
 
+export const inBrowser = typeof window !== 'undefined'
+
 export function is(val, type) {
   return toString.call(val) === `[object ${type}]`
 }

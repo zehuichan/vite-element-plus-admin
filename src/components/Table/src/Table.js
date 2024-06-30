@@ -1,7 +1,7 @@
 export const tableProps = {
-  name: {
-    type: String,
-    default: ''
+  tableKey: {
+    type: [String, Number],
+    default: '0'
   },
   columns: {
     type: Array,

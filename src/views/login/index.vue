@@ -61,13 +61,14 @@
 </template>
 
 <script setup>
-import { computed, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { reactive, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { validUsername } from '@/utils/validate'
 import { useUserStore } from '@/store/modules/user'
 
 const userStore = useUserStore()
-const { currentRoute, replace } = useRouter()
+const route = useRoute()
+const router = useRouter()
 
 const validateUsername = (rule, value, callback) => {
   if (!validUsername(value)) {
@@ -88,14 +89,11 @@ const loginForm = reactive({
   username: 'admin',
   password: '111111'
 })
-const loginRules = reactive({
+const loginRules = ref({
   username: [{ required: true, validator: validateUsername }],
   password: [{ required: true, validator: validatePassword }]
 })
 const loading = ref(false)
-const redirect = computed(() => {
-  return currentRoute.value.query.redirect
-})
 
 async function login() {
   try {
@@ -104,7 +102,8 @@ async function login() {
     if (valid) {
       console.log('submit!')
       await userStore.login(loginForm)
-      await replace({ path: redirect.value || '/' })
+      const toPath = decodeURIComponent(route.query?.redirect || '/')
+      await router.replace(toPath)
       loading.value = false
     }
   } catch (error) {

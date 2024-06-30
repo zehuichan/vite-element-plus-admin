@@ -1,5 +1,7 @@
-import { unref } from 'vue'
-import { isDef, isNumber, isObject } from '@/utils/is'
+import { createApp, unref, h } from 'vue'
+import { ElIcon } from 'element-plus'
+
+import { isObject } from '@/utils/is'
 
 export const noop = () => {
 }
@@ -70,15 +72,51 @@ export function withInstall(options) {
   return options
 }
 
-export function sleep(timeout = 1 * 1000) {
+export function mountComponent(RootComponent) {
+  const app = createApp(RootComponent)
+  const root = document.createElement('div')
+
+  document.body.appendChild(root)
+
+  return {
+    instance: app.mount(root),
+    unmount() {
+      app.unmount()
+      document.body.removeChild(root)
+    },
+  }
+}
+
+export function looseToNumber(val) {
+  const n = parseFloat(val)
+  return isNaN(n) ? val : n
+}
+
+export function getAssetsImage(path) {
+  return new URL(`/src/assets/images/${path}`, import.meta.url).href // 本地文件路径
+}
+
+export function sleep(timeout = 1000) {
   return new Promise((resolve) => setTimeout(resolve, timeout))
 }
 
-export function addUnit(value) {
-  if (isDef(value)) {
-    return isNumber(value) ? `${value}px` : String(value)
+export async function poll(fn, validate, interval = 2500) {
+  const resolver = async (resolve, reject) => {
+    try {
+      // catch any error thrown by the "fn" function
+      const result = await fn() // fn does not need to be asynchronous or return promise
+      // call validator to see if the data is at the state to stop the polling
+      const valid = validate(result)
+      if (valid === true) {
+        resolve(result)
+      } else if (valid === false) {
+        setTimeout(resolver, interval, resolve, reject)
+      } // if validator returns anything other than "true" or "false" it stops polling
+    } catch (e) {
+      reject(e)
+    }
   }
-  return undefined
+  return new Promise(resolver)
 }
 
 export function closest(arr, target) {
@@ -86,3 +124,9 @@ export function closest(arr, target) {
     Math.abs(pre - target) < Math.abs(cur - target) ? pre : cur,
   )
 }
+
+export function renderIcon(icon) {
+  return () => h(ElIcon, null, { default: () => h(icon) })
+}
+
+export const uniqueArr = (arr) => Array.from(new Set(arr))

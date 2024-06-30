@@ -68,24 +68,21 @@ const handleActions = (type) => {
 }
 
 const saveColums = () => {
-  console.log('saveColums')
-  const cacheKey = route.name + table.name
+  const cacheKey = route.name + table.tableKey
   const options = cloneDeep(columnOptions.value)
   localForage.setItem(TABLE_SETTING_KEY, { [cacheKey]: options })
 }
 
 const resetColums = async () => {
   const cacheMap = await localForage.getItem(TABLE_SETTING_KEY)
-  delete cacheMap[route.name + table.name]
+  delete cacheMap[route.name + table.tableKey]
   await localForage.setItem(TABLE_SETTING_KEY, cacheMap)
   updateColums()
 }
 
 const updateColums = () => {
-  console.log('updateColums')
   // 考虑了所有列
   const columns = cloneDeep(table?.getColumns())
-  console.log('columns', columns)
 
   let count = 1
 
@@ -126,7 +123,6 @@ const getColumns = () => {
 }
 
 const setColumns = (columns) => {
-  console.log('setColumns', columns)
   isInnerChange = true
   table.setColumns(columns)
   emit('columns-change', columns)
@@ -134,9 +130,8 @@ const setColumns = (columns) => {
 
 // todo
 const diff = async () => {
-  console.log('diff')
   const cacheMap = await localForage.getItem(TABLE_SETTING_KEY)
-  const cache = cacheMap && cacheMap[route.name + table.name]
+  const cache = cacheMap && cacheMap[route.name + table.tableKey]
   console.log('a', JSON.stringify(columnOptions.value))
   console.log('b', JSON.stringify(cache))
   if (cache) {
@@ -146,9 +141,8 @@ const diff = async () => {
 }
 
 const restore = async () => {
-  console.log('restore')
   const cacheMap = await localForage.getItem(TABLE_SETTING_KEY)
-  const cache = cacheMap && cacheMap[route.name + table.name]
+  const cache = cacheMap && cacheMap[route.name + table.tableKey]
   if (cache) {
     columnOptions.value = cache
   }
@@ -164,7 +158,6 @@ const draggableEnd = () => {
 const init = async () => {
   if (!isRestored) {
     const columns = getColumns()
-    console.log(columns)
 
     // 沿用逻辑
     table.setCacheColumns(columns)
@@ -204,8 +197,8 @@ onMounted(() => {
   watch(columnsRef, () => {
     if (!isInnerChange) {
       isRestored = false
-      console.log('onMounted isRestored')
       columnOptions.value = columnsRef.value
+      console.log('onMounted isRestored', columnOptions.value)
       saveColums()
       updateColums()
     } else {

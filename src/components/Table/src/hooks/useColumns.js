@@ -6,7 +6,7 @@ import { usePermission } from '@/hooks/web/usePermission'
 
 import { isArray, isBoolean, isFunction, isString } from '@/utils/is'
 
-export function useColumns(propsRef, ctx) {
+export function useColumns(propsRef) {
   const columnsRef = ref(unref(propsRef).columns)
   let cacheColumns = unref(propsRef).columns
 

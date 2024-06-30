@@ -4,6 +4,7 @@ import 'nprogress/nprogress.css'
 
 import { useAppStoreWithOut } from '@/store/modules/app'
 import { useUserStoreWithOut } from '@/store/modules/user'
+import { useDictStoreWithOut } from '@/store/modules/dict'
 import { usePermissionStoreWithOut } from '@/store/modules/permission'
 import { useMultipleTabStoreWithOut } from '@/store/modules/multipleTab'
 
@@ -15,6 +16,8 @@ import { LOGIN_ROUTE, PAGE_NOT_FOUND_ROUTE } from '@/router'
 import { cancelAllRequest } from '@/utils/request'
 
 import { removeTabChangeListener, setRouteChange } from '@/install/plugins/router-change'
+
+import { Cache } from '@/utils/cache'
 
 import projectSetting from '@/settings/projectSetting'
 
@@ -91,6 +94,7 @@ function createProgressGuard(router) {
 function createPermissionGuard(router) {
   const appStore = useAppStoreWithOut()
   const userStore = useUserStoreWithOut()
+  const dictStore = useDictStoreWithOut()
   const permissionStore = usePermissionStoreWithOut()
 
   router.beforeEach(async (to, from, next) => {
@@ -128,7 +132,6 @@ function createPermissionGuard(router) {
       return
     }
 
-
     // token does not exist
     if (!token) {
       // You can access without permissions. You need to set the routing meta.ignoreAuth to true
@@ -136,6 +139,7 @@ function createPermissionGuard(router) {
         next()
         return
       }
+
       // redirect login page
       const redirectData = {
         path: LOGIN_ROUTE.path,

@@ -7,11 +7,13 @@ const DATE_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss'
 const DATE_FORMAT = 'YYYY-MM-DD'
 
 export function formatToDateTime(date = undefined, format = DATE_TIME_FORMAT) {
-  return dayjs(date).format(format)
+  if (date) return dayjs(date).format(format)
+  return ''
 }
 
 export function formatToDate(date = undefined, format = DATE_FORMAT) {
-  return dayjs(date).format(format)
+  if (date) return dayjs(date).format(format)
+  return ''
 }
 
 export const dateUtil = dayjs

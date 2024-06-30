@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 
 import { ElMessage, ElMessageBox, ElNotification } from 'element-plus'
 
@@ -77,7 +77,7 @@ export default (config) =>
           })
           const userStore = useUserStoreWithOut()
           userStore.logout(true)
-          return reject(new Error('无效的会话，或者会话已过期，请重新登录。'))
+          throw new Error('无效的会话，或者会话已过期，请重新登录。')
         } else if (code === 500) {
           ElMessage({ message: msg, type: 'error' })
           return reject(new Error(msg))
@@ -85,7 +85,7 @@ export default (config) =>
           ElMessage({ message: msg, type: 'warning' })
           return reject(new Error(msg))
         } else if (code !== 200) {
-          ElNotification.error({ title: msg })
+          ElNotification.error({ title: '系统提示', message: msg })
           return reject(new Error('error'))
         } else {
           return resolve(res)
@@ -93,6 +93,11 @@ export default (config) =>
       })
       .catch((err) => {
         console.log(err)
+        if (err.code === AxiosError.ERR_CANCELED) {
+          return
+        } else if (err.code === AxiosError.ERR_BAD_RESPONSE) {
+          ElMessage({ message: errorCode.default, type: 'error' })
+        }
         return reject(new Error(err))
       })
   })
