@@ -7,6 +7,7 @@ export const tableProps = {
     type: Array,
     default: () => []
   },
+  cache: Boolean,
   loading: Boolean,
   pagination: {
     type: Boolean,

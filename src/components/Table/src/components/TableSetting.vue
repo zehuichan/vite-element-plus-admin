@@ -45,6 +45,7 @@ import { TABLE_SETTING_KEY } from '@/enums/cacheEnum'
 
 import { useTableContext } from '../hooks/useTableContext'
 
+const props = defineProps(['cache'])
 const emit = defineEmits(['columns-change'])
 
 const route = useRoute()
@@ -68,9 +69,11 @@ const handleActions = (type) => {
 }
 
 const saveColums = () => {
-  const cacheKey = route.name + table.tableKey
-  const options = cloneDeep(columnOptions.value)
-  localForage.setItem(TABLE_SETTING_KEY, { [cacheKey]: options })
+  if (props.cache) {
+    const cacheKey = route.name + table.tableKey
+    const options = cloneDeep(columnOptions.value)
+    localForage.setItem(TABLE_SETTING_KEY, { [cacheKey]: options })
+  }
 }
 
 const resetColums = async () => {
@@ -174,8 +177,8 @@ const init = async () => {
     }
     columnOptions.value = cloneDeep(options)
 
-    await diff()
-    await restore()
+    props.cache && await diff()
+    props.cache && await restore()
 
     updateColums()
 
@@ -197,8 +200,8 @@ onMounted(() => {
   watch(columnsRef, () => {
     if (!isInnerChange) {
       isRestored = false
+      console.log('onMounted isRestored')
       columnOptions.value = columnsRef.value
-      console.log('onMounted isRestored', columnOptions.value)
       saveColums()
       updateColums()
     } else {

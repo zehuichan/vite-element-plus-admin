@@ -37,13 +37,14 @@
     </pagination>
     <table-setting
       v-model="show"
+      :cache="cache"
       @columns-change="onColumnsChange"
     />
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted, useSlots, ref, useAttrs, unref } from 'vue'
+import { computed, useSlots, ref, useAttrs, unref } from 'vue'
 
 import { omit } from 'lodash-unified'
 
@@ -130,7 +131,7 @@ const onColumnsChange = (data) => {
 }
 
 const headerContextmenu = () => {
-  show.value = true
+  props.cache && (show.value = true)
 }
 
 const headerDragend = (newWidth, oldWidth, column, event) => {
@@ -164,7 +165,7 @@ createTableContext({ ...tableActions, tableKey: props.tableKey, tableRef })
 
 emit('register', tableActions)
 
-defineExpose({ ...tableActions })
+defineExpose(tableActions)
 </script>
 
 <style lang="scss">
