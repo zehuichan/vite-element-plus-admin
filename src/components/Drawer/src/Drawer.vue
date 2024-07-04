@@ -98,6 +98,8 @@ export default defineComponent({
   .el-drawer__title {
     font-size: 14px;
     line-height: 24px;
+    color: #000010;
+    font-weight: 500;
   }
 
   .el-drawer__body {

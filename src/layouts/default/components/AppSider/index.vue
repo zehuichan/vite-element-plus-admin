@@ -26,20 +26,15 @@
 <script setup>
 import { usePermissionStore } from '@/store/modules/permission'
 
-import { ElOverlay } from 'element-plus'
-import AppLogo from '../AppLogo/index.vue'
-import AppMenu from '../AppMenu/index.vue'
-
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 import { useAppInjectStore } from '@/hooks/web/useAppProvideStore'
 import { useRootSetting } from '@/hooks/setting/useRootSetting'
 
+import { ElOverlay } from 'element-plus'
+import AppLogo from '../AppLogo/index.vue'
+import AppMenu from '../AppMenu/index.vue'
 
 const { version } = __APP_INFO__
-
-const globAppTitle = import.meta.env.VITE_GLOB_APP_TITLE
-const globAppFooter = import.meta.env.VITE_GLOB_APP_FOOTER
-const globAppICP = import.meta.env.VITE_GLOB_APP_ICP
 
 const permissionStore = usePermissionStore()
 

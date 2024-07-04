@@ -1,6 +1,6 @@
 <template>
   <div class="basic-layout-navbar-action__item" @click="visible = true">
-    <icon name="Setting" />
+    <icon-park type="config" />
   </div>
   <el-drawer size="260px" append-to-body :with-header="false" v-model="visible">
     <div class="drawer-container">
@@ -12,6 +12,10 @@
       <div class="drawer-item">
         <span>标签页</span>
         <el-switch v-model="multipleTab" class="drawer-switch" />
+      </div>
+      <div class="drawer-item" v-if="false">
+        <span>Logo</span>
+        <el-switch v-model="logo" class="drawer-switch" />
       </div>
       <div class="drawer-item">
         <span>页脚</span>
@@ -51,8 +55,7 @@ import { useRootSetting } from '@/hooks/setting/useRootSetting'
 export default defineComponent({
   name: 'Settings',
   setup() {
-    const { setRootSetting, getShowBreadCrumb, getShowFooter } =
-      useRootSetting()
+    const { setRootSetting, getShowBreadCrumb, getShowLogo, getShowFooter } = useRootSetting()
     const {
       setHeaderSetting,
       getFixed,
@@ -61,8 +64,7 @@ export default defineComponent({
       getShowNotice,
       getShowSetting
     } = useHeaderSetting()
-    const { setMultipleTabSetting, getShowMultipleTab } =
-      useMultipleTabSetting()
+    const { setMultipleTabSetting, getShowMultipleTab } = useMultipleTabSetting()
 
     const visible = ref(false)
 
@@ -84,6 +86,17 @@ export default defineComponent({
       set(val) {
         setMultipleTabSetting({
           show: val
+        })
+      }
+    })
+
+    const logo = computed({
+      get() {
+        return getShowLogo.value
+      },
+      set(val) {
+        setRootSetting({
+          showLogo: val
         })
       }
     })
@@ -159,6 +172,7 @@ export default defineComponent({
 
       breadCrumb,
       multipleTab,
+      logo,
       footer,
       search,
       fullscreen,

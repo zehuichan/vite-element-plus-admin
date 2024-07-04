@@ -68,11 +68,12 @@ const handleActions = (type) => {
   }
 }
 
-const saveColums = () => {
+const saveColums = async () => {
   if (props.cache) {
+    const cacheMap = await localForage.getItem(TABLE_SETTING_KEY)
     const cacheKey = route.name + table.tableKey
     const options = cloneDeep(columnOptions.value)
-    localForage.setItem(TABLE_SETTING_KEY, { [cacheKey]: options })
+    await localForage.setItem(TABLE_SETTING_KEY, { ...cacheMap, [cacheKey]: options })
   }
 }
 
@@ -235,6 +236,6 @@ onMounted(() => {
 }
 
 .table-column-drag-index {
-
+  width: 120px;
 }
 </style>

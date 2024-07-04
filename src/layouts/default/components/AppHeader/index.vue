@@ -19,8 +19,10 @@ import Tabs from '../Tabs/index.vue'
 import { useHeaderSetting } from '@/hooks/setting/useHeaderSetting'
 import { useMultipleTabSetting } from '@/hooks/setting/useMultipleTabSetting'
 
-const HEADER_HEIGHT = 48
-const TABS_HEIGHT = 44
+
+const HEADER_HEIGHT = 40
+const TABS_HEIGHT = 40
+
 
 export default defineComponent({
   name: 'AppHeader',

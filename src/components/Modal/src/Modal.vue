@@ -17,7 +17,7 @@
             <icon-park type="copy" />
           </div>
           <div v-else class="modal-header__action-item cursor-pointer" @click="toggle()">
-            <icon-park type="full-screen" />
+            <icon-park type="square" />
           </div>
           <div class="modal-header__action-item modal-header__action-close cursor-pointer" @click="close">
             <icon-park type="close" />
@@ -26,7 +26,13 @@
       </div>
     </template>
     <template #default>
-      <slot />
+      <el-auto-resizer>
+        <template #default="{ height, width }">
+          <el-scrollbar :height="scrollbarHeight">
+            <slot :height="height" :width="width" />
+          </el-scrollbar>
+        </template>
+      </el-auto-resizer>
     </template>
     <template #footer v-if="showCancelButton || showConfirmButton">
       <slot name="footer">
@@ -138,6 +144,8 @@ export default defineComponent({
   .el-dialog__title {
     font-size: 14px;
     padding-left: 7px;
+    color: #000010;
+    font-weight: 500;
   }
 }
 

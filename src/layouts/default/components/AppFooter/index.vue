@@ -1,20 +1,14 @@
 <template>
   <el-footer class="basic-layout-footer">
-    <div>Copyright &copy; {{ info }}</div>
+    <span v-html="globAppFooter"></span>
+    <span> ⋅ </span>
+    <span v-html="globAppICP"></span>
   </el-footer>
 </template>
 
-<script>
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'AppFooter',
-  setup() {
-    return {
-      info: import.meta.env.VITE_GLOB_APP_FOOTER
-    }
-  }
-})
+<script setup>
+const globAppFooter = import.meta.env.VITE_GLOB_APP_FOOTER
+const globAppICP = import.meta.env.VITE_GLOB_APP_ICP
 </script>
 
 <style lang="scss">

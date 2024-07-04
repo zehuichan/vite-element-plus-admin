@@ -43,8 +43,7 @@ export default defineComponent({
   },
   setup() {
     const { getShowBreadCrumb, getUseErrorHandle } = useRootSetting()
-    const { getShowSearch, getShowFullScreen, getShowNotice, getShowSetting } =
-      useHeaderSetting()
+    const { getShowSearch, getShowFullScreen, getShowNotice, getShowSetting } = useHeaderSetting()
 
     return {
       getShowBreadCrumb,
@@ -61,7 +60,7 @@ export default defineComponent({
 <style lang="scss">
 .basic-layout-navbar {
   overflow: hidden;
-  height: 48px;
+  height: 40px;
   background-color: #fff;
   border-bottom: 1px solid #eee;
 
@@ -80,13 +79,14 @@ export default defineComponent({
     &__item {
       color: #000000d9;
       display: flex;
-      height: 48px;
+      align-items: center;
+      justify-content: center;
+      height: 40px;
       padding: 0 10px;
       cursor: pointer;
-      align-items: center;
 
-      .el-icon {
-        font-size: 16px;
+      .i-icon {
+        font-size: 14px;
       }
 
       &:hover {

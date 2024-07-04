@@ -1,6 +1,6 @@
 <template>
   <div class="basic-layout-navbar-action__item" @click="visible = true">
-    <icon name="Search" />
+    <icon-park type="search" />
   </div>
   <el-dialog
     v-model="visible"
@@ -23,7 +23,7 @@
           @input="handleSearch"
         >
           <template #prefix>
-            <icon name="search" />
+            <icon-park type="search" />
           </template>
         </el-input>
       </div>

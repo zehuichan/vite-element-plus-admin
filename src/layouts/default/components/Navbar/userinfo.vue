@@ -58,13 +58,13 @@ export default defineComponent({
   }
 
   .user-avatar {
-    width: 24px;
-    height: 24px;
-    margin-right: 12px;
+    width: 22px;
+    height: 22px;
+    margin-right: 10px;
   }
 
   .user-name {
-    font-size: 14px;
+    font-size: 12px;
   }
 }
 </style>

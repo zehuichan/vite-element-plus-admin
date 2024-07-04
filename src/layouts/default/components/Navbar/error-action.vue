@@ -5,7 +5,7 @@
       :hidden="!getCount"
       style="display: inline-flex"
     >
-      <icon name="Warning" />
+      <icon-park type="info" />
     </el-badge>
   </div>
 </template>
@@ -18,7 +18,7 @@ export default defineComponent({
   name: 'ErrorAction',
   setup() {
     const errorLogStore = useErrorLogStore()
-
+    console.log(errorLogStore.getErrorLogInfoList)
     const getCount = computed(() => errorLogStore.getErrorLogListCount)
 
     return {

@@ -1,7 +1,7 @@
 <template>
   <div class="basic-layout-navbar-action__item" @click="toggle">
-    <icon name="FullScreen" v-if="!isFullscreen" />
-    <icon name="Close" v-else />
+    <icon-park type="full-screen" v-if="!isFullscreen" />
+    <icon-park type="off-screen" v-else />
   </div>
 </template>
 

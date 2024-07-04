@@ -97,7 +97,7 @@ const {
   setCacheColumns,
   setColumnWidth
 } = useColumns(getProps)
-const { height, setAdaptive } = useAdaptive(wrapRef, { adaptive: props.adaptive })
+const { height, setAdaptive } = useAdaptive(wrapRef, { adaptive: props.adaptive, ...props.adaptiveConfig })
 
 const setProps = (props) => {
   innerPropsRef.value = { ...unref(innerPropsRef), ...props }
