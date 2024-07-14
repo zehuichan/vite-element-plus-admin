@@ -2,7 +2,8 @@
   <page-wrapper>
     <div class="table-wrapper">
       <api-select
-        v-model="form.id"
+        v-model:label="form.name"
+        v-model:value="form.id"
         :api="getDicts"
         result-field="data"
         label-field="name"
@@ -15,7 +16,7 @@
         label-field="name"
         value-field="id"
       />
-      <code>{{ form}}</code>
+      <code>{{ form }}</code>
     </div>
   </page-wrapper>
 </template>

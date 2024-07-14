@@ -131,6 +131,7 @@ const handleFetch = async (query) => {
 
 const handleClear = () => {
   stateLabel.value = ''
+  stateValue.value = ''
 }
 
 const handleSelect = (val) => {
