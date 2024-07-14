@@ -37,7 +37,7 @@ export default defineComponent({
     const renderInput = () => {
       return props.border
         ? <el-input {...attrs} model-value={inputValue.value || '--'} placeholder={props.placeholder} readonly />
-        : <div class="vc-desc ellipsis">{inputValue.value || '--'}</div>
+        : <div  {...attrs} class="vc-desc ellipsis">{inputValue.value || '--'}</div>
     }
 
     return () => {
@@ -45,8 +45,11 @@ export default defineComponent({
 
       if (showOverflowTooltip) {
         return (
-          <el-tooltip disabled={tooltipDisabled.value} content={inputValue.value}>
-            {renderInput()}
+          <el-tooltip disabled={tooltipDisabled.value}>
+            {{
+              content: () => <div style="max-width: 40vw">{inputValue.value}</div>,
+              default: () => renderInput(),
+            }}
           </el-tooltip>
         )
       }
@@ -58,5 +61,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-
+.vc-desc {
+  display: inline-flex;
+}
 </style>

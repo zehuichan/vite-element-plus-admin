@@ -1,25 +1,34 @@
 <template>
   <el-autocomplete
+    class="w-full"
     v-bind="$attrs"
     :fetch-suggestions="fetchSuggestions"
     :placeholder="placeholder"
+    :value-key="labelField"
     clearable
-  />
+    @select="handleSelect"
+    @change="handleChange"
+  >
+    <template #default="scope">
+      <slot v-bind="scope" />
+    </template>
+  </el-autocomplete>
 </template>
 
 <script setup>
-import { onMounted, ref, unref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 import { get } from 'lodash-unified'
 
-import { isFunction } from '@/utils/is'
+import { isArray, isFunction } from '@/utils/is'
 
 defineOptions({
-  name: 'ApiSuggestion',
+  name: 'ApiSelectV2',
   inheritAttrs: false
 })
-const emit = defineEmits(['unmatched'])
 const props = defineProps({
+  label: null,
+  value: null,
   api: {
     type: Function,
     default: null
@@ -31,60 +40,57 @@ const props = defineProps({
     type: String,
     default: ''
   },
+  labelField: {
+    type: String,
+    default: 'label'
+  },
+  valueField: {
+    type: String,
+    default: 'value'
+  },
   placeholder: {
     type: String,
     default: '请填写'
   },
+  options: {
+    type: Array,
+    default: () => []
+  },
 })
+const emit = defineEmits(['unmatched'])
 
-const cacheOptions = ref([])
+// todo 占位
+const stateLabel = defineModel('label')
+const stateValue = defineModel('value')
+
 const options = ref([])
-const loading = ref(false)
-const isFirstLoaded = ref(false)
 
-const handleFetch = async (queryString = '') => {
-  const { api, params } = props
-  if (!api || !isFunction(api)) return []
-  loading.value = true
-  const res = await api({ ...params, ...(params?.key ? { [params?.key]: queryString } : null) })
-  loading.value = false
-  isFirstLoaded.value = true
-  if (Array.isArray(res)) {
-    options.value = res
-  } else if (props.resultField) {
-    options.value = get(res, props.resultField) || []
-  }
-  return options.value
-}
-
-const fetchSuggestions = async (queryString = '', cb) => {
+const fetchSuggestions = async (queryString, cb) => {
   queryString = queryString === 'null' ? '' : queryString
-  const results = queryString
-    ? await handleFetch(queryString)
-    : unref(cacheOptions)
-  if (queryString && results.length === 0) {
-    emit('unmatched')
-  }
-  cb(results)
-}
-
-const fetchAll = async () => {
   const { api, params } = props
-  if (!api || !isFunction(api)) return
-  loading.value = true
-  const res = await api(params)
-  loading.value = false
-  isFirstLoaded.value = true
-  if (Array.isArray(res)) {
-    options.value = cacheOptions.value = res
-  } else if (props.resultField) {
-    options.value = cacheOptions.value = get(res, props.resultField) || []
+  if (isFunction(api)) {
+    const data = {
+      ...params,
+      ...(params?.key ? { [params?.key]: queryString } : null)
+    }
+    const res = await api(data)
+    options.value = isArray(res) ? res : get(res, props.resultField) || []
+  } else if (isArray(props.options) && queryString) {
+    options.value = props.options.filter(option => option[props.labelField].toLowerCase().includes(queryString.toLowerCase()))
+  } else {
+    options.value = props.options
   }
+  if (queryString && options.value.length === 0) emit('unmatched')
+  cb && cb(options.value)
 }
 
-onMounted(fetchAll)
+const handleSelect = (val) => {
+  stateValue.value = val[props.valueField]
+}
+
+const handleChange = (val) => {
+  stateValue.value = val ? val : ''
+}
+
+onMounted(fetchSuggestions)
 </script>
-
-<style scoped lang="scss">
-
-</style>

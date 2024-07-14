@@ -2,12 +2,13 @@ import { unref } from 'vue'
 import { cloneDeep, set } from 'lodash-unified'
 import {
   isArray,
-  isFunction, isNull,
+  isFunction,
+  isNil,
+  isNull,
   isNullOrUnDef,
   isObject,
   isString
 } from '@/utils/is'
-import { createPlaceholderMessage } from '@/components/Form/src/helper'
 
 /**
  * @desription deconstruct array-link key. This method will mutate the target.
@@ -74,12 +75,18 @@ export function useFormValues({ defaultValueRef, getSchema, formModel, getProps 
     const schemas = unref(getSchema)
     const obj = {}
     schemas.forEach((item) => {
-      const { defaultValue } = item
-      if (!isNullOrUnDef(defaultValue)) {
+      const { defaultValue, componentProps } = item
+      if (!isNil(defaultValue)) {
         obj[item.field] = defaultValue
 
         if (formModel[item.field] === undefined) {
           formModel[item.field] = defaultValue
+        }
+      }
+      if (!isNil(componentProps?.defaultValue)) {
+        obj[item.field] = componentProps?.defaultValue
+        if (formModel[item.field] === undefined) {
+          formModel[item.field] = componentProps?.defaultValue
         }
       }
     })

@@ -143,11 +143,12 @@ export default defineComponent({
 
       .el-sub-menu {
         .i-icon {
+          flex-shrink: 0;
           vertical-align: middle;
           margin-right: 5px;
           width: var(--el-menu-icon-width);
           text-align: center;
-          font-size: 14px;
+          font-size: 18px;
         }
       }
 

@@ -1,3 +1,5 @@
+export { isNil } from 'lodash-unified'
+
 const { toString } = Object.prototype
 
 export const inBrowser = typeof window !== 'undefined'
@@ -19,19 +21,9 @@ export function isObject(val) {
 }
 
 export function isEmpty(val) {
-  if (isArray(val) || isString(val)) {
-    return val.length === 0
-  }
-
-  if (val instanceof Map || val instanceof Set) {
-    return val.size === 0
-  }
-
-  if (isObject(val)) {
-    return Object.keys(val).length === 0
-  }
-
-  return false
+  return (!val && val !== 0) ||
+    (isArray(val) && val.length === 0) ||
+    (isObject(val) && !Object.keys(val).length)
 }
 
 export function isDate(val) {

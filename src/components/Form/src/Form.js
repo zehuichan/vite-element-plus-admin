@@ -12,7 +12,7 @@ export const formProps = {
     default: 'auto'
   },
   schemas: {
-    type: [Array],
+    type: [Array, Function],
     default: () => []
   },
   baseColProps: {
@@ -21,6 +21,7 @@ export const formProps = {
   },
   size: String,
   disabled: Boolean,
+  readonly: Boolean,
   rulesMessageJoinLabel: {
     type: Boolean,
     default: true

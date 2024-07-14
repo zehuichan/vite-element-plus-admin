@@ -150,7 +150,7 @@ export default defineComponent({
     }
 
     watch(
-      () => unref(getProps).schemas,
+      () => props.schemas,
       (schemas) => {
         resetSchema(schemas ?? [])
       }
@@ -239,7 +239,7 @@ export default defineComponent({
     })
 
     const getReadonly = useComputed((schema) => {
-      const { disabled: globReadonly } = props
+      const { readonly: globReadonly } = props
       const { dynamicReadonly } = schema
       const { readonly: itemReadonly = false } = getComponentsProps(schema)
       let readonly = globReadonly || itemReadonly
@@ -370,7 +370,8 @@ export default defineComponent({
       } else {
         const values = getValues(schema)
         const disabled = getDisable(schema)
-        const data = { ...values, disabled }
+        const readonly = getReadonly(schema)
+        const data = { ...values, disabled, readonly }
         const getContent = (schema) => {
           return slot
             ? getSlot(slots, slot, data)
@@ -407,6 +408,7 @@ export default defineComponent({
         size,
         ...getComponentsProps(schema),
         disabled: getDisable(schema),
+        readonly: getReadonly(schema),
         class: 'w-full',
       }
 
