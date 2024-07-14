@@ -2,6 +2,7 @@
   <el-select
     class="w-full"
     v-bind="$attrs"
+    v-model="stateValue"
     filterable
     clearable
     :loading="loading"
@@ -14,7 +15,7 @@
       :label="item.label"
       :value="item.value"
       :disabled="item.disabled"
-      @click="handleSelcet(item)"
+      @click="handleSelect(item)"
     >
       <slot name="item" :item="item" />
     </el-option>
@@ -28,14 +29,14 @@ import { get } from 'lodash-unified'
 
 import { isArray, isFunction } from '@/utils/is'
 
+defineOptions({
+  name: 'ApiSelect',
+  inheritAttrs: false
+})
 const props = defineProps({
   label: null,
   value: null,
   numberToString: Boolean,
-  placeholder: {
-    type: String,
-    default: '请填写'
-  },
   api: {
     type: Function,
     default: null
@@ -62,6 +63,10 @@ const props = defineProps({
   alwaysLoad: {
     type: Boolean,
     default: false
+  },
+  placeholder: {
+    type: String,
+    default: '请填写'
   },
   options: {
     type: Array,
@@ -96,15 +101,7 @@ const getOptions = computed(() => {
   return data.length > 0 ? data : props.options
 })
 
-watch(
-  () => props.params,
-  () => {
-    !unref(isFirstLoaded) && handleFetch()
-  },
-  { deep: true, immediate: props.immediate }
-)
-
-async function handleFetch(query) {
+const handleFetch = async (query) => {
   const { api, params } = props
   if (!api || !isFunction(api)) return
   options.value = []
@@ -132,16 +129,24 @@ async function handleFetch(query) {
   }
 }
 
-function handleClear() {
+const handleClear = () => {
   stateLabel.value = ''
 }
 
-function handleSelcet(val) {
+const handleSelect = (val) => {
   stateLabel.value = val[props.labelField]
   emit('select', val)
 }
 
-function emitChange() {
+const emitChange = () => {
   emit('options-change', unref(getOptions))
 }
+
+watch(
+  () => props.params,
+  () => {
+    !unref(isFirstLoaded) && handleFetch()
+  },
+  { deep: true, immediate: props.immediate }
+)
 </script>

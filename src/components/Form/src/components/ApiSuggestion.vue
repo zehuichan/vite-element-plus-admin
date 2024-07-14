@@ -2,12 +2,14 @@
   <el-autocomplete
     class="w-full"
     v-bind="$attrs"
+    v-model="stateLabel"
     :fetch-suggestions="fetchSuggestions"
     :placeholder="placeholder"
     :value-key="labelField"
     clearable
     @select="handleSelect"
     @change="handleChange"
+    @clear="handleClear"
   >
     <template #default="scope">
       <slot v-bind="scope" />
@@ -23,7 +25,7 @@ import { get } from 'lodash-unified'
 import { isArray, isFunction } from '@/utils/is'
 
 defineOptions({
-  name: 'ApiSelectV2',
+  name: 'ApiSuggestion',
   inheritAttrs: false
 })
 const props = defineProps({
@@ -82,6 +84,11 @@ const fetchSuggestions = async (queryString, cb) => {
   }
   if (queryString && options.value.length === 0) emit('unmatched')
   cb && cb(options.value)
+}
+
+function handleClear() {
+  stateLabel.value = ''
+  stateValue.value = ''
 }
 
 const handleSelect = (val) => {
