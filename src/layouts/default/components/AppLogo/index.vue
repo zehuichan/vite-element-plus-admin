@@ -1,8 +1,8 @@
 <template>
-  <div class="logo" @click="goHome">
+  <router-link class="logo" to="/">
     <img src="/element-plus-logo.svg" alt="" :class="{ 'mr-2': !collapse }" />
     <div v-show="!collapse" class="title">PlusAdmin</div>
-  </div>
+  </router-link>
 </template>
 
 <script>
@@ -33,8 +33,9 @@ export default defineComponent({
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 64px;
-  line-height: 64px;
+  height: 48px;
+  line-height: 48px;
+  min-height: 48px;
   overflow: hidden;
   white-space: nowrap;
   transition: padding 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
@@ -46,10 +47,6 @@ export default defineComponent({
 
   .title {
     color: #fff;
-  }
-
-  .mr-2 {
-    margin-right: 0.5rem;
   }
 }
 </style>

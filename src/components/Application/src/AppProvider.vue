@@ -1,24 +1,61 @@
-<script>
-import { defineComponent, ref } from 'vue'
-import { breakpointsAntDesign, useBreakpoints } from '@vueuse/core'
+<template>
+  <div class="app-provider" :class="active">
+    <slot />
+  </div>
+</template>
+
+<script setup>
+import { onMounted, ref } from 'vue'
+import { useBreakpoints, useEventListener } from '@vueuse/core'
+
+import { useAppStore } from '@/store/modules/app'
 
 import { useAppProvideStore } from '@/hooks/web/useAppProvideStore'
 
-export default defineComponent({
-  name: 'AppProvider',
-  setup(props, { slots }) {
-    const isMobile = ref(false)
-    const isLaptop = ref(false)
+const isMobile = ref(false)
 
-    const breakpoints = useBreakpoints(breakpointsAntDesign)
+const appStore = useAppStore()
 
-    isMobile.value = breakpoints.smaller('md')
-    isLaptop.value = breakpoints.between('md', 'lg')
+const breakpoints = useBreakpoints({
+  mobile: 0, // optional
+  tablet: 640,
+  laptop: 1024,
+  desktop: 1280,
+})
 
-    // Inject variables into the global
-    useAppProvideStore({ isMobile, isLaptop })
+const active = breakpoints.active()
 
-    return () => slots.default?.()
+useEventListener(window, 'resize', () => {
+  isMobile.value = active.value === 'mobile'
+  if (isMobile.value) {
+    appStore.setProjectConfig({
+      menuSetting: {
+        animation: true,
+        hidden: true
+      },
+    })
   }
 })
+
+onMounted(() => {
+  if (isMobile.value) {
+    appStore.setProjectConfig({
+      menuSetting: {
+        collapsed: true,
+        animation: false
+      },
+    })
+  }
+})
+
+useAppProvideStore({ isMobile: isMobile.value })
 </script>
+
+<style lang="scss">
+.app-provider {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+}
+</style>

@@ -9,14 +9,15 @@
       <query v-if="getShowSearch" />
       <screenfull v-if="getShowFullScreen" />
       <notification v-if="getShowNotice" />
+      <app-locale-picker class="basic-layout-navbar-action__item" />
       <userinfo />
       <settings v-if="getShowSetting" />
     </div>
   </div>
 </template>
 
-<script>
-import { defineComponent } from 'vue'
+<script setup>
+import { AppLocalePicker } from '@/components/Application'
 import Trigger from '../Trigger/index.vue'
 import Breadcrumb from './breadcrumb.vue'
 import Notification from './notification.vue'
@@ -29,32 +30,8 @@ import ErrorAction from './error-action.vue'
 import { useRootSetting } from '@/hooks/setting/useRootSetting'
 import { useHeaderSetting } from '@/hooks/setting/useHeaderSetting'
 
-export default defineComponent({
-  name: 'Navbar',
-  components: {
-    Screenfull,
-    Query,
-    Settings,
-    Trigger,
-    Breadcrumb,
-    Notification,
-    Userinfo,
-    ErrorAction
-  },
-  setup() {
-    const { getShowBreadCrumb, getUseErrorHandle } = useRootSetting()
-    const { getShowSearch, getShowFullScreen, getShowNotice, getShowSetting } = useHeaderSetting()
-
-    return {
-      getShowBreadCrumb,
-      getUseErrorHandle,
-      getShowSearch,
-      getShowFullScreen,
-      getShowNotice,
-      getShowSetting
-    }
-  }
-})
+const { getShowBreadCrumb, getUseErrorHandle } = useRootSetting()
+const { getShowSearch, getShowFullScreen, getShowNotice, getShowSetting } = useHeaderSetting()
 </script>
 
 <style lang="scss">

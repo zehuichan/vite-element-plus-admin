@@ -1,5 +1,5 @@
 <template>
-  <el-menu-item v-if="!hasMultiChild(item) && getShowMenu" :index="item.path">
+  <el-menu-item v-if="!menuHasChildren(item) && getShowMenu" :index="item.path">
     <icon-park v-if="item.meta?.icon" :type="item.meta.icon" />
     <template #title>
       <span>{{ item.meta?.title }}</span>
@@ -7,7 +7,7 @@
   </el-menu-item>
   <el-sub-menu
     class="nest-menu"
-    v-if="hasMultiChild(item) && getShowMenu"
+    v-if="menuHasChildren(item) && getShowMenu"
     :index="item.path"
   >
     <template #title>
@@ -22,30 +22,25 @@
   </el-sub-menu>
 </template>
 
-<script>
-import { computed, defineComponent } from 'vue'
+<script setup>
+import { computed } from 'vue'
 
-export default defineComponent({
+defineOptions({
   name: 'MenuItem',
-  props: {
-    item: Object
-  },
-  setup(props) {
-    const getShowMenu = computed(() => !props.item.meta?.hideMenu)
-
-    const hasMultiChild = (menuTreeItem) => {
-      return (
-        !menuTreeItem.meta?.hideChildrenInMenu &&
-        Reflect.has(menuTreeItem, 'children') &&
-        !!menuTreeItem.children &&
-        menuTreeItem.children.length > 0
-      )
-    }
-
-    return {
-      getShowMenu,
-      hasMultiChild
-    }
-  }
+  isSubMenu: true
 })
+const props = defineProps({
+  item: Object
+})
+
+const getShowMenu = computed(() => !props.item.meta?.hideMenu)
+
+const menuHasChildren = (menuTreeItem) => {
+  return (
+    !menuTreeItem.meta?.hideChildrenInMenu &&
+    Reflect.has(menuTreeItem, 'children') &&
+    !!menuTreeItem.children &&
+    menuTreeItem.children.length > 0
+  )
+}
 </script>

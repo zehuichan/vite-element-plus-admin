@@ -84,10 +84,9 @@ export const useUserStore = defineStore({
     async getUserInfoAction() {
       if (!this.getToken) return null
 
-      console.log('getInfo')
       const res = await getInfo()
-      console.log(res.data)
-      const { fields = null, permissions = [], roles = [], user = null } = res.data
+      console.log('getInfo', res.data)
+      const { fields = null, permissions = [], roles = [] } = res.data
 
       // roles must be a non-empty array
       if (isArray(roles)) {
@@ -96,8 +95,8 @@ export const useUserStore = defineStore({
         this.setRoles([])
       }
 
-      this.setUserInfo(user)
-      return user
+      this.setUserInfo(res.data)
+      return res.data
     },
     logout(goLogin = false) {
       this.setToken(undefined)

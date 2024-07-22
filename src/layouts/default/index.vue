@@ -10,75 +10,34 @@
   <el-backtop v-if="getUseOpenBackTop" />
 </template>
 
-<script>
-import { computed, defineComponent, onMounted, unref } from 'vue'
+<script setup>
+import { computed, unref } from 'vue'
+
+import { useRootSetting } from '@/hooks/setting/useRootSetting'
+import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
+
 import AppHeader from './components/AppHeader/index.vue'
 import AppContent from './components/AppContent/index.vue'
 import AppSider from './components/AppSider/index.vue'
 import AppFooter from './components/AppFooter/index.vue'
 
-import { useRootSetting } from '@/hooks/setting/useRootSetting'
-import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
-import { useAppInjectStore } from '@/hooks/web/useAppProvideStore'
-import { useEventListener } from '@vueuse/core'
+const { getShowFooter, getUseOpenBackTop } = useRootSetting()
+const {
+  setMenuSetting,
+  getCollapsed,
+  getAnimation,
+  getMenuBackgroundColor,
+  getMenuWidth,
+  getCollapsedWidth
+} = useMenuSetting()
 
-export default defineComponent({
-  name: 'BasicLayout',
-  components: {
-    AppFooter,
-    AppHeader,
-    AppContent,
-    AppSider
-  },
-  setup() {
-    const { getIsMobile } = useAppInjectStore()
+const layoutClass = computed(() => {
+  const opened = unref(getCollapsed)
 
-    const { getShowFooter, getUseOpenBackTop } = useRootSetting()
-    const {
-      setMenuSetting,
-      getCollapsed,
-      getAnimation,
-      getMenuBackgroundColor,
-      getMenuWidth,
-      getCollapsedWidth
-    } = useMenuSetting()
-
-    const layoutClass = computed(() => {
-      const opened = unref(getCollapsed)
-
-      return {
-        hideSider: opened,
-        openSider: !opened,
-        withoutAnimation: unref(getAnimation),
-        mobile: unref(getIsMobile)
-      }
-    })
-
-    useEventListener(window, 'resize', () => {
-      if (unref(getIsMobile)) {
-        setMenuSetting({
-          animation: true
-        })
-      }
-    })
-
-    onMounted(() => {
-      if (unref(getIsMobile)) {
-        setMenuSetting({
-          collapsed: true,
-          animation: false
-        })
-      }
-    })
-
-    return {
-      getShowFooter,
-      getUseOpenBackTop,
-      getMenuBackgroundColor,
-      getMenuWidth,
-      getCollapsedWidth,
-      layoutClass
-    }
+  return {
+    hideSider: opened,
+    openSider: !opened,
+    withoutAnimation: unref(getAnimation),
   }
 })
 </script>
@@ -117,7 +76,7 @@ export default defineComponent({
       text-align: center;
     }
 
-    &-content {
+    .basic-layout-aside-content {
       display: flex;
       flex-direction: column;
       height: 100%;
@@ -137,18 +96,17 @@ export default defineComponent({
           margin-right: 5px;
           width: var(--el-menu-icon-width);
           text-align: center;
-          font-size: 18px;
+          font-size: 14px;
         }
       }
 
       .el-sub-menu {
         .i-icon {
-          flex-shrink: 0;
           vertical-align: middle;
           margin-right: 5px;
           width: var(--el-menu-icon-width);
           text-align: center;
-          font-size: 18px;
+          font-size: 14px;
         }
       }
 
@@ -168,29 +126,31 @@ export default defineComponent({
       }
     }
 
-    &__collapsed {
+    .basic-layout-aside__collapsed {
       width: v-bind(getCollapsedWidth);
     }
 
-    &__open {
+    .basic-layout-aside__open {
       width: v-bind(getMenuWidth);
       transform: translateX(0);
     }
 
-    &__hide {
+    .basic-layout-aside__hide {
       width: v-bind(getMenuWidth);
       transform: translateX(-100%);
     }
   }
 
   .basic-layout-multiple-header {
-    &--fixed {
-      position: fixed;
-      top: 0;
-      z-index: 505;
-      width: calc(100% - v-bind(getMenuWidth));
-      transition: width 0.28s;
-    }
+
+  }
+
+  .basic-layout-multiple-header--fixed {
+    position: fixed;
+    top: 0;
+    z-index: 505;
+    width: calc(100% - v-bind(getMenuWidth));
+    transition: width 0.28s;
   }
 
   &.hideSider {
@@ -207,33 +167,43 @@ export default defineComponent({
     }
   }
 
-  &.mobile {
-    .basic-layout-aside {
-      transition: transform 0.28s;
-      width: v-bind(getMenuWidth);
-    }
-
-    .basic-layout-main {
-      margin-left: 0;
-    }
-
-    .basic-layout-multiple-header--fixed {
-      width: 100%;
-    }
-
-    &.hideSider {
-      .basic-layout-aside {
-        pointer-events: none;
-        transition-duration: 0.3s;
-      }
-    }
-  }
-
   &.withoutAnimation {
     .basic-layout-aside,
     .basic-layout-main,
     .basic-layout-multiple-header--fixed {
       transition: none;
+    }
+  }
+}
+
+.mobile {
+  .basic-layout-aside {
+    transition: transform 0.28s;
+    width: v-bind(getMenuWidth);
+  }
+
+  .basic-layout-aside__open {
+    width: v-bind(getMenuWidth);
+    transform: translateX(0);
+  }
+
+  .basic-layout-aside__hide {
+    width: v-bind(getMenuWidth);
+    transform: translateX(-100%);
+  }
+
+  .basic-layout-main {
+    margin-left: 0;
+  }
+
+  .basic-layout-multiple-header--fixed {
+    width: 100%;
+  }
+
+  &.hideSider {
+    .basic-layout-aside {
+      pointer-events: none;
+      transition-duration: 0.3s;
     }
   }
 }

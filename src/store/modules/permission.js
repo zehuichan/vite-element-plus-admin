@@ -12,32 +12,40 @@ import { PageEnum } from '@/enums/pageEnum'
 export const usePermissionStore = defineStore({
   id: 'permission',
   state: () => ({
-    menus: [],
-    routers: [],
     // Whether the route has been dynamically added
     // 路由是否动态添加
     isDynamicAddedRoute: false,
     // To trigger a menu update
     // 触发菜单更新
-    lastBuildMenuTime: 0
+    lastBuildMenuTime: 0,
+    // Backstage menu list
+    // 后台菜单列表
+    backMenuList: [],
+    // menu List
+    // 菜单列表
+    frontMenuList: [],
   }),
   getters: {
-    getMenus() {
-      return this.menus
+    getBackMenuList(state) {
+      return state.backMenuList
     },
-    getIsDynamicAddedRoute() {
-      return this.isDynamicAddedRoute
+    getFrontMenuList(state) {
+      return state.frontMenuList
+    },
+    getLastBuildMenuTime(state) {
+      return state.lastBuildMenuTime
+    },
+    getIsDynamicAddedRoute(state) {
+      return state.isDynamicAddedRoute
     }
   },
   actions: {
-    // 设置动态菜单
-    setMenus(menus) {
-      this.menus = menus
-      menus?.length > 0 && this.setLastBuildMenuTime()
+    setBackMenuList(list) {
+      this.backMenuList = list
+      list?.length > 0 && this.setLastBuildMenuTime()
     },
-    // 设置动态路由
-    setRouters(routers) {
-      this.routers = constantRoutes.concat(routers)
+    setFrontMenuList(list) {
+      this.frontMenuList = list
     },
     setLastBuildMenuTime() {
       this.lastBuildMenuTime = new Date().getTime()
@@ -46,9 +54,8 @@ export const usePermissionStore = defineStore({
       this.isDynamicAddedRoute = added
     },
     resetState() {
-      this.menus = []
-      this.routers = []
       this.isDynamicAddedRoute = false
+      this.backMenuList = []
       this.lastBuildMenuTime = 0
     },
     async buildRoutesAction() {
@@ -110,9 +117,8 @@ export const usePermissionStore = defineStore({
 
       // Background routing to menu structure
       // 后台路由到菜单结构
-      const menus = transformRouteToMenu(routeList)
-      console.log(menus)
-      this.setMenus(menus)
+      const backMenuList = transformRouteToMenu(routeList)
+      this.setBackMenuList(backMenuList)
 
       // remove meta.ignoreRoute item
       // 删除 meta.ignoreRoute 项
@@ -123,7 +129,6 @@ export const usePermissionStore = defineStore({
       // 将多级路由转换为 2 级路由
       routeList = flatMultiLevelRoutes(routeList)
       routes = [PAGE_NOT_FOUND_ROUTE, ...routeList]
-      this.setRouters(routes)
 
       patchHomeAffix(routes)
       return routes

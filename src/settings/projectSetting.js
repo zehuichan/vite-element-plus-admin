@@ -25,6 +25,7 @@ export default {
     accordion: true,
 
     animation: true,
+    hidden: true,
     backgroundColor: '#001529',
     textColor: '#ffffffb3',
     activeTextColor: '#1890ff',
@@ -60,5 +61,9 @@ export default {
   useErrorHandle: true,
 
   // Whether to open back to top
-  useOpenBackTop: true
+  useOpenBackTop: false,
+
+  // Whether to cancel the http request that has been sent but not responded when switching the interface.
+  // If it is enabled, I want to overwrite a single interface. Can be set in a separate interface
+  removeAllHttpPending: true,
 }
