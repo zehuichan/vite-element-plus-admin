@@ -1,0 +1,1 @@
+import{_ as s,d as o,u as n,a as r,o as c,c as a}from"./index-CXQZnFx_.js";const i=o({name:"BeforeEnter",setup(){const e=n();r()(e.getMenus[0].children[0].path,!0)}}),p={class:"w-full h-full flex items-center justify-center text-primary"};function u(e,t,f,l,_,d){return c(),a("div",p)}const x=s(i,[["render",u]]);export{x as default};
