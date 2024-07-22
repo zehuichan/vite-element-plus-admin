@@ -2,13 +2,12 @@
   <el-autocomplete
     class="w-full"
     v-bind="$attrs"
-    v-model="stateLabel"
+    v-model="computedModel"
     :fetch-suggestions="fetchSuggestions"
     :placeholder="placeholder"
     :value-key="labelField"
     clearable
     @select="handleSelect"
-    @change="handleChange"
     @clear="handleClear"
   >
     <template #default="scope">
@@ -18,7 +17,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 import { get } from 'lodash-unified'
 
@@ -29,8 +28,6 @@ defineOptions({
   inheritAttrs: false
 })
 const props = defineProps({
-  label: null,
-  value: null,
   api: {
     type: Function,
     default: null
@@ -61,11 +58,20 @@ const props = defineProps({
 })
 const emit = defineEmits(['unmatched'])
 
-// todo 占位
+const stateModelValue = defineModel('modelValue')
 const stateLabel = defineModel('label')
 const stateValue = defineModel('value')
 
 const options = ref([])
+
+const computedModel = computed({
+  get: () => stateModelValue.value || stateLabel.value,
+  set: (val) => {
+    console.log(val)
+    stateModelValue.value = val
+    stateLabel.value = val
+  }
+})
 
 const fetchSuggestions = async (queryString, cb) => {
   queryString = queryString === 'null' ? '' : queryString
@@ -87,16 +93,14 @@ const fetchSuggestions = async (queryString, cb) => {
 }
 
 function handleClear() {
+  stateModelValue.value = ''
   stateLabel.value = ''
   stateValue.value = ''
 }
 
+// 关联 value，ex: form.clientId
 const handleSelect = (val) => {
   stateValue.value = val[props.valueField]
-}
-
-const handleChange = (val) => {
-  stateValue.value = val ? val : ''
 }
 
 onMounted(fetchSuggestions)

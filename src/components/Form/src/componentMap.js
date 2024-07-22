@@ -18,7 +18,6 @@ import ApiTabs from './components/ApiTabs.vue'
 import ApiCheckbox from './components/ApiCheckbox.vue'
 import ApiCheckTag from './components/ApiCheckTag.vue'
 import ApiSuggestion from './components/ApiSuggestion.vue'
-import ApiDropdown from './components/ApiDropdown.vue'
 import Field from './components/Field.vue'
 import Desc from './components/Desc.vue'
 
@@ -53,7 +52,6 @@ componentMap.set('ApiTabs', ApiTabs)
 componentMap.set('ApiCheckbox', ApiCheckbox)
 componentMap.set('ApiCheckTag', ApiCheckTag)
 componentMap.set('ApiSuggestion', ApiSuggestion)
-componentMap.set('ApiDropdown', ApiDropdown)
 componentMap.set('Field', Field)
 componentMap.set('Desc', Desc)
 

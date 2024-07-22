@@ -2,11 +2,11 @@
   <el-select
     class="w-full"
     v-bind="$attrs"
-    v-model="stateValue"
-    filterable
-    clearable
+    v-model="computedModel"
     :loading="loading"
     :placeholder="placeholder"
+    filterable
+    clearable
     @clear="handleClear"
   >
     <el-option
@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { ref, computed, unref, watch } from 'vue'
+import { computed, ref, unref, watch } from 'vue'
 
 import { get } from 'lodash-unified'
 
@@ -34,8 +34,6 @@ defineOptions({
   inheritAttrs: false
 })
 const props = defineProps({
-  label: null,
-  value: null,
   numberToString: Boolean,
   api: {
     type: Function,
@@ -79,10 +77,17 @@ const options = ref([])
 const loading = ref(false)
 const isFirstLoaded = ref(false)
 
-// todo 占位
+const stateModelValue = defineModel('modelValue')
 const stateLabel = defineModel('label')
 const stateValue = defineModel('value')
 
+const computedModel = computed({
+  get: () => stateModelValue.value || stateValue.value,
+  set: (val) => {
+    stateModelValue.value = val
+    stateValue.value = val
+  }
+})
 const getOptions = computed(() => {
   const { labelField, valueField, numberToString } = props
 
@@ -130,6 +135,7 @@ const handleFetch = async (query) => {
 }
 
 const handleClear = () => {
+  stateModelValue.value = ''
   stateLabel.value = ''
   stateValue.value = ''
 }

@@ -7,14 +7,13 @@ import {
   Form,
   ApiCheckbox,
   ApiCheckTag,
-  ApiDropdown,
   ApiRadioGroup,
   ApiSelect,
   ApiSuggestion,
   ApiTabs,
   ApiTreeSelect,
   Desc,
-  Field
+  Field,
 } from './Form'
 import Search from './Search'
 import { Table } from './Table'
@@ -36,7 +35,6 @@ const components = [
   Form,
   ApiCheckbox,
   ApiCheckTag,
-  ApiDropdown,
   ApiRadioGroup,
   ApiSelect,
   ApiSuggestion,

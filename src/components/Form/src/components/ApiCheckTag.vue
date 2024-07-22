@@ -1,5 +1,5 @@
 <template>
-  <el-space class="api-check-tag" wrap>
+  <el-space :id="inputId" class="api-check-tag" wrap>
     <el-check-tag
       v-for="{label, value} in getOptions"
       :class="{[`el-check-tag--${inputSize}`]: true}"
@@ -8,105 +8,194 @@
     >
       {{ label }}
     </el-check-tag>
+    <el-icon
+      v-if="validateState && validateIcon"
+      class="el-input__icon el-input__validateIcon"
+    >
+      <component :is="validateIcon" />
+    </el-icon>
   </el-space>
 </template>
 
-<script>
-import { computed, defineComponent, ref, unref } from 'vue'
-import { useVModel } from '@vueuse/core'
-import { useFormSize } from 'element-plus'
+<script setup>
+import { computed, ref, unref, watch } from 'vue'
 
-export default defineComponent({
+import { useFormItem, useFormItemInputId, useFormSize } from 'element-plus'
+
+import { get } from 'lodash-unified'
+
+import { ValidateComponentsMap } from '@/install/framework/ValidateComponentsMap'
+
+import { isArray, isFunction } from '@/utils/is'
+
+defineOptions({
   name: 'ApiCheckTag',
-  props: {
-    modelValue: [String, Number, Array],
-    options: {
-      type: Array,
-      default: () => []
-    },
-    size: {
-      type: String,
-      values: ['', 'default', 'small', 'large'],
-    },
-    multiple: Boolean,
-    numberToString: Boolean,
-    labelField: {
-      type: String,
-      default: 'label'
-    },
-    valueField: {
-      type: String,
-      default: 'value'
-    },
+  inheritAttrs: false,
+})
+const props = defineProps({
+  options: {
+    type: Array,
+    default: () => []
   },
-  emits: ['update:modelValue', 'change'],
-  setup(props, { emit }) {
-    const options = ref([])
-
-    // Initialize state.value based on props.multiple
-    const state = useVModel(props, 'modelValue', emit, { defaultValue: props.multiple ? [] : '' })
-
-    const inputSize = useFormSize()
-
-    const getOptions = computed(() => {
-      const { labelField, valueField, numberToString } = props
-
-      const data = unref(options).reduce((prev, next) => {
-        if (next) {
-          const value = next[valueField]
-          prev.push({
-            ...next,
-            label: next[labelField],
-            value: numberToString ? `${value}` : value
-          })
-        }
-        return prev
-      }, [])
-
-      return data.length > 0 ? data : props.options
-    })
-
-    function isChecked(value) {
-      if (props.multiple) {
-        return state.value.includes(value)
-      } else {
-        return state.value === value
-      }
-    }
-
-    function handleChange(value) {
-      if (props.multiple) {
-        const index = state.value.indexOf(value)
-        if (index === -1) {
-          state.value.push(value)
-        } else {
-          state.value.splice(index, 1)
-        }
-      } else {
-        if (value === state.value) {
-          state.value = null
-        } else {
-          state.value = value
-        }
-      }
-      emit('change', value)
-    }
-
-    return {
-      state,
-      inputSize,
-      getOptions,
-      isChecked,
-      handleChange
-    }
+  size: {
+    type: String,
+    values: ['', 'default', 'small', 'large'],
+  },
+  multiple: Boolean,
+  numberToString: Boolean,
+  api: {
+    type: Function,
+    default: null
+  },
+  // api params
+  params: null,
+  resultField: {
+    type: String,
+    default: ''
+  },
+  labelField: {
+    type: String,
+    default: 'label'
+  },
+  valueField: {
+    type: String,
+    default: 'value'
+  },
+  immediate: {
+    type: Boolean,
+    default: true
+  },
+  validateEvent: {
+    type: Boolean,
+    default: true,
   }
 })
+const emit = defineEmits(['change', 'options-change'])
+
+const options = ref([])
+const loading = ref(false)
+const isFirstLoaded = ref(false)
+
+const stateModelValue = defineModel('modelValue')
+
+const { form: elForm, formItem: elFormItem } = useFormItem()
+const { inputId } = useFormItemInputId(props, {
+  formItemContext: elFormItem,
+})
+const inputSize = useFormSize()
+
+const needStatusIcon = computed(() => elForm?.statusIcon ?? false)
+const validateState = computed(() => elFormItem?.validateState || '')
+const validateIcon = computed(
+  () => validateState.value && ValidateComponentsMap[validateState.value]
+)
+
+const getOptions = computed(() => {
+  const { labelField, valueField, numberToString } = props
+
+  const data = unref(options).reduce((prev, next) => {
+    if (next) {
+      const value = next[valueField]
+      prev.push({
+        ...next,
+        label: next[labelField],
+        value: numberToString ? `${value}` : value
+      })
+    }
+    return prev
+  }, [])
+
+  return data.length > 0 ? data : props.options
+})
+
+const isChecked = (value) => {
+  if (props.multiple) {
+    return stateModelValue.value.includes(value)
+  } else {
+    return stateModelValue.value === value
+  }
+}
+
+const handleFetch = async () => {
+  const { api, params } = props
+  if (!api || !isFunction(api)) return
+  options.value = []
+  try {
+    loading.value = true
+    const data = {
+      ...params,
+      ...(params?.key ? { [params?.key]: query } : null)
+    }
+    const res = await api(data)
+    isFirstLoaded.value = true
+    if (isArray(res)) {
+      options.value = res
+      emitChange()
+      return
+    }
+    if (props.resultField) {
+      options.value = get(res, props.resultField) || []
+    }
+    emitChange()
+  } catch (error) {
+    console.warn(error)
+  } finally {
+    loading.value = false
+  }
+}
+
+const handleChange = (value) => {
+  if (props.multiple) {
+    const index = stateModelValue.value.indexOf(value)
+    if (index === -1) {
+      stateModelValue.value.push(value)
+    } else {
+      stateModelValue.value.splice(index, 1)
+    }
+  } else {
+    if (value === stateModelValue.value) {
+      stateModelValue.value = null
+    } else {
+      stateModelValue.value = value
+    }
+  }
+  emit('change', value)
+}
+
+const emitChange = () => {
+  emit('options-change', unref(getOptions))
+}
+
+watch(
+  () => stateModelValue.value,
+  () => {
+    if (props.validateEvent) {
+      elFormItem?.validate?.('change').catch(err => console.warn(err))
+    }
+  }
+)
+watch(
+  () => props.params,
+  () => {
+    !unref(isFirstLoaded) && handleFetch()
+  },
+  { deep: true, immediate: props.immediate }
+)
 </script>
 
 <style lang="scss">
 .api-check-tag {
   .el-check-tag {
     font-weight: 400;
+  }
+
+  .el-input__icon {
+    height: inherit;
+    line-height: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all var(--el-transition-duration);
   }
 }
 
