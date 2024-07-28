@@ -1,33 +1,19 @@
 <template>
-  <div class="app-provider" :class="active">
+  <div class="app-provider">
     <slot />
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
-import { useBreakpoints, useEventListener } from '@vueuse/core'
+import { onMounted } from 'vue'
+import { useEventListener } from '@vueuse/core'
 
 import { useAppStore } from '@/store/modules/app'
 
-import { useAppProvideStore } from '@/hooks/web/useAppProvideStore'
-
-const isMobile = ref(false)
-
 const appStore = useAppStore()
 
-const breakpoints = useBreakpoints({
-  mobile: 0, // optional
-  tablet: 640,
-  laptop: 1024,
-  desktop: 1280,
-})
-
-const active = breakpoints.active()
-
 useEventListener(window, 'resize', () => {
-  isMobile.value = active.value === 'mobile'
-  if (isMobile.value) {
+  if (appStore.getIsMobile) {
     appStore.setProjectConfig({
       menuSetting: {
         animation: true,
@@ -38,7 +24,7 @@ useEventListener(window, 'resize', () => {
 })
 
 onMounted(() => {
-  if (isMobile.value) {
+  if (appStore.getIsMobile) {
     appStore.setProjectConfig({
       menuSetting: {
         collapsed: true,
@@ -47,8 +33,6 @@ onMounted(() => {
     })
   }
 })
-
-useAppProvideStore({ isMobile: isMobile.value })
 </script>
 
 <style lang="scss">

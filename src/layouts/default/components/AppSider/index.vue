@@ -1,27 +1,30 @@
 <template>
-  <el-overlay v-if="isMobile && !getCollapsed" @click="handleClose(true)">
+  <el-overlay v-if="getIsMobile && !getCollapsed" @click="handleClose(true)">
+    {{ getIsMobile }}
   </el-overlay>
-    <div
-      :class="{
+  <div
+    :class="{
       'basic-layout-aside': true,
-      'basic-layout-aside__open': isMobile && !getCollapsed,
-      'basic-layout-aside__hide': isMobile && getCollapsed
+      'basic-layout-aside__collapsed': !getIsMobile && getCollapsed,
+      'basic-layout-aside__fixed': getIsMobile,
+      'basic-layout-aside__open': getIsMobile && !getCollapsed,
+      'basic-layout-aside__hide': getIsMobile && getCollapsed
     }"
-    >
-      <div class="basic-layout-aside-content">
-        <app-logo v-if="getShowLogo" :collapse="getCollapsed" />
-        <el-scrollbar wrap-class="scrollbar-wrapper">
-          <app-menu
-            :collapse="getCollapsed"
-            :routes="permissionStore.getBackMenuList"
-            @click="handleClose(false)"
-          />
-        </el-scrollbar>
-        <div v-if="!getCollapsed" class="operations">
-          version: v{{ version }}{{ isMobile }}
-        </div>
+  >
+    <div class="basic-layout-aside-content">
+      <app-logo v-if="getShowLogo" :collapse="getCollapsed" />
+      <el-scrollbar wrap-class="scrollbar-wrapper">
+        <app-menu
+          :collapse="getCollapsed"
+          :routes="permissionStore.getBackMenuList"
+          @click="handleClose(false)"
+        />
+      </el-scrollbar>
+      <div v-if="!getCollapsed" class="operations">
+        version: v{{ version }}
       </div>
     </div>
+  </div>
 </template>
 
 <script setup>
@@ -31,7 +34,6 @@ import { usePermissionStore } from '@/store/modules/permission'
 
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 import { useRootSetting } from '@/hooks/setting/useRootSetting'
-import { useAppInjectStore } from '@/hooks/web/useAppProvideStore'
 
 import AppLogo from '../AppLogo/index.vue'
 import AppMenu from '../AppMenu/index.vue'
@@ -39,9 +41,8 @@ import AppMenu from '../AppMenu/index.vue'
 const { version } = __APP_INFO__
 
 const permissionStore = usePermissionStore()
-const { isMobile } = useAppInjectStore()
 
-const { getShowLogo } = useRootSetting()
+const { getIsMobile, getShowLogo } = useRootSetting()
 const { setMenuSetting, getCollapsed } = useMenuSetting()
 
 function handleClose(flag) {

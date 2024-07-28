@@ -1,21 +1,37 @@
 import { defineStore } from 'pinia'
 import { store } from '..'
 
+import { useBreakpoints } from '@vueuse/core'
+
 import { Cache } from '@/utils/cache'
 import { PROJ_CFG_KEY } from '@/enums/cacheEnum'
 import { deepMerge } from '@/utils'
 
 import projectConfig from '@/settings/projectSetting'
 
+const breakpoints = useBreakpoints({
+  mobile: 0, // optional
+  tablet: 640,
+  laptop: 1024,
+  desktop: 1280,
+})
+
 let timeId
 export const useAppStore = defineStore({
   id: 'app',
   state: () => ({
+    breakpoint: breakpoints.active(),
     darkMode: undefined,
     pageLoading: false,
     projectConfig: Cache.getItem(PROJ_CFG_KEY, projectConfig)
   }),
   getters: {
+    getBreakpoint() {
+      return this.breakpoint
+    },
+    getIsMobile() {
+      return this.breakpoint === 'mobile'
+    },
     getPageLoading() {
       return this.pageLoading
     },

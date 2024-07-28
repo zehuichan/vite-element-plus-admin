@@ -21,9 +21,8 @@ import AppContent from './components/AppContent/index.vue'
 import AppSider from './components/AppSider/index.vue'
 import AppFooter from './components/AppFooter/index.vue'
 
-const { getShowFooter, getUseOpenBackTop } = useRootSetting()
+const { getIsMobile, getShowFooter, getUseOpenBackTop } = useRootSetting()
 const {
-  setMenuSetting,
   getCollapsed,
   getAnimation,
   getMenuBackgroundColor,
@@ -35,6 +34,7 @@ const layoutClass = computed(() => {
   const opened = unref(getCollapsed)
 
   return {
+    mobile: unref(getIsMobile),
     hideSider: opened,
     openSider: !opened,
     withoutAnimation: unref(getAnimation),
@@ -174,36 +174,36 @@ const layoutClass = computed(() => {
       transition: none;
     }
   }
-}
 
-.mobile {
-  .basic-layout-aside {
-    transition: transform 0.28s;
-    width: v-bind(getMenuWidth);
-  }
-
-  .basic-layout-aside__open {
-    width: v-bind(getMenuWidth);
-    transform: translateX(0);
-  }
-
-  .basic-layout-aside__hide {
-    width: v-bind(getMenuWidth);
-    transform: translateX(-100%);
-  }
-
-  .basic-layout-main {
-    margin-left: 0;
-  }
-
-  .basic-layout-multiple-header--fixed {
-    width: 100%;
-  }
-
-  &.hideSider {
+  &.mobile {
     .basic-layout-aside {
-      pointer-events: none;
-      transition-duration: 0.3s;
+      transition: transform 0.28s;
+      width: v-bind(getMenuWidth);
+    }
+
+    .basic-layout-aside__open {
+      width: v-bind(getMenuWidth);
+      transform: translateX(0);
+    }
+
+    .basic-layout-aside__hide {
+      width: v-bind(getMenuWidth);
+      transform: translateX(-100%);
+    }
+
+    .basic-layout-main {
+      margin-left: 0;
+    }
+
+    .basic-layout-multiple-header--fixed {
+      width: 100%;
+    }
+
+    &.hideSider {
+      .basic-layout-aside {
+        pointer-events: none;
+        transition-duration: 0.3s;
+      }
     }
   }
 }
