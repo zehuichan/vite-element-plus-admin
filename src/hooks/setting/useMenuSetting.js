@@ -9,16 +9,17 @@ export function useMenuSetting() {
   const getCollapsed = computed(() => appStore.getMenuSetting.collapsed)
   const getAccordion = computed(() => appStore.getMenuSetting.accordion)
   const getAnimation = computed(() => appStore.getMenuSetting.animation)
-  const getMenuIsHidden = computed(() => appStore.getMenuSetting.hidden)
   const getMenuBackgroundColor = computed(() => appStore.getMenuSetting.backgroundColor)
   const getMenuTextColor = computed(() => appStore.getMenuSetting.textColor)
   const getMenuActiveTextColor = computed(() => appStore.getMenuSetting.activeTextColor)
   const getMenuWidth = computed(() => appStore.getMenuSetting.width)
   const getCollapsedWidth = computed(() => appStore.getMenuSetting.collapsedWidth)
+
   const getCalcContentWidth = computed(() => {
-    const width = unref(getMenuIsHidden)
-      ? 0 : unref(getCollapsed)
+    const width = appStore.getIsMobile
+      ? '0px' : unref(getCollapsed)
         ? unref(getCollapsedWidth) : unref(getMenuWidth)
+    console.log(width)
     return `calc(100% - ${unref(width)})`
   })
 

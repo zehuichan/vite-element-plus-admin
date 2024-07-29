@@ -14,9 +14,8 @@ const globAppICP = import.meta.env.VITE_GLOB_APP_ICP
 <style lang="scss">
 .basic-layout-footer {
   text-align: center;
-  padding: 24px 50px 80px;
-  color: #000000d9;
-  font-size: 14px;
+  padding: 24px 50px;
+  font-size: 12px;
   height: auto;
 }
 </style>

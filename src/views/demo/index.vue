@@ -18,6 +18,9 @@
       />
       <code>{{ form }}</code>
     </div>
+    <template #footer>
+      123
+    </template>
   </page-wrapper>
 </template>
 

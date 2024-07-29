@@ -1,16 +1,13 @@
 <template>
-  <div :style="{height: height ? `${height}px` : undefined}">
-    <div ref="contentRef" class="page-footer">
-      <div class="flex p-12px" :class="{[`align-${align}`]: align, [`justify-${justify}`]: justify}">
-        <slot />
-      </div>
+  <div class="page-footer" :style="{width: getCalcContentWidth}">
+    <div class="flex" :class="{[`align-${align}`]: align, [`justify-${justify}`]: justify}">
+      <slot />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { usePlaceholder } from '@/hooks/web/usePlaceholder'
+import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
 
 defineOptions({
   name: 'PageFooter',
@@ -28,8 +25,7 @@ const props = defineProps({
   }
 })
 
-const contentRef = ref(null)
-const height = usePlaceholder(contentRef, true)
+const { getCalcContentWidth } = useMenuSetting()
 </script>
 
 <style lang="scss">
@@ -42,6 +38,7 @@ const height = usePlaceholder(contentRef, true)
   background: #fff;
   border-top: 1px solid rgba(0, 0, 0, .06);
   box-shadow: 0 -6px 16px -8px rgba(0, 0, 0, .08), 0 -9px 28px 0 rgba(0, 0, 0, .05), 0 -12px 48px 16px rgba(0, 0, 0, .03);
+  padding: 12px;
 
   .justify-start {
     justify-content: flex-start;

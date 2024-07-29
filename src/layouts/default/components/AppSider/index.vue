@@ -1,7 +1,5 @@
 <template>
-  <el-overlay v-if="getIsMobile && !getCollapsed" @click="handleClose(true)">
-    {{ getIsMobile }}
-  </el-overlay>
+  <el-overlay v-if="getIsMobile && !getCollapsed" @click="handleClose(true)" />
   <div
     :class="{
       'basic-layout-aside': true,

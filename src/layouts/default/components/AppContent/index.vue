@@ -1,5 +1,5 @@
 <template>
-  <div class="basic-layout-content" v-loading="getPageLoading">
+  <div class="basic-layout-content" v-loading="getPageLoading" element-loading-text="loading...">
     <fullcontent v-model="fullContent">
       <page-layout />
     </fullcontent>
