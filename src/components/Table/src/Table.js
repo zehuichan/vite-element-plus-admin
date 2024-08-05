@@ -3,6 +3,10 @@ export const tableProps = {
     type: [String, Number],
     default: '0'
   },
+  rowKey: {
+    type: [Function, String],
+    default: 'id'
+  },
   columns: {
     type: Array,
     default: () => []

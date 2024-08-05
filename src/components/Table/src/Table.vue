@@ -1,14 +1,14 @@
 <template>
-  <div ref="wrapRef" class="vc-table">
+  <div ref="wrapRef" class="vc-table" v-loading="loading" element-loading-text="loading...">
     <el-table
-      v-loading="loading"
-      element-loading-text="loading..."
       ref="tableRef"
       v-bind="$attrs"
       border
       show-overflow-tooltip
+      :row-key="rowKey"
       :max-height="height"
       :row-class-name="tableRowClassName"
+      @cell-click="onCellClick"
       @row-dblclick="onRowDblclick"
       @header-contextmenu="headerContextmenu"
       @header-dragend="headerDragend"
@@ -44,11 +44,15 @@
 </template>
 
 <script setup>
-import { computed, useSlots, ref, useAttrs, unref } from 'vue'
+import { computed, provide, reactive, onDeactivated, onMounted, useSlots, ref, useAttrs, unref, toRefs } from 'vue'
+
+import { onClickOutside, onKeyStroke, useEventListener, useStorage } from '@vueuse/core'
 
 import { omit } from 'lodash-unified'
 
 import { useAdaptive } from '@/hooks/web/useAdaptive'
+
+import { addClass, getEventTargetNode, removeClass } from '@/utils/domUtil'
 
 import { useColumns } from './hooks/useColumns'
 import { createTableContext } from './hooks/useTableContext'
@@ -56,6 +60,7 @@ import { createTableContext } from './hooks/useTableContext'
 import { tableEmits, tableProps } from './Table'
 
 import TableSetting from './components/TableSetting.vue'
+import { tableContextKey } from '@/components/Table/src/constants.js'
 
 const COMPONENT_NAME = 'VcTable'
 defineOptions({
@@ -69,7 +74,11 @@ const emit = defineEmits(tableEmits)
 const slots = useSlots()
 const attrs = useAttrs()
 
-const wrapRef = ref(null)
+const internalData = {
+  isActivated: false
+}
+
+const wrapRef = ref()
 const tableRef = ref()
 const innerPropsRef = ref({})
 const show = ref(false)
@@ -80,7 +89,6 @@ const getProps = computed(() => {
 const getPaginationProps = computed(() => {
   return omit({ ...attrs, }, ['columns', 'data', 'pagination', 'show-summary', 'summary-method'])
 })
-
 const highlight = computed(() => {
   const selection = tableRef.value?.getSelectionRows() || []
   if (selection.length > 0) {
@@ -89,6 +97,7 @@ const highlight = computed(() => {
   return []
 })
 
+const histroy = useStorage(`histroy_${props.tableKey}`, null)
 const {
   getViewColumns,
   getColumns,
@@ -103,25 +112,25 @@ const setProps = (props) => {
   innerPropsRef.value = { ...unref(innerPropsRef), ...props }
 }
 
+const onCellClick = (row, column, cell, event) => {
+  removeClass(wrapRef.value.querySelector('.cell--selected'), 'cell--selected')
+  addClass(cell, 'cell--selected')
+}
+
 const onRowDblclick = (row, column, event) => {
   tableRef.value.toggleRowSelection(row)
 }
 
+const setHighlightRow = (row) => {
+  histroy.value = row?.[props.rowKey] ?? null
+}
+
 const tableRowClassName = ({ row, rowIndex }) => {
-  if (highlight.value.includes(row.id)) {
+  if (row.id && highlight.value.includes(row.id)) {
     return 'highlight-row'
   }
-  if (row.auditStatusId == 2) {
-    return 'audit-row'
-  }
-  if (row.isPacked == 1) {
-    return 'command-row'
-  }
-  if (row.isPacked == 2) {
-    return 'packed-row'
-  }
-  if (row.isLocked == 1) {
-    return 'locked-row'
+  if (histroy.value === row.id) {
+    return 'histroy-row'
   }
   return ''
 }
@@ -146,6 +155,8 @@ const tableActions = {
   getCacheColumns,
   setCacheColumns,
   setColumnWidth,
+  setHighlightRow,
+  // ElTable Exposes
   clearSelection: () => unref(tableRef).clearSelection(),
   getSelectionRows: () => unref(tableRef).getSelectionRows(),
   toggleRowSelection: (row, selected) => unref(tableRef).toggleRowSelection(row, selected),
@@ -163,11 +174,73 @@ const tableActions = {
 
 createTableContext({ ...tableActions, tableKey: props.tableKey, tableRef })
 
-emit('register', tableActions)
+onClickOutside(wrapRef, event => {
+  removeClass(wrapRef.value.querySelector('.cell--selected'), 'cell--selected')
+  internalData.isActivated = false
+})
+
+useEventListener(wrapRef, 'keydown', (event) => {
+  const isActivated = getEventTargetNode(event, wrapRef.value).flag
+  // 最后激活的表格
+  internalData.isActivated = isActivated
+})
+
+onKeyStroke(['ArrowUp'], (event) => {
+  if (!internalData.isActivated) return
+  console.log(event)
+})
+
+onKeyStroke(['ArrowDown'], (event) => {
+  if (!internalData.isActivated) return
+  console.log(event)
+})
+
+onKeyStroke(['ArrowLeft'], (event) => {
+  if (!internalData.isActivated) return
+  console.log(event)
+})
+
+onKeyStroke(['ArrowUp'], (event) => {
+  if (!internalData.isActivated) return
+  console.log(event)
+})
+
+onKeyStroke(['ArrowRight'], (event) => {
+  if (!internalData.isActivated) return
+  console.log(event)
+})
+
+onDeactivated(() => {
+  internalData.isActivated = false
+})
+
+onMounted(() => {
+  setHighlightRow(null)
+})
+
+provide(
+  tableContextKey,
+  reactive({
+    ...toRefs(props),
+    emit,
+  })
+)
 
 defineExpose(tableActions)
 </script>
 
 <style lang="scss">
+.vc-table {
+  .cell--selected {
+    box-shadow: inset 0 0 0 2px var(--el-color-primary);
+  }
 
+  .highlight-row {
+    --el-table-tr-bg-color: var(--el-color-warning-light-7);
+  }
+
+  .histroy-row {
+    --el-table-tr-bg-color: var(--el-color-success-light-9);
+  }
+}
 </style>

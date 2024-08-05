@@ -78,6 +78,19 @@ export function removeClass(el, cls) {
   }
 }
 
+export function hackCss(attr, value) {
+  const prefix = ['webkit', 'Moz', 'ms', 'OT']
+
+  const styleObj = {}
+  prefix.forEach((item) => {
+    styleObj[`${item}${upperFirst(attr)}`] = value
+  })
+  return {
+    ...styleObj,
+    [attr]: value,
+  }
+}
+
 /**
  * Get the left and top offset of the current element
  * left: the distance between the leftmost element and the left side of the document
@@ -122,17 +135,18 @@ export function getViewportOffset(element) {
   }
 }
 
-export function hackCss(attr, value) {
-  const prefix = ['webkit', 'Moz', 'ms', 'OT']
-
-  const styleObj = {}
-  prefix.forEach((item) => {
-    styleObj[`${item}${upperFirst(attr)}`] = value
-  })
-  return {
-    ...styleObj,
-    [attr]: value,
+export function getEventTargetNode(evnt, container, queryCls, queryMethod) {
+  let targetElem
+  let target = (evnt.target.shadowRoot && evnt.composed) ? (evnt.composedPath()[0] || evnt.target) : evnt.target
+  while (target && target.nodeType && target !== document) {
+    if (queryCls && hasClass(target, queryCls) && (!queryMethod || queryMethod(target))) {
+      targetElem = target
+    } else if (target === container) {
+      return { flag: queryCls ? !!targetElem : true, container, targetElem: targetElem }
+    }
+    target = target.parentNode
   }
+  return { flag: false }
 }
 
 export const { width: windowWidth, height: windowHeight } = useWindowSize()

@@ -1,22 +1,24 @@
 <template>
   <page-wrapper>
     <div class="table-wrapper">
-      <api-select
-        v-model:label="form.name"
-        v-model:value="form.id"
-        :api="getDicts"
-        result-field="data"
-        label-field="name"
-        value-field="id"
-      />
-      <api-suggestion
-        v-model:label="form.name"
-        v-model:value="form.id"
-        :options="data"
-        label-field="name"
-        value-field="id"
-      />
-      <code>{{ form }}</code>
+      <vc-table
+        ref="tableRef"
+        table-key="0"
+        :data="tableData"
+        @cell-click="onCellClick"
+      >
+        <el-table-column type="selection" width="55" />
+        <el-table-column prop="date" label="Date" />
+        <el-table-column prop="name" label="Name" />
+        <el-table-column prop="address" label="Address" />
+        <el-table-column
+          prop="id"
+          label="Actions"
+          v-slot="scope"
+        >
+          <el-button @click="editItem(scope.row)">Edit</el-button>
+        </el-table-column>
+      </vc-table>
     </div>
     <template #footer>
       123
@@ -30,24 +32,27 @@ import { onMounted, ref, reactive } from 'vue'
 import { useSelection } from '@/components/Table'
 import { useDropdown } from '@/hooks/web/useDropdown'
 
-import { sleep } from '@/utils'
-import { getDicts } from '@/api/dict.js'
-
-defineOptions({ name: 'Demo' })
+defineOptions({
+  name: 'Demo'
+})
 
 const tableRef = ref()
-const loading = ref(false)
-const data = ref([])
-const options = ref([])
-const form = ref({})
+const tableData = reactive([
+  { id: '1', date: '2016-05-03', name: 'Tom', address: 'No. 189, Grove St, Los Angeles' },
+  { id: '2', date: '2016-05-02', name: 'Tom', address: 'No. 189, Grove St, Los Angeles' },
+  { id: '3', date: '2016-05-04', name: 'Tom', address: 'No. 189, Grove St, Los Angeles' },
+  { id: '4', date: '2016-05-01', name: 'Tom', address: 'No. 189, Grove St, Los Angeles' },
+])
 
-onMounted(async () => {
-  loading.value = true
-  await sleep(1000)
-  data.value = Array.from({ length: 10 }).map((_, index) => ({
-    id: `${index}`,
-    name: `选项-${index}`,
-  }))
-  loading.value = false
-})
+const editItem = (row) => {
+  // Navigate to edit page and set highlightedId after editing
+  tableRef.value.setHighlightRow(row, '0')
+  // Navigate to edit page logic here
+}
+
+const onCellClick = (row, column, cell, event) => {
+}
 </script>
+
+<style lang="scss">
+</style>
