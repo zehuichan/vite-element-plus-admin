@@ -18,9 +18,6 @@
           @click="handleClose(false)"
         />
       </el-scrollbar>
-      <div v-if="!getCollapsed" class="operations">
-        version: v{{ version }}
-      </div>
     </div>
   </div>
 </template>
@@ -35,8 +32,6 @@ import { useRootSetting } from '@/hooks/setting/useRootSetting'
 
 import AppLogo from '../AppLogo/index.vue'
 import AppMenu from '../AppMenu/index.vue'
-
-const { version } = __APP_INFO__
 
 const permissionStore = usePermissionStore()
 

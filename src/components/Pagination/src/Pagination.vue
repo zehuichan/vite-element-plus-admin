@@ -11,39 +11,31 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from 'vue'
+<script setup>
 import { scrollTo } from '@/utils/scrollTo'
 
-import props from './props'
+import { paginationProps, paginationEmits } from './Pagination'
 
-export default defineComponent({
+defineOptions({
   name: 'Pagination',
   inheritAttrs: false,
-  props: props,
-  emits: ['pagination'],
-  setup(props, { emit }) {
-
-    function handleSizeChange() {
-      emit('pagination')
-      if (props.autoScroll) {
-        scrollTo(0, 800)
-      }
-    }
-
-    function handleCurrentChange() {
-      emit('pagination')
-      if (props.autoScroll) {
-        scrollTo(0, 800)
-      }
-    }
-
-    return {
-      handleSizeChange,
-      handleCurrentChange
-    }
-  }
 })
+const props = defineProps(paginationProps)
+const emit = defineEmits(paginationEmits)
+
+function handleSizeChange() {
+  emit('pagination')
+  if (props.autoScroll) {
+    scrollTo(0, 800)
+  }
+}
+
+function handleCurrentChange() {
+  emit('pagination')
+  if (props.autoScroll) {
+    scrollTo(0, 800)
+  }
+}
 </script>
 
 <style lang="scss">

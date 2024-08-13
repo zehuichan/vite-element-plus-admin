@@ -44,11 +44,13 @@
 </template>
 
 <script setup>
-import { computed, provide, reactive, onDeactivated, onMounted, useSlots, ref, useAttrs, unref, toRefs } from 'vue'
+import { computed, provide, reactive, onDeactivated, onMounted, ref, useAttrs, unref, toRefs } from 'vue'
 
-import { onClickOutside, onKeyStroke, useEventListener, useStorage } from '@vueuse/core'
+import { paginationProps } from 'element-plus'
 
-import { omit } from 'lodash-unified'
+import { onClickOutside, useEventListener, useStorage } from '@vueuse/core'
+
+import { pick } from 'lodash-unified'
 
 import { useAdaptive } from '@/hooks/web/useAdaptive'
 
@@ -58,9 +60,9 @@ import { useColumns } from './hooks/useColumns'
 import { createTableContext } from './hooks/useTableContext'
 
 import { tableEmits, tableProps } from './Table'
+import { tableContextKey } from './constants'
 
 import TableSetting from './components/TableSetting.vue'
-import { tableContextKey } from '@/components/Table/src/constants.js'
 
 const COMPONENT_NAME = 'VcTable'
 defineOptions({
@@ -71,7 +73,6 @@ defineOptions({
 const props = defineProps(tableProps)
 const emit = defineEmits(tableEmits)
 
-const slots = useSlots()
 const attrs = useAttrs()
 
 const internalData = {
@@ -87,7 +88,7 @@ const getProps = computed(() => {
   return { ...props, ...unref(innerPropsRef) }
 })
 const getPaginationProps = computed(() => {
-  return omit({ ...attrs, }, ['columns', 'data', 'pagination', 'show-summary', 'summary-method'])
+  return pick({ ...props, ...attrs, }, Object.keys(paginationProps))
 })
 const highlight = computed(() => {
   const selection = tableRef.value?.getSelectionRows() || []
@@ -185,31 +186,6 @@ useEventListener(wrapRef, 'keydown', (event) => {
   internalData.isActivated = isActivated
 })
 
-onKeyStroke(['ArrowUp'], (event) => {
-  if (!internalData.isActivated) return
-  console.log(event)
-})
-
-onKeyStroke(['ArrowDown'], (event) => {
-  if (!internalData.isActivated) return
-  console.log(event)
-})
-
-onKeyStroke(['ArrowLeft'], (event) => {
-  if (!internalData.isActivated) return
-  console.log(event)
-})
-
-onKeyStroke(['ArrowUp'], (event) => {
-  if (!internalData.isActivated) return
-  console.log(event)
-})
-
-onKeyStroke(['ArrowRight'], (event) => {
-  if (!internalData.isActivated) return
-  console.log(event)
-})
-
 onDeactivated(() => {
   internalData.isActivated = false
 })
@@ -223,6 +199,8 @@ provide(
   reactive({
     ...toRefs(props),
     emit,
+
+    internalData
   })
 )
 

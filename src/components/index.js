@@ -17,6 +17,7 @@ import {
 } from './Form'
 import Search from './Search'
 import { Table } from './Table'
+import { TableV2 } from './TableV2'
 import Pagination from './Pagination'
 import Modal from './Modal'
 import Drawer from './Drawer'
@@ -30,6 +31,7 @@ const components = [
   AppTitle,
   Search,
   Table,
+  TableV2,
   Pagination,
 
   Form,

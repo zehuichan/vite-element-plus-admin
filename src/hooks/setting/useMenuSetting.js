@@ -19,7 +19,6 @@ export function useMenuSetting() {
     const width = appStore.getIsMobile
       ? '0px' : unref(getCollapsed)
         ? unref(getCollapsedWidth) : unref(getMenuWidth)
-    console.log(width)
     return `calc(100% - ${unref(width)})`
   })
 

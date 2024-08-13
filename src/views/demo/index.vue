@@ -1,24 +1,17 @@
 <template>
   <page-wrapper>
     <div class="table-wrapper">
-      <vc-table
+      <vc-table-v2
         ref="tableRef"
         table-key="0"
         :data="tableData"
         @cell-click="onCellClick"
       >
-        <el-table-column type="selection" width="55" />
+        <el-table-column type="selection" width="55" align="center" />
         <el-table-column prop="date" label="Date" />
         <el-table-column prop="name" label="Name" />
         <el-table-column prop="address" label="Address" />
-        <el-table-column
-          prop="id"
-          label="Actions"
-          v-slot="scope"
-        >
-          <el-button @click="editItem(scope.row)">Edit</el-button>
-        </el-table-column>
-      </vc-table>
+      </vc-table-v2>
     </div>
     <template #footer>
       123
@@ -44,13 +37,8 @@ const tableData = reactive([
   { id: '4', date: '2016-05-01', name: 'Tom', address: 'No. 189, Grove St, Los Angeles' },
 ])
 
-const editItem = (row) => {
-  // Navigate to edit page and set highlightedId after editing
-  tableRef.value.setHighlightRow(row, '0')
-  // Navigate to edit page logic here
-}
-
 const onCellClick = (row, column, cell, event) => {
+  console.log('=>(index.vue:55) tableRef.value', tableRef.value)
 }
 </script>
 
