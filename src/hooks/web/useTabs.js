@@ -1,19 +1,6 @@
 import { useRoute, useRouter } from 'vue-router'
-import { unref } from 'vue'
 
-import { useAppStore } from '@/store/modules/app'
 import { useMultipleTabStore } from '@/store/modules/multipleTab'
-
-export const TableActionEnum = {
-  REFRESH: 0,
-  CLOSE_ALL: 1,
-  CLOSE_LEFT: 2,
-  CLOSE_RIGHT: 3,
-  CLOSE_OTHER: 4,
-  CLOSE_CURRENT: 5,
-  CLOSE: 6,
-  FULL_CONTENT: 7
-}
 
 export function useTabs() {
   const router = useRouter()
