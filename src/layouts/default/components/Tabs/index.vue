@@ -25,7 +25,7 @@
         </div>
         <div ref="navScroll" class="tabs-card-scroll">
           <draggable
-            :list="getTabsState"
+            :list="currentTabs"
             animation="300"
             item-key="fullPath"
             class="flex"
@@ -33,18 +33,23 @@
           >
             <template #item="{ element }">
               <router-link
+                class="tabs-card-scroll-item"
+                active-class="active-item"
                 :id="`tag${element?.fullPath?.split('/').join('\/')}`"
-                :class="{'tabs-card-scroll-item': true, 'active-item': activeKey === element.fullPath }"
                 :to="{ path: element.path, query: element.query }"
                 @contextmenu.prevent="handleContextMenu($event, element)"
               >
                 <div class="tabs-card-scroll-item__inner">
                   <span>{{ element.meta.title }}</span>
                   <icon-park
-                    class="ml-8px"
-                    v-show="!element.meta.affix && activeKey === element.fullPath"
+                    v-show="!element.meta.affixTab && currentTabs.length > 1"
                     type="close"
-                    @click.prevent.stop="handleClose(element)"
+                    @click.prevent.stop="closeTabByKey(element.path)"
+                  />
+                  <icon-park
+                    v-show="element.meta.affixTab && currentTabs.length > 1"
+                    type="pushpin"
+                    @click.prevent.stop="unpinTab(element)"
                   />
                 </div>
               </router-link>
@@ -54,36 +59,26 @@
       </div>
       <div class="tabs-extra">
         <div class="tabs-card-item haptics-feedback" @click="fullContent">
-          <icon-park class="text-12px " type="screenshot-one" />
+          <icon-park class="text-12px " type="full-screen" />
         </div>
-        <div class="tabs-card-item haptics-feedback" @click="refreshPage">
+        <div class="tabs-card-item haptics-feedback" @click="refreshTab">
           <icon-park class="text-12px " type="undo" />
         </div>
       </div>
     </div>
     <context-menu
       ref="contextmenu"
-      v-show="showDropdown"
+      v-show="state.showDropdown"
       :tab-item="currentTab"
-      :x="dropdownX"
-      :y="dropdownY"
-      @click="showDropdown = false"
+      :x="state.dropdownX"
+      :y="state.dropdownY"
+      @click="state.showDropdown = false"
     />
   </div>
 </template>
 
-<script>
-import {
-  computed,
-  defineComponent,
-  nextTick,
-  onMounted,
-  reactive,
-  ref,
-  toRaw,
-  toRefs,
-  unref,
-} from 'vue'
+<script setup>
+import { nextTick, reactive, ref, watch, } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 
 import { useRoute, useRouter } from 'vue-router'
@@ -91,218 +86,166 @@ import { useRoute, useRouter } from 'vue-router'
 import Draggable from 'vuedraggable'
 import ContextMenu from './context-menu.vue'
 
+import { useAppStore } from '@/store/modules/app'
+import { usePermissionStore } from '@/store/modules/permission'
 import { useMultipleTabStore } from '@/store/modules/multipleTab'
-import { useUserStore } from '@/store/modules/user'
 
 import { useTabs } from '@/hooks/web/useTabs'
+import { filter } from '@/utils/treeHelper'
 
-import { PAGE_NOT_FOUND_NAME, REDIRECT_NAME } from '@/router/constant'
+const appStore = useAppStore()
+const permissionStore = usePermissionStore()
+const tabStore = useMultipleTabStore()
 
-import { listenerRouteChange } from '@/install/plugins/router-change'
+const router = useRouter()
+const route = useRoute()
 
-export default defineComponent({
-  name: 'AppTabs',
-  components: {
-    Draggable,
-    ContextMenu
+const { refreshTab, closeTabByKey, unpinTab } = useTabs()
+
+const navWrap = ref(null)
+const navScroll = ref(null)
+const contextmenu = ref(null)
+const currentTab = ref(null)
+const currentTabs = ref([])
+const state = reactive({
+  activeKey: route.fullPath,
+  scrollable: false,
+  dropdownX: 0,
+  dropdownY: 0,
+  showDropdown: false,
+  isMultiHeaderFixed: false,
+  multiTabsSetting: true
+})
+
+watch(
+  [
+    () => tabStore.getTabs,
+    () => tabStore.updateTime,
+  ],
+  ([tabs]) => {
+    currentTabs.value = tabs
   },
-  setup() {
-    const navWrap = ref(null)
-    const navScroll = ref(null)
-    const contextmenu = ref(null)
-    const currentTab = ref(null)
-    const affixList = ref([])
+)
 
-    const userStore = useUserStore()
-    const tabStore = useMultipleTabStore()
+watch(
+  () => permissionStore.getBackMenuList,
+  () => {
+    initAffixTabs()
+  },
+  { immediate: true },
+)
 
-    const router = useRouter()
-    const route = useRoute()
-
-    const { refreshPage, close, fullContent } = useTabs()
-
-    const state = reactive({
-      activeKey: route.fullPath,
-      scrollable: false,
-      dropdownX: 0,
-      dropdownY: 0,
-      showDropdown: false,
-      isMultiHeaderFixed: false,
-      multiTabsSetting: true
+watch(
+  () => route.path,
+  () => {
+    const meta = route.matched?.[route.matched.length - 1]?.meta
+    tabStore.addTab({
+      ...route,
+      meta: meta || route.meta,
     })
+  },
+  { immediate: true },
+)
 
-    // 标签页列表
-    const getTabsState = computed(() => tabStore.getTabList)
+function initAffixTabs() {
+  const affixTabs = filter(router.getRoutes(), (route) => {
+    return !!route.meta?.affixTab
+  })
+  tabStore.setAffixTabs(affixTabs)
+}
 
-    listenerRouteChange((route) => {
-      const { name } = route
-      if (
-        name === REDIRECT_NAME ||
-        route.name === PAGE_NOT_FOUND_NAME ||
-        !route ||
-        !userStore.getToken
-      ) {
-        return
-      }
+function scrollTo(value, amplitude) {
+  const currentScroll = navScroll.value.scrollLeft
+  const scrollWidth =
+    (amplitude > 0 && currentScroll + amplitude >= value) ||
+    (amplitude < 0 && currentScroll + amplitude <= value)
+      ? value
+      : currentScroll + amplitude
+  navScroll.value && navScroll.value.scrollTo(scrollWidth, 0)
+  if (scrollWidth === value) return
+  return window.requestAnimationFrame(() => scrollTo(value, amplitude))
+}
 
-      const { path, fullPath, meta = {} } = route
-      const { currentActiveMenu, hideTab } = meta
-      const isHide = !hideTab ? null : currentActiveMenu
-      const p = isHide || fullPath || path
-      if (state.activeKey !== p) {
-        state.activeKey = p
-      }
+function scrollPrev() {
+  const containerWidth = navScroll.value.offsetWidth
+  const currentScroll = navScroll.value.scrollLeft
 
-      if (isHide) {
-        const findParentRoute = router
-          .getRoutes()
-          .find((item) => item.path === currentActiveMenu)
+  if (!currentScroll) return
+  const scrollLeft = currentScroll > containerWidth ? currentScroll - containerWidth : 0
+  scrollTo(scrollLeft, (scrollLeft - currentScroll) / 20)
+}
 
-        findParentRoute && tabStore.addTab(findParentRoute)
-      } else {
-        tabStore.addTab(unref(route))
-      }
+function scrollNext() {
+  const containerWidth = navScroll.value.offsetWidth
+  const navWidth = navScroll.value.scrollWidth
+  const currentScroll = navScroll.value.scrollLeft
 
-      updateNavScroll(true)
-    })
+  if (navWidth - currentScroll <= containerWidth) return
+  const scrollLeft =
+    navWidth - currentScroll > containerWidth * 2
+      ? currentScroll + containerWidth
+      : navWidth - containerWidth
+  scrollTo(scrollLeft, (scrollLeft - currentScroll) / 20)
+}
 
-    function filterAffixTabs(routes) {
-      const tabs = []
-      routes &&
-      routes.forEach((route) => {
-        if (route.meta && route.meta.affix) {
-          tabs.push(toRaw(route))
+async function updateNavScroll(autoScroll) {
+  await nextTick()
+  if (!navScroll.value) return
+  const containerWidth = navScroll.value.offsetWidth
+  const navWidth = navScroll.value.scrollWidth
+
+  if (containerWidth < navWidth) {
+    state.scrollable = true
+    if (autoScroll) {
+      let tagList = navScroll.value.querySelectorAll('.tabs-card-scroll-item') || [];
+      [...tagList].forEach((tag) => {
+        // fix SyntaxError
+        if (tag.id === `tag${state.activeKey.split('/').join('\/')}`) {
+          tag.scrollIntoView && tag.scrollIntoView()
         }
       })
-      return tabs
     }
-
-    function initAffixTabs() {
-      affixList.value = filterAffixTabs(router.getRoutes())
-      for (const tab of affixList.value) {
-        tab.name && tabStore.addTab({
-          meta: tab.meta,
-          name: tab.name,
-          path: tab.path,
-        })
-      }
-    }
-
-    function scrollTo(value, amplitude) {
-      const currentScroll = navScroll.value.scrollLeft
-      const scrollWidth =
-        (amplitude > 0 && currentScroll + amplitude >= value) ||
-        (amplitude < 0 && currentScroll + amplitude <= value)
-          ? value
-          : currentScroll + amplitude
-      navScroll.value && navScroll.value.scrollTo(scrollWidth, 0)
-      if (scrollWidth === value) return
-      return window.requestAnimationFrame(() => scrollTo(value, amplitude))
-    }
-
-    function scrollPrev() {
-      const containerWidth = navScroll.value.offsetWidth
-      const currentScroll = navScroll.value.scrollLeft
-
-      if (!currentScroll) return
-      const scrollLeft = currentScroll > containerWidth ? currentScroll - containerWidth : 0
-      scrollTo(scrollLeft, (scrollLeft - currentScroll) / 20)
-    }
-
-    function scrollNext() {
-      const containerWidth = navScroll.value.offsetWidth
-      const navWidth = navScroll.value.scrollWidth
-      const currentScroll = navScroll.value.scrollLeft
-
-      if (navWidth - currentScroll <= containerWidth) return
-      const scrollLeft =
-        navWidth - currentScroll > containerWidth * 2
-          ? currentScroll + containerWidth
-          : navWidth - containerWidth
-      scrollTo(scrollLeft, (scrollLeft - currentScroll) / 20)
-    }
-
-    async function updateNavScroll(autoScroll) {
-      await nextTick()
-      if (!navScroll.value) return
-      const containerWidth = navScroll.value.offsetWidth
-      const navWidth = navScroll.value.scrollWidth
-
-      if (containerWidth < navWidth) {
-        state.scrollable = true
-        if (autoScroll) {
-          let tagList = navScroll.value.querySelectorAll('.tabs-card-scroll-item') || [];
-          [...tagList].forEach((tag) => {
-            // fix SyntaxError
-            if (tag.id === `tag${state.activeKey.split('/').join('\/')}`) {
-              tag.scrollIntoView && tag.scrollIntoView()
-            }
-          })
-        }
-      } else {
-        state.scrollable = false
-      }
-    }
-
-    function handleClose(item) {
-      close(item)
-    }
-
-    async function handleContextMenu(e, item) {
-      await updateNavScroll()
-      state.showDropdown = false
-      currentTab.value = null
-      await nextTick()
-      const menuMinWidth = 105
-      const offsetLeft = navWrap.value.getBoundingClientRect().left // container margin left
-      const offsetWidth = navWrap.value.offsetWidth // container width
-      const maxLeft = offsetWidth - menuMinWidth // left boundary
-      const left = e.clientX - offsetLeft + 15 // 15: margin right
-
-      if (left > maxLeft) {
-        state.dropdownX = maxLeft
-      } else {
-        state.dropdownX = left
-      }
-
-      state.showDropdown = true
-      state.dropdownY = e.clientY
-      currentTab.value = item
-    }
-
-    function handleSortTabs(evt) {
-      const { oldIndex, newIndex } = evt
-      if (oldIndex === newIndex) {
-        return
-      }
-      tabStore.sortTabs()
-    }
-
-    onClickOutside(contextmenu, () => (state.showDropdown = false))
-
-    onMounted(() => {
-      initAffixTabs()
-      updateNavScroll(true)
-    })
-
-    return {
-      ...toRefs(state),
-      navWrap,
-      navScroll,
-      contextmenu,
-      currentTab,
-      getTabsState,
-
-      refreshPage,
-      fullContent,
-      scrollPrev,
-      scrollNext,
-      handleClose,
-      handleContextMenu,
-      handleSortTabs
-    }
+  } else {
+    state.scrollable = false
   }
-})
+}
+
+function fullContent() {
+  const { fullContent } = appStore.getProjectConfig
+  appStore.setProjectConfig({ fullContent: !fullContent })
+}
+
+async function handleContextMenu(e, item) {
+  await updateNavScroll()
+  state.showDropdown = false
+  currentTab.value = null
+  await nextTick()
+  const menuMinWidth = 105
+  const offsetLeft = navWrap.value.getBoundingClientRect().left // container margin left
+  const offsetWidth = navWrap.value.offsetWidth // container width
+  const maxLeft = offsetWidth - menuMinWidth // left boundary
+  const left = e.clientX - offsetLeft + 15 // 15: margin right
+
+  if (left > maxLeft) {
+    state.dropdownX = maxLeft
+  } else {
+    state.dropdownX = left
+  }
+
+  state.showDropdown = true
+  state.dropdownY = e.clientY
+  currentTab.value = item.fullPath
+}
+
+function handleSortTabs(evt) {
+  const { oldIndex, newIndex } = evt
+  if (oldIndex === newIndex) {
+    return
+  }
+  tabStore.sortTabs()
+}
+
+onClickOutside(contextmenu, () => (state.showDropdown = false))
 </script>
 
 <style lang="scss">
@@ -380,10 +323,9 @@ export default defineComponent({
             justify-content: center;
           }
 
-          .el-icon {
-            width: 16px;
-            height: 16px;
+          .i-icon {
             margin-left: 8px;
+            line-height: 1;
           }
         }
 
@@ -391,6 +333,10 @@ export default defineComponent({
           color: #fff;
           background: theme('colors.primary');
           border: 0;
+
+          .i-icon {
+            color: #fff;
+          }
         }
       }
     }

@@ -1,41 +1,40 @@
 <template>
   <router-view v-slot="{ Component, route }">
-    <keep-alive v-if="openCache" :include="getCaches">
-      <component :is="Component" :key="route.fullPath"/>
+    <keep-alive
+      v-if="keepAlive"
+      :exclude="getExcludeCachedTabs"
+      :include="getCachedTabs"
+    >
+      <component
+        v-if="renderRouteView"
+        :is="Component"
+        :key="route.fullPath"
+      />
     </keep-alive>
-    <component v-else :is="Component" :key="route.fullPath"/>
+    <component
+      v-else-if="renderRouteView"
+      :is="Component"
+      :key="route.fullPath"
+    />
   </router-view>
 </template>
 
-<script>
-import { computed, defineComponent, unref } from 'vue'
+<script setup>
+import { computed, unref } from 'vue'
 
+import { storeToRefs } from '@/store'
 import { useMultipleTabStore } from '@/store/modules/multipleTab'
 import { useMultipleTabSetting } from '@/hooks/setting/useMultipleTabSetting'
 import { useRootSetting } from '@/hooks/setting/useRootSetting'
 
-export default defineComponent({
-  name: 'PageLayout',
-  setup() {
-    const tabStore = useMultipleTabStore()
+const tabStore = useMultipleTabStore()
 
-    const { getOpenKeepAlive } = useRootSetting()
-    const { getShowMultipleTab } = useMultipleTabSetting()
+const { getCachedTabs, getExcludeCachedTabs, renderRouteView } = storeToRefs(tabStore)
 
-    const openCache = computed(
-      () => unref(getOpenKeepAlive) && unref(getShowMultipleTab)
-    )
-    const getCaches = computed(() => {
-      if (!unref(getOpenKeepAlive)) {
-        return []
-      }
-      return tabStore.getCachedTabList
-    })
+const { getOpenKeepAlive } = useRootSetting()
+const { getShowMultipleTab } = useMultipleTabSetting()
 
-    return {
-      openCache,
-      getCaches
-    }
-  }
-})
+const keepAlive = computed(
+  () => unref(getOpenKeepAlive) && unref(getShowMultipleTab)
+)
 </script>

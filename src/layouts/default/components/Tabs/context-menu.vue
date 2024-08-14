@@ -6,168 +6,164 @@
   >
     <li
       v-for="item in getDropMenuList"
-      :key="item.event"
+      :key="item.key"
       class="tabs-view-contextmenu-item"
       :class="{ 'tabs-view-contextmenu-item__disabled': item.disabled }"
-      @click="handleMenuEvent(item)"
+      @click="item.handler"
     >
-      <icon-park :type="item.icon" />
+      <component is="icon-park" :key="item.icon" :type="item.icon" />
       <span>{{ item.text }}</span>
     </li>
   </ul>
 </template>
 
 <script>
-import { computed, defineComponent, reactive, unref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, defineComponent } from 'vue'
 
+import { useRoute } from 'vue-router'
+
+import { useAppStore } from '@/store/modules/app'
 import { useMultipleTabStore } from '@/store/modules/multipleTab'
-import { TableActionEnum, useTabs } from '@/hooks/web/useTabs'
+import { useTabs } from '@/hooks/web/useTabs'
 
 export default defineComponent({
   name: 'ContextMenu',
   props: {
-    tabItem: Object,
+    tabItem: String,
     x: Number,
     y: Number
   },
   emits: ['click'],
   setup(props, { emit }) {
-    const state = reactive({
-      current: null,
-      currentIndex: 0
-    })
+    const route = useRoute()
 
+    const appStore = useAppStore()
     const tabStore = useMultipleTabStore()
-    const { currentRoute } = useRouter()
+
     const {
-      refreshPage,
-      closeAll,
-      close,
-      closeLeft,
-      closeOther,
-      closeRight,
-      fullContent
+      closeAllTabs,
+      closeCurrentTab,
+      closeLeftTabs,
+      closeOtherTabs,
+      closeRightTabs,
+      getTabDisableState,
+      openTabInNewWindow,
+      refreshTab,
+      toggleTabPin,
     } = useTabs()
 
-    const getTargetTab = computed(() => {
-      return props.tabItem
+    const currentActive = computed(() => {
+      return props.tabItem || route.fullPath
     })
 
     const getDropMenuList = computed(() => {
-      if (!unref(getTargetTab)) {
-        return
-      }
-      const { meta } = unref(getTargetTab)
-      const { path } = unref(currentRoute)
+      const tab = tabStore.getTabByPath(currentActive.value)
+      const { fullContent } = appStore.getProjectConfig
 
-      const curItem = state.current
+      const {
+        disabledCloseAll,
+        disabledCloseCurrent,
+        disabledCloseLeft,
+        disabledCloseOther,
+        disabledCloseRight,
+        disabledRefresh,
+      } = getTabDisableState(tab)
 
-      const isCurItem = curItem ? curItem.path === path : false
-
-      // Refresh button
-      const index = state.currentIndex
-      const refreshDisabled = !isCurItem
-      // Close left
-      const closeLeftDisabled = index === 0 || !isCurItem
-
-      const disabled = tabStore.getTabList.length === 1
-
-      // Close right
-      const closeRightDisabled = !isCurItem || (index === tabStore.getTabList.length - 1 && tabStore.getLastDragEndIndex >= 0)
+      const affixTab = tab?.meta?.affixTab ?? false
 
       return [
         {
-          icon: 'refresh',
-          event: TableActionEnum.REFRESH,
-          text: '重新加载',
-          disabled: refreshDisabled
-        },
-        {
-          icon: 'full-screen',
-          event: TableActionEnum.FULL_CONTENT,
-          text: '专注模式',
-          disabled: !isCurItem
-        },
-        {
+          disabled: disabledCloseCurrent,
+          handler: async () => {
+            await closeCurrentTab(tab)
+            emit('click')
+          },
           icon: 'close',
-          event: TableActionEnum.CLOSE_CURRENT,
-          text: '关闭标签页',
-          disabled: !!meta?.affix || disabled
+          key: 'close',
+          text: '关闭',
         },
         {
+          handler: async () => {
+            await toggleTabPin(tab)
+            emit('click')
+          },
+          icon: affixTab ? 'pushpin' : 'pin',
+          key: 'affix',
+          text: affixTab ? '取消固定' : '固定',
+        },
+        {
+          handler: () => {
+            appStore.setProjectConfig({ fullContent: !fullContent })
+            emit('click')
+          },
+          icon: 'full-screen',
+          key: 'affix',
+          text: '最大化',
+        },
+        {
+          disabled: disabledRefresh,
+          handler: () => {
+            refreshTab()
+            emit('click')
+          },
+          icon: 'refresh',
+          key: 'reload',
+          text: '重新加载',
+        },
+        {
+          handler: async () => {
+            await openTabInNewWindow(tab)
+            emit('click')
+          },
+          icon: 'efferent-three',
+          key: 'reload',
+          text: '在新窗口打开',
+        },
+        {
+          disabled: disabledCloseLeft,
+          handler: async () => {
+            await closeLeftTabs(tab)
+            emit('click')
+          },
           icon: 'to-left',
-          event: TableActionEnum.CLOSE_LEFT,
+          key: 'close-left',
           text: '关闭左侧标签页',
-          disabled: closeLeftDisabled
         },
         {
+          disabled: disabledCloseRight,
+          handler: async () => {
+            await closeRightTabs(tab)
+            emit('click')
+          },
           icon: 'to-right',
-          event: TableActionEnum.CLOSE_RIGHT,
+          key: 'close-right',
           text: '关闭右侧标签页',
-          disabled: closeRightDisabled
         },
         {
+          disabled: disabledCloseOther,
+          handler: async () => {
+            await closeOtherTabs(tab)
+            emit('click')
+          },
           icon: 'transfer-data',
-          event: TableActionEnum.CLOSE_OTHER,
+          key: 'close-other',
           text: '关闭其他标签页',
-          disabled: disabled || !isCurItem
         },
         {
+          disabled: disabledCloseAll,
+          handler: ()=>{
+            closeAllTabs()
+            emit('click')
+          },
           icon: 'close-one',
-          event: TableActionEnum.CLOSE_ALL,
+          key: 'close-all',
           text: '关闭全部标签页',
-          disabled: disabled
         }
       ]
     })
 
-    watch(
-      () => getTargetTab.value,
-      (tabItem) => {
-        if (!tabItem) return
-        const index = tabStore.getTabList.findIndex(
-          (tab) => tab.path === tabItem.path
-        )
-        state.current = tabItem
-        state.currentIndex = index
-      }
-    )
-
-    function handleMenuEvent(menu) {
-      const { event, disabled } = menu
-      if (disabled) return false
-
-      switch (event) {
-        case TableActionEnum.REFRESH:
-          refreshPage()
-          break
-        case TableActionEnum.FULL_CONTENT:
-          fullContent()
-          break
-        case TableActionEnum.CLOSE_CURRENT:
-          close(props.tabItem)
-          break
-        case TableActionEnum.CLOSE_LEFT:
-          closeLeft()
-          break
-        case TableActionEnum.CLOSE_RIGHT:
-          closeRight()
-          break
-        case TableActionEnum.CLOSE_OTHER:
-          closeOther()
-          break
-        case TableActionEnum.CLOSE_ALL:
-          closeAll()
-          break
-      }
-
-      emit('click')
-    }
-
     return {
       getDropMenuList,
-      handleMenuEvent
     }
   }
 })

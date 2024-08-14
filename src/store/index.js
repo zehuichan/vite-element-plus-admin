@@ -1,9 +1,11 @@
-import { createPinia } from 'pinia'
+import { createPinia, storeToRefs } from 'pinia'
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
 const store = createPinia()
+store.use(piniaPluginPersistedstate)
 
 export function setupStore(app) {
   app.use(store)
 }
 
-export { store }
+export { store, storeToRefs }

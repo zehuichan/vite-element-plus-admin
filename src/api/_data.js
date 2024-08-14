@@ -10,7 +10,6 @@ const MENU_DATA = [
         meta: {
           title: '仪表板',
           icon: 'dashboard',
-          affix: true
         }
       },
     ]
@@ -26,7 +25,6 @@ const MENU_DATA = [
         meta: {
           title: '文档',
           icon: 'doc-success',
-          affix: true
         }
       },
     ]

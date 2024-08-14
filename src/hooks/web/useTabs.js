@@ -1,4 +1,4 @@
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { unref } from 'vue'
 
 import { useAppStore } from '@/store/modules/app'
@@ -15,96 +15,107 @@ export const TableActionEnum = {
   FULL_CONTENT: 7
 }
 
-export function useTabs(_router) {
-  const appStore = useAppStore()
-
-  function canIUseTabs() {
-    const { show } = appStore.getMultiTabsSetting
-    if (!show) {
-      console.warn(
-        'The multi-tab page is currently not open, please open it in the settings！'
-      )
-    }
-    return !!show
-  }
-
+export function useTabs() {
+  const router = useRouter()
+  const route = useRoute()
   const tabStore = useMultipleTabStore()
-  const router = _router || useRouter()
 
-  const { currentRoute, back } = router
-
-  function getCurrentTab() {
-    const route = unref(currentRoute)
-    return tabStore.getTabList.find((item) => item.fullPath === route.fullPath)
+  async function closeLeftTabs(tab) {
+    await tabStore.closeLeftTabs(tab || route)
   }
 
-  async function updateTabTitle(title, tab) {
-    const canIUse = canIUseTabs
-    if (!canIUse) {
-      return
-    }
-    const targetTab = tab || getCurrentTab()
-    await tabStore.setTabTitle(title, targetTab)
+  async function closeAllTabs() {
+    await tabStore.closeAllTabs(router)
   }
 
-  async function updateTabPath(path, tab) {
-    const canIUse = canIUseTabs()
-    if (!canIUse) {
-      return
-    }
-    const targetTab = tab || getCurrentTab()
-    await tabStore.updateTabPath(path, targetTab)
+  async function closeRightTabs(tab) {
+    await tabStore.closeRightTabs(tab || route)
   }
 
-  async function handleTabAction(action, tab) {
-    const canIUse = canIUseTabs()
-    if (!canIUse) {
-      return
-    }
-    const currentTab = getCurrentTab()
-    switch (action) {
-      case TableActionEnum.REFRESH:
-        await tabStore.refreshPage(router)
-        break
+  async function closeOtherTabs(tab) {
+    await tabStore.closeOtherTabs(tab || route)
+  }
 
-      case TableActionEnum.CLOSE_ALL:
-        await tabStore.closeAllTab(router)
-        break
+  async function closeCurrentTab(tab) {
+    await tabStore.closeTab(tab || route, router)
+  }
 
-      case TableActionEnum.CLOSE_LEFT:
-        await tabStore.closeLeftTabs(currentTab, router)
-        break
+  async function pinTab(tab) {
+    await tabStore.pinTab(tab || route)
+  }
 
-      case TableActionEnum.CLOSE_RIGHT:
-        await tabStore.closeRightTabs(currentTab, router)
-        break
+  async function unpinTab(tab) {
+    await tabStore.unpinTab(tab || route)
+  }
 
-      case TableActionEnum.CLOSE_OTHER:
-        await tabStore.closeOtherTabs(currentTab, router)
-        break
+  async function toggleTabPin(tab) {
+    await tabStore.toggleTabPin(tab || route)
+  }
 
-      case TableActionEnum.CLOSE_CURRENT:
-      case TableActionEnum.CLOSE:
-        await tabStore.closeTab(tab || currentTab, router)
-        break
+  async function refreshTab() {
+    await tabStore.refresh(router)
+  }
 
-      case TableActionEnum.FULL_CONTENT:
-        const { fullContent } = appStore.getProjectConfig
-        appStore.setProjectConfig({ fullContent: !fullContent })
-        break
+  async function openTabInNewWindow(tab) {
+    await tabStore.openTabInNewWindow(tab || route)
+  }
+
+  async function closeTabByKey(key) {
+    await tabStore.closeTabByKey(key, router)
+  }
+
+  async function setTabTitle(title) {
+    tabStore.setUpdateTime()
+    await tabStore.setTabTitle(route, title)
+  }
+
+  async function resetTabTitle() {
+    tabStore.setUpdateTime()
+    await tabStore.resetTabTitle(route)
+  }
+
+  function getTabDisableState(tab = route) {
+    const tabs = tabStore.getTabs
+    const affixTabs = tabStore.affixTabs
+    const index = tabs.findIndex((item) => item.path === tab.path)
+    const disabled = tabs.length <= 1
+
+    const { meta } = tab
+    const affixTab = meta?.affixTab ?? false
+    const isCurrentTab = route.path === tab.path
+
+    // 当前处于最左侧或者减去固定标签页的数量等于0
+    const disabledCloseLeft = index === 0 || index - affixTabs.length <= 0 || !isCurrentTab
+
+    const disabledCloseRight = !isCurrentTab || index === tabs.length - 1
+
+    const disabledCloseOther = disabled || !isCurrentTab || tabs.length - affixTabs.length <= 1
+
+    return {
+      disabledCloseAll: disabled,
+      disabledCloseCurrent: !!affixTab || disabled,
+      disabledCloseLeft,
+      disabledCloseOther,
+      disabledCloseRight,
+      disabledRefresh: !isCurrentTab,
     }
   }
+
 
   return {
-    refreshPage: () => handleTabAction(TableActionEnum.REFRESH),
-    closeAll: () => handleTabAction(TableActionEnum.CLOSE_ALL),
-    closeLeft: () => handleTabAction(TableActionEnum.CLOSE_LEFT),
-    closeRight: () => handleTabAction(TableActionEnum.CLOSE_RIGHT),
-    closeOther: () => handleTabAction(TableActionEnum.CLOSE_OTHER),
-    closeCurrent: () => handleTabAction(TableActionEnum.CLOSE_CURRENT),
-    close: (tab) => handleTabAction(TableActionEnum.CLOSE, tab),
-    fullContent: () => handleTabAction(TableActionEnum.FULL_CONTENT),
-    setTitle: (title, tab) => updateTabTitle(title, tab),
-    updatePath: (fullPath, tab) => updateTabPath(fullPath, tab)
+    closeLeftTabs,
+    closeAllTabs,
+    closeRightTabs,
+    closeOtherTabs,
+    closeCurrentTab,
+    pinTab,
+    unpinTab,
+    toggleTabPin,
+    refreshTab,
+    openTabInNewWindow,
+    closeTabByKey,
+    setTabTitle,
+    resetTabTitle,
+    getTabDisableState
   }
 }

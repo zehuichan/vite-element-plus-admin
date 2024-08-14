@@ -17,7 +17,7 @@ export default defineComponent({
 
     const go = useGo()
 
-    go(permissionStore.getMenus[0].children[0].path, true)
+    go(permissionStore.getBackMenuList[0].children[0].path, true)
   }
 })
 </script>
