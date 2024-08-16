@@ -1,0 +1,1 @@
+import{_ as s,d as o,u as n,o as r,c}from"./index-D3J4LNDq.js";import{u as a}from"./usePage-1OFsDK7_.js";const i=o({name:"BeforeEnter",setup(){const e=n();a()(e.getBackMenuList[0].children[0].path,!0)}}),p={class:"w-full h-full flex items-center justify-center text-primary"};function u(e,t,f,m,l,_){return r(),c("div",p)}const h=s(i,[["render",u]]);export{h as default};
