@@ -22,8 +22,9 @@ import { useRouter } from 'vue-router'
 
 import MenuItem from './item.vue'
 
-import { isUrl } from '@/utils/is'
 import { useMenuSetting } from '@/hooks/setting/useMenuSetting'
+
+import { isUrl } from '@/utils/is'
 
 export default defineComponent({
   name: 'AppMenu',
@@ -60,7 +61,8 @@ export default defineComponent({
         window.open(index)
       } else {
         emit('click')
-        push(index)
+        const now = new Date().getTime()
+        push(`${index}?_t=${now}`)
       }
     }
 

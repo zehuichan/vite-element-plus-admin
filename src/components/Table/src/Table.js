@@ -17,6 +17,8 @@ export const tableProps = {
     type: Boolean,
     default: true
   },
+  keyboard: Boolean,
+  selected: Boolean,
   adaptive: Boolean,
   adaptiveConfig: Object,
 }

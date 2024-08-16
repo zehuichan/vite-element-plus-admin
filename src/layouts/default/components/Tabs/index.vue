@@ -36,7 +36,8 @@
                 class="tabs-card-scroll-item"
                 active-class="active-item"
                 :id="`tag${element?.fullPath?.split('/').join('\/')}`"
-                :to="{ path: element.path, query: element.query }"
+                :key="`tag${element?.fullPath?.split('/').join('\/')}`"
+                :to="element"
                 @contextmenu.prevent="handleContextMenu($event, element)"
               >
                 <div class="tabs-card-scroll-item__inner">
@@ -44,7 +45,7 @@
                   <icon-park
                     v-show="!element.meta.affixTab && currentTabs.length > 1"
                     type="close"
-                    @click.prevent.stop="closeTabByKey(element.path)"
+                    @click.prevent.stop="closeTabByKey(element.fullPath)"
                   />
                   <icon-park
                     v-show="element.meta.affixTab && currentTabs.length > 1"
@@ -312,6 +313,7 @@ onClickOutside(contextmenu, () => (state.showDropdown = false))
           padding: 2px 6px;
           font-size: 12px;
           margin-left: 6px;
+          border-radius: 2px;
 
           &:hover {
             color: #515a6e;
@@ -320,7 +322,8 @@ onClickOutside(contextmenu, () => (state.showDropdown = false))
           &__inner {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
+            min-width: 80px;
           }
 
           .i-icon {
